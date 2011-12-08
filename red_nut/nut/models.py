@@ -13,7 +13,7 @@ class Patient(models.Model):
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     surname_mother = models.CharField(max_length=30, \
                                       verbose_name=(u"Prénom de la mère"))
-    DDN_Age = models.PositiveIntegerField(_(u"DDN/Age"))
+    DDN_Age = models.PositiveIntegerField(u"DDN/Age")
     cscom = models.CharField(max_length=30, verbose_name=(u"CSCOM"))
 
     def __unicode__(self):
@@ -33,10 +33,10 @@ class input_output_Program(models.Model):
     HEALING = "h"
     TANSFER = "t"
     DEATH = "d"
-    NON-RESPONDENT = "n"
+    NON_RESPONDENT = "n"
     Reason_type = ((N, "----"), (ADBANDONMENT, "abandon"), \
                     (HEALING, u"guérison"), (TANSFER, "transfer"), \
-                    (DEATH, u"deces"), (NON-RESPONDENT, u"non-repondant"))
+                    (DEATH, u"deces"), (NON_RESPONDENT, u"non-repondant"))
 
     date = models.DateField(verbose_name=(u"Date"),\
                                             default=datetime.datetime.today)
@@ -58,13 +58,13 @@ class Input(models.Model):
     KG = "g"
     BOX = "bo"
     BAG = "ba"
-    Unit_type = ((N, "----"), (KG, u"KG"), (BOX, u"Boite"), (BAG, u"sachet")
+    Unit_type = ((N, "----"), (KG, u"KG"), (BOX, u"Boite"), (BAG, u"sachet"))
 
     name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     code = models.CharField(max_length=30, verbose_name=(u"Code"))
 
     unit = models.CharField(max_length=30, verbose_name=(u"Unité"),\
-                                             choices=Reason_type, default=N)
+                                             choices=Unit_type, default=N)
 
     def __unicode__(self):
         return _(u'%(name)s %(code)s %(unit)s') % \
