@@ -7,6 +7,7 @@ import datetime
 from django.db import models
 from bolibana.models import Period
 
+
 class Patient(models.Model):
     """ """
     first_name = models.CharField(max_length=30, verbose_name=(u"Prénom"))
@@ -17,7 +18,7 @@ class Patient(models.Model):
     cscom = models.CharField(max_length=30, verbose_name=(u"CSCOM"))
 
     def __unicode__(self):
-        return _(u'%(first_name)s %(last_name)s') % \
+        return (u'%(first_name)s %(last_name)s') % \
                 {"first_name": self.first_name, "last_name": self.last_name}
 
 
@@ -46,7 +47,7 @@ class input_output_Program(models.Model):
                                              choices=Reason_type, default=N)
 
     def __unicode__(self):
-        return _(u'%(date)s %(event)s %(reason)s') % \
+        return (u'%(date)s %(event)s %(reason)s') % \
                 {"date": self.date, "event": self.event, \
                                     "reason": self.reason}
 
@@ -67,7 +68,7 @@ class Input(models.Model):
                                              choices=Unit_type, default=N)
 
     def __unicode__(self):
-        return _(u'%(name)s %(code)s %(unit)s') % \
+        return (u'%(name)s %(code)s %(unit)s') % \
                 {"name": self.name, "code": self.code, \
                                     "unit": self.unit}
 
