@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+# encoding=utf-8
+
+# ROOT_DIR contains path of this folder.
+import os
+abs_path = os.path.abspath(__file__)
+ROOT_DIR = os.path.dirname(abs_path)
+
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    ('root', 'root@localhost'),
+)
+
+DATABASES = {'default': {
+    'ENGINE': 'django.db.backends.sqlite',
+    'NAME': 'rednut',
+    'USER': 'red',
+    'PASSWORD': 'red',
+    'HOST': '',
+    'PORT': ''}}
+
+TIME_ZONE = 'Africa/Bamako'
+
+LANGUAGE_CODE = 'fr-fr'
+
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'media')
+MEDIA_URL = ''
+
+#ADMIN_MEDIA_PREFIX = '/admin_static/'
+
+# change that one!
+SECRET_KEY = '________something'
+
+TEMPLATE_DIRS = ()
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+
+USE_HTTPS = True
