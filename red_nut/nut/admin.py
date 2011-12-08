@@ -3,7 +3,8 @@
 # maintainer: alou
 
 from django.contrib import admin
-from models import Seat, DataNut, Input, input_output_Program, Patient, Nutperiod
+from models import (Seat, DataNut, Input, input_output_Program,\
+                    Patient, Nutperiod,Stock)
 
 admin.site.register(Seat)
 admin.site.register(DataNut)
