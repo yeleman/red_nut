@@ -3,7 +3,7 @@
 # maintainer: alou
 
 from django.contrib import admin
-from nut.models import *
+from models import Seat, DataNut, Input, input_output_Program, Patient, Nutperiod
 
 admin.site.register(Seat)
 admin.site.register(DataNut)
