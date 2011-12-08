@@ -2,7 +2,6 @@
 # encoding=utf-8
 # maintainer: Alou/Fadiga
 
-
 import datetime
 from django.db import models
 from bolibana.models import Period
@@ -67,7 +66,7 @@ class Input(models.Model):
                                              choices=Unit_type, default=N)
 
     def __unicode__(self):
-        return _(u'%(name)s %(code)s %(unit)s') % \
+        return (u'%(name)s %(code)s %(unit)s') % \
                 {"name": self.name, "code": self.code, \
                                     "unit": self.unit}
 
@@ -82,6 +81,7 @@ class Nutperiod(models.Model):
 
 
 class Seat(models.Model):
+    """ """
     name = models.CharField(max_length=30, verbose_name=("Name"))
     code = models.CharField(max_length=30, verbose_name=("Code"))
 
@@ -90,6 +90,10 @@ class Seat(models.Model):
 
 
 class DataNut(models.Model):
+    """ """
+    patient = models.ForeignKey(Patient,
+                                related_name='patient',\
+                                verbose_name=("Patient"))
     date = models.CharField(max_length=30, verbose_name=("Name"))
     weight = models.CharField(max_length=30, verbose_name=("weight"))
     heught = models.PositiveIntegerField(verbose_name=("heught"))
@@ -97,4 +101,28 @@ class DataNut(models.Model):
     danger_sign = models.CharField(max_length=30, verbose_name=("Danger sign"))
 
     def __unicode__(self):
-        return u'%(name)s' % {"name": self.date}
+        return u'%(date)s' % {"date": self.date}
+
+
+class Stock(models.Model):
+    """ """
+    seat = models.ForeignKey(Seat,\
+                                related_name='seat',\
+                                verbose_name=("Seat"))
+    nutperiod = models.ForeignKey(Nutperiod,
+                                        related_name='nutperiod',\
+                                        verbose_name='Period')
+    alou = models.ForeignKey(Input,\
+                                    related_name='input',\
+                                    verbose_name='Input')
+    stock_initial = models.PositiveIntegerField(verbose_name=("Stock initial"))
+    stock_received = models.PositiveIntegerField(verbose_name=("Stock received"))
+    stock_used = models.PositiveIntegerField(verbose_name=("Stock used"))
+    stock_lost = models.PositiveIntegerField(verbose_name=("Stock lost"))
+
+    def __unicode__(self):
+        return u'%(seat)s' % {"date": self.seat}
+
+
+
+
