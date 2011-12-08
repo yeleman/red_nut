@@ -15,7 +15,7 @@ ADMINS = (
 
 DATABASES = {'default': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': 'rednut',
+    'NAME': 'rednut.sqlite',
     'USER': 'red',
     'PASSWORD': 'red',
     'HOST': '',
