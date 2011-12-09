@@ -21,4 +21,10 @@ class DataNut(models.Model):
     danger_sign = models.CharField(max_length=30, verbose_name=("Danger sign"))
 
     def __unicode__(self):
-        return u'%(date)s' % {"date": self.date}
+        return u"%(patient)s %(weight)skg/%(heught)scm %(pb)smm "\
+        "%(danger_sign)s %(date)s" % {"date": self.date,
+                                      "patient": self.patient,
+                                      "heught": self.heught,
+                                      "weight": self.weight,
+                                      "pb": self.pb,
+                                      "danger_sign": self.danger_sign}
