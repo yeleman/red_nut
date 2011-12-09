@@ -5,6 +5,8 @@
 import datetime
 from django.db import models
 
+from Patient import Patient
+
 
 class InputOutputProgram(models.Model):
     """ """
@@ -26,14 +28,13 @@ class InputOutputProgram(models.Model):
                     (HEALING, u"guérison"), (TANSFER, "transfer"), \
                     (DEATH, u"deces"), (NON_RESPONDENT, u"non-repondant"))
 
-    date = models.DateField(verbose_name=(u"Date"),\
-                                            default=datetime.datetime.today)
-    event = models.CharField(max_length=30, verbose_name=(u"Type"),\
-                                             choices=Event_type, default=N)
-    reason = models.CharField(max_length=30, verbose_name=(u"Type"),\
-                                             choices=Reason_type, default=N)
+    date = models.DateField(blank=True, null=True, verbose_name=(u"Date"))
+    event = models.CharField(max_length=30, verbose_name=(u"Evenement"),\
+                                            choices=Event_type, default=N)
+    reason = models.CharField(max_length=30, verbose_name=(u"Raison"),\
+                                            choices=Reason_type, default=N)
+    patient = models.ForeignKey(Patient, verbose_name=("Patient"))
 
     def __unicode__(self):
-        return (u'%(date)s %(event)s %(reason)s') % \
-                {"date": self.date, "event": self.event, \
-                                    "reason": self.reason}
+        return (u'%(patient)s %(event)s %(reason)s') % {"event": self.event, \
+                            "patient": self.patient, "reason": self.reason}
