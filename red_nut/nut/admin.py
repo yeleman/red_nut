@@ -3,8 +3,8 @@
 # maintainer: alou
 
 from django.contrib import admin
-from models import Seat, DataNut, Input, inputOutputProgram, Patient, \
-                                                                Nutperiod
+from models.models import Seat, DataNut, Input, inputOutputProgram, Patient, \
+                                                        Nutperiod, Stock
 
 admin.site.register(Seat)
 admin.site.register(DataNut)
