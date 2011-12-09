@@ -22,7 +22,7 @@ class Patient(models.Model):
                 {"first_name": self.first_name, "last_name": self.last_name}
 
 
-class input_output_Program(models.Model):
+class inputOutputProgram(models.Model):
     """ """
 
     N = ""
@@ -41,7 +41,7 @@ class input_output_Program(models.Model):
 
     date = models.DateField(verbose_name=(u"Date"),\
                                             default=datetime.datetime.today)
-    event = models.CharField(max_length=30,verbose_name=(u"Type"),\
+    event = models.CharField(max_length=30, verbose_name=(u"Type"),\
                                              choices=Event_type, default=N)
     reason = models.CharField(max_length=30, verbose_name=(u"Type"),\
                                              choices=Reason_type, default=N)
@@ -71,6 +71,7 @@ class Input(models.Model):
         return (u'%(name)s %(code)s %(unit)s') % \
                 {"name": self.name, "code": self.code, \
                                     "unit": self.unit}
+
 
 class Nutperiod(models.Model):
     """ """
