@@ -17,24 +17,25 @@ class Stock(models.Model):
         verbose_name_plural = u"Stocks"
     seat = models.ForeignKey(Seat,\
                                 related_name='seat',\
-                                verbose_name=("Seat"))
+                                verbose_name="Seat")
     period = models.ForeignKey(Period,
                                         related_name='period',\
                                         verbose_name='Period')
-    alou = models.ForeignKey(Input,\
+    intrant = models.ForeignKey(Input,\
                                     related_name='input',\
                                     verbose_name='Input')
-    stock_initial = models.PositiveIntegerField(verbose_name=("Stock initial"))
-    stock_received = models.PositiveIntegerField(verbose_name=("Stock received"))
-    stock_used = models.PositiveIntegerField(verbose_name=("Stock used"))
-    stock_lost = models.PositiveIntegerField(verbose_name=("Stock lost"))
+    stock_initial = models.PositiveIntegerField(verbose_name="Stock initial")
+    stock_received = models.PositiveIntegerField(verbose_name="Stock received")
+    stock_used = models.PositiveIntegerField(verbose_name="Stock used")
+    stock_lost = models.PositiveIntegerField(verbose_name="Stock lost")
 
     def remaining(self):
-        re = (self.stock_initial + self.stock_received) - (self.stock_used + self.stock_lost)
+        re = (self.stock_initial + self.stock_received) -\
+             (self.stock_used + self.stock_lost)
         print re
         return re
 
     def __unicode__(self):
         restant = self.remaining()
-        return u'%(seat)s le restant est %(restant)s' % {"seat": self.seat, 'restant': restant}
-
+        return u'%(seat)s le restant est %(restant)s' % {"seat": self.seat,\
+                                                         "restant": restant}
