@@ -7,6 +7,15 @@ from django.db import models
 from bolibana.models import Period
 
 
+class Seat(models.Model):
+    """ """
+    name = models.CharField(max_length=30, verbose_name=("Name"))
+    code = models.CharField(max_length=30, verbose_name=("Code"))
+
+    def __unicode__(self):
+        return u'%(name)s' % {"name": self.name}
+
+
 class Patient(models.Model):
     """ """
     first_name = models.CharField(max_length=30, verbose_name=(u"Prénom"))
@@ -14,8 +23,9 @@ class Patient(models.Model):
     surname_mother = models.CharField(max_length=30, \
                                       verbose_name=(u"Prénom de la mère"))
     DDN_Age = models.PositiveIntegerField(u"DDN/Age")
-    cscom = models.CharField(max_length=30, verbose_name=(u"CSCOM"))
-
+    cscom = models.ForeignKey(Seat,\
+                                related_name='cscom',\
+                                verbose_name=("Seat"))
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s') % \
                 {"first_name": self.first_name, "last_name": self.last_name}
@@ -81,21 +91,12 @@ class Nutperiod(models.Model):
         return u'%(name)s' % {"name": self.name}
 
 
-class Seat(models.Model):
-    """ """
-    name = models.CharField(max_length=30, verbose_name=("Name"))
-    code = models.CharField(max_length=30, verbose_name=("Code"))
-
-    def __unicode__(self):
-        return u'%(name)s' % {"name": self.name}
-
-
 class DataNut(models.Model):
     """ """
     patient = models.ForeignKey(Patient,
                                 related_name='patient',\
                                 verbose_name=("Patient"))
-    date = models.CharField(max_length=30, verbose_name=("Name"))
+    date = models.DateField(verbose_name=("Date"))
     weight = models.CharField(max_length=30, verbose_name=("weight"))
     heught = models.PositiveIntegerField(verbose_name=("heught"))
     pb = models.PositiveIntegerField(verbose_name=("PB"))
@@ -121,8 +122,15 @@ class Stock(models.Model):
     stock_used = models.PositiveIntegerField(verbose_name=("Stock used"))
     stock_lost = models.PositiveIntegerField(verbose_name=("Stock lost"))
 
+    def remaining(self):
+        re = (self.stock_initial + self.stock_received) - (self.stock_used + self.stock_lost)
+        print re
+        return re
+
     def __unicode__(self):
-        return u'%(seat)s' % {"date": self.seat}
+        restant = self.remaining()
+        return u'%(seat)s le restant est %(restant)s' % {"seat": self.seat, 'restant': restant}
+
 
 
 
