@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding=utf-8
-# maintainer: Alou/Fadiga
+# maintainer: Fadiga
 
 import datetime
 from django.db import models
@@ -16,7 +16,10 @@ class Input(models.Model):
     KG = "g"
     BOX = "bo"
     BAG = "ba"
-    Unit_type = ((N, "----"), (KG, u"Kg"), (BOX, u"Boite"), (BAG, u"Sachet"))
+    LITER = "l"
+    Unit_type = ((N, "----"), (KG, u"Kg"),\
+                 (BOX, u"Boite"), (BAG, u"Sachet"),\
+                 (LITER, u"Litre"))
 
     name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     code = models.CharField(max_length=30, verbose_name=(u"Code"))

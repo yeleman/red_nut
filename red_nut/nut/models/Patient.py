@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding=utf-8
-# maintainer: Alou/Fadiga
+# maintainer: Fadiga
 
 import datetime
 from django.db import models

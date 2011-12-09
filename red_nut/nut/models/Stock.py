@@ -32,10 +32,9 @@ class Stock(models.Model):
     def remaining(self):
         re = (self.stock_initial + self.stock_received) -\
              (self.stock_used + self.stock_lost)
-        print re
         return re
 
     def __unicode__(self):
         restant = self.remaining()
-        return u'%(seat)s le restant est %(restant)s' % {"seat": self.seat,\
-                                                         "restant": restant}
+        return u'%(seat)s le restant est %(re)s' % {"seat": self.seat,\
+                                                         "re": restant}
