@@ -16,7 +16,7 @@ class Input(models.Model):
     KG = "g"
     BOX = "bo"
     BAG = "ba"
-    Unit_type = ((N, "----"), (KG, u"KG"), (BOX, u"Boite"), (BAG, u"sachet"))
+    Unit_type = ((N, "----"), (KG, u"Kg"), (BOX, u"Boite"), (BAG, u"Sachet"))
 
     name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     code = models.CharField(max_length=30, verbose_name=(u"Code"))
@@ -26,5 +26,4 @@ class Input(models.Model):
 
     def __unicode__(self):
         return (u'%(name)s %(code)s %(unit)s') % \
-                {"name": self.name, "code": self.code, \
-                                    "unit": self.unit}
+                {"name": self.name, "code": self.code, "unit": self.unit}
