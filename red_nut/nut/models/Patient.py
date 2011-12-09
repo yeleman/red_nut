@@ -16,10 +16,9 @@ class Patient(models.Model):
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     surname_mother = models.CharField(max_length=30, \
                                       verbose_name=(u"Prénom de la mère"))
-    DDN_Age = models.PositiveIntegerField(u"DDN/Age")
+    DDN_Age = models.CharField(max_length=30, verbose_name=(u"DDN/Age"))
     cscom = models.CharField(max_length=30, verbose_name=(u"CSCOM"))
 
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s') % \
                 {"first_name": self.first_name, "last_name": self.last_name}
-

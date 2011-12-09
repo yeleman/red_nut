@@ -11,6 +11,7 @@ class Input(models.Model):
 
     class Meta:
         app_label = 'nut'
+
     N = ""
     KG = "g"
     BOX = "bo"
