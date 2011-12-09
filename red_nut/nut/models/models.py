@@ -20,7 +20,7 @@ class Patient(models.Model):
                 {"first_name": self.first_name, "last_name": self.last_name}
 
 
-class inputOutputProgram(models.Model):
+class InputOutputProgram(models.Model):
     """ """
 
     N = ""

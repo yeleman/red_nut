@@ -62,7 +62,7 @@ class Period(models.Model):
     p.next() '''
 
     class Meta:
-        app_label = 'bolibana'
+        app_label = 'nut'
         unique_together = ('start_on', 'end_on', 'period_type')
         verbose_name = _(u"Period")
         verbose_name_plural = _(u"Periods")

@@ -3,13 +3,16 @@
 # maintainer: alou
 
 from django.contrib import admin
-from models.models import Seat, DataNut, Input, inputOutputProgram, Patient, \
-                                                        Nutperiod, Stock
 
-admin.site.register(Seat)
-admin.site.register(DataNut)
+from models.Period import Period
+from models.Input  import Input
+from models.Patient  import Patient
+from models.InputOutputProgram  import InputOutputProgram
+
+#~ admin.site.register(Seat)
+#~ admin.site.register(DataNut)
 admin.site.register(Input)
-admin.site.register(inputOutputProgram)
+admin.site.register(InputOutputProgram)
 admin.site.register(Patient)
-admin.site.register(Nutperiod)
-admin.site.register(Stock)
+admin.site.register(Period)
+#~ admin.site.register(Stock)
