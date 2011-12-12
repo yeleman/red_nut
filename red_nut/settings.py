@@ -111,6 +111,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'nut',
+    'nosms',
     'reversion',
     'babeldjango',
 
@@ -134,7 +135,16 @@ LOGGING = {
         },
     }
 }
+NOSMS_HANDLER = 'nut_sms.nut.nosms_handler'
+NOSMS_TRANSPORT_HOST = 'localhost'
+NOSMS_TRANSPORT_PORT = 13013
+#NOSMS_TRANSPORT_USERNAME = None
+#NOSMS_TRANSPORT_PASSWORD = None
 
+HOTLINE_NUMBER = "00000000"
+HOTLINE_EMAIL = "root@localhost"
+
+SUPPORT_CONTACTS = [('unknown', u"HOTLINE", HOTLINE_EMAIL)]
 try:
     from local_settings import *
 except ImportError:
