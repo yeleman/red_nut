@@ -31,11 +31,14 @@ MEDIA_URL = ''
 #ADMIN_MEDIA_PREFIX = '/admin_static/'
 
 # change that one!
-SECRET_KEY = '________some'
+SECRET_KEY = '___5*/_\:-)_____//-_-\\'
 
 TEMPLATE_DIRS = ()
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
+EMAIL_SENDER = ""
 
+HOTLINE_NUMBER = "63341424"
+HOTLINE_EMAIL = ""
 USE_HTTPS = True
