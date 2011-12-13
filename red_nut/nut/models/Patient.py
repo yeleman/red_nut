@@ -21,6 +21,7 @@ class Patient(models.Model):
     seat = models.ForeignKey(Seat,
                             related_name='patient',\
                             verbose_name=("Seat"))
+    status = models.BooleanField(default=True, verbose_name=("Status"))
 
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(age)s \

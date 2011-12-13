@@ -29,6 +29,8 @@ def nosms_handler(message):
                 return nut_register(message)
             elif message.text.lower().startswith('nut research'):
                 return id_information_research(message)
+            elif message.text.lower().startswith('nut off'):
+                return disable_child(message)
         else:
             return False
 
@@ -186,8 +188,7 @@ def id_information_research(message):
             message.respond(u"Il à pour id %(id)s." \
                                     % {'id': patient.id})
         except:
-            message.respond(u"%(first_name)s"
-                            u"n'est pas enregistrer" \
+            message.respond(u"%(first_name)s n'est pas enregistrer" \
                             % {'first_name': first_name})
 
     if surname_mother == "n" and last_name == "n":
@@ -206,8 +207,7 @@ def id_information_research(message):
             message.respond(u"Il à pour id %(id)s." \
                                     % {'id': patient.id})
         except:
-            message.respond(u"%(last_name)s"
-                            u"n'est pas enregistrer" \
+            message.respond(u"%(last_name)s n'est pas enregistrer" \
                             % {'last_name': last_name})
 
     if first_name != "n" and surname_mother != "n" and last_name != "n":
@@ -218,8 +218,7 @@ def id_information_research(message):
             message.respond(u"Il à pour id %(id)s." \
                                     % {'id': patient.id})
         except:
-            message.respond(u"%(first_name)s "
-                            u"n'est pas enregistrer" \
+            message.respond(u"%(first_name)s n'est pas enregistrer" \
                             % {'first_name': first_name})
 
     return True
@@ -234,7 +233,7 @@ def followed_child(message):
             or error message """
 
     # common start of error message
-    error_start = u"Impossible d'enregistrer le rapport. "
+    error_start = u"Impossible d'enregistrer les donnees. "
     try:
         args_names = ['kw1', 'kw2', 'id', 'date', 'weight', \
         'heught', 'pb', 'danger_sign']
@@ -285,3 +284,28 @@ def followed_child(message):
     message.respond(u"[SUCCES] Les données nutritionnelles de %(full_name)s "
                     u"ont ete bien enregistre. " %
                     {'full_name': datanut.patient.full_name()})
+    return True
+
+def disable_child(message):
+    """  Incomming:
+            nut off id
+         Outgoing:
+            [SUCCES] full_name ne fait plus partie du programme.
+            or error message """
+
+    # common start of error message
+    error_start = u"Impossible de desactiver. "
+    kw1, kw2, id_= message.text.strip().lower().split()
+    try:
+        patient = Patient.objects.get(id=id_)
+    except:
+        message.respond(u"Cet enfant n'existe pas dans le programme")
+        return True
+
+    patient.status = False
+    patient.save()
+
+    message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
+                    u"du programme." %
+                    {'full_name': patient.full_name()})
+    return True
