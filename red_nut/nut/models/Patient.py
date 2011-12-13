@@ -28,3 +28,8 @@ class Patient(models.Model):
                 {"first_name": self.first_name, "last_name": self.last_name, \
                  "mother": self.surname_mother, "age": self.DDN_Age, \
                  "seat": self.seat}
+
+    def full_name(self):
+        return (u'%(first_name)s %(last_name)s' % \
+                                        {"first_name": self.first_name,
+                                        "last_name": self.last_name})

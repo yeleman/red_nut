@@ -7,3 +7,4 @@ from Patient import Patient
 from InputOutputProgram import InputOutputProgram
 from Seat import Seat
 from Stock import Stock
+from DataNut import DataNut
