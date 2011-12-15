@@ -144,7 +144,7 @@ def nut_register(message):
 
 def id_information_research(message):
     """ Incomming:
-            nut register seat first_name(op) last_name(op) surname_mother(op)
+            nut research seat first_name(op) last_name(op) surname_mother(op)
             None = n
         Outgoing:
             [SUCCES] Le rapport de Asacotoqua a été enregistre. Son id est 8.
@@ -152,74 +152,108 @@ def id_information_research(message):
 
     nut, research, code_seat, first_name, last_name, \
                     surname_mother = message.text.strip().lower().split()
-
+    #Si SMS ne contient que le nom
     if first_name == "n" and surname_mother == "n":
-        try:
-            patient = Patient.objects.get(last_name=last_name)
-            message.respond(u"%(last_name)s à pour id %(id)s." \
-                            % {'last_name': last_name, 'id': patient.id})
-        except:
-            message.respond(u"%(last_name)s n'est pas enregistrer" \
+        patient = [(u"%(first)s %(mother)s de l'id %(id)s" % \
+                    {"id":op.id,"first": op.first_name, \
+                    "mother": op.surname_mother}) for op in \
+                        Patient.objects.filter(seat__code=code_seat, \
+                        last_name=last_name)]
+        if patient:
+            message.respond(u" Il existe %(nber)s patient(s) du nom %(last_name)s: %(patient)s." \
+                        % {'nber': patient.__len__(), 'last_name': last_name, \
+                            'patient': ', '.join(patient)})
+        else:
+            message.respond(u"Il n'existe aucun patient du nom %(last_name)s" \
                         % {'last_name': last_name})
+    #Si SMS ne contient que le prénom et nom de mère
     if first_name != "n" and surname_mother != "n" and last_name == "n":
-        try:
-            patient = Patient.objects.get(surname_mother=surname_mother, \
-                                             first_name=first_name)
-            message.respond(u"Il à pour id %(id)s." \
-                                    % {'id': patient.id})
-        except:
-            message.respond(u"%(first_name)s"
-                            u"n'est pas enregistrer" \
-                            % {'first_name': first_name})
-
+        patient = [(u"%(last)s de l'id %(id)s" % \
+                    {"id":op.id, "last": op.last_name}) for op in \
+                        Patient.objects.filter(seat__code=code_seat, \
+                                                surname_mother=surname_mother, \
+                                                first_name=first_name)]
+        if patient:
+            message.respond(u" Il existe %(nber)s patient(s) du prénom %(first_name)s " \
+                            u"et nom de mère %(surname_mother)s: %(patient)s." \
+                            % {'nber': patient.__len__(), \
+                            'first_name': first_name, \
+                            'surname_mother': surname_mother, \
+                            'patient': ', '.join(patient)})
+        else:
+            message.respond(u"Il n'existe aucun patient du prénom %(first_name)s " \
+                            u"et nom de mère %(surname_mother)s"
+                            % {'surname_mother': surname_mother, \
+                                            'first_name': first_name})
+    #Si SMS ne contient que le nom de mère
     if first_name == "n" and last_name == "n":
-        try:
-            patient = Patient.objects.get(surname_mother=surname_mother)
-            message.respond(u"%(surname_mother)s à pour id %(id)s." \
-                                % {'surname_mother': surname_mother, \
-                                'id': patient.id})
-        except:
-            message.respond(u"%(surname_mother)s n'est pas enregistrer" \
+
+        patient = [(u"%(first)s %(last)s de l'id %(id)s" % \
+                    {"id":op.id,"first": op.first_name, \
+                        "last": op.last_name}) for op in \
+                        Patient.objects.filter(seat__code=code_seat, \
+                        surname_mother=surname_mother)]
+        if patient:
+            message.respond(u" Il existe %(nber)s patient(s) du nom de mère %(surname_mother)s: %(patient)s." \
+                        % {'nber': patient.__len__(), 'surname_mother': surname_mother, \
+                            'patient': ', '.join(patient)})
+        else:
+            message.respond(u"Il n'existe aucun patient du nom de mère %(surname_mother)s" \
                         % {'surname_mother': surname_mother})
+    #Si SMS ne cotient que le prénom et nom
     if first_name != "n" and last_name != "n" and surname_mother == "n":
-        try:
-            patient = Patient.objects.get(last_name=last_name, \
-                                          first_name=first_name)
-            message.respond(u"Il à pour id %(id)s." \
-                                    % {'id': patient.id})
-        except:
-            message.respond(u"%(first_name)s n'est pas enregistrer" \
-                            % {'first_name': first_name})
-
+        patient = [(u"%(mother)s de l'id %(id)s" % \
+                    {"id":op.id, "mother": op.surname_mother}) for op in \
+                        Patient.objects.filter(seat__code=code_seat, \
+                        last_name=last_name, first_name=first_name)]
+        if patient:
+            message.respond(u" Il existe %(nber)s patient(s) du prénom %(first_name)s " \
+                            u"et nom %(last_name)s: %(patient)s." \
+                            % {'nber': patient.__len__(), \
+                            'first_name': first_name, \
+                            'last_name': last_name, \
+                            'patient': ', '.join(patient)})
+        else:
+            message.respond(u"Il n'existe aucun patient du prénom %(first_name)s " \
+                            u"et nom %(last_name)s"
+                            % {'last_name': last_name, \
+                                            'first_name': first_name})
+    #Si SMS ne cotient que prénom
     if surname_mother == "n" and last_name == "n":
-        try:
-            patient = Patient.objects.get(first_name=first_name)
-            message.respond(u"%(first_name)s à pour id %(id)s." \
-                                % {'first_name': first_name, \
-                                'id': patient.id})
-        except:
-            message.respond(u"%(first_name)s n'est pas enregistrer" \
+        patient = [(u"%(last)s %(mother)s de l'id %(id)s" % \
+                    {"id":op.id,"last": op.last_name,"mother": \
+                            op.surname_mother}) for op in \
+                        Patient.objects.filter(seat__code=code_seat, \
+                                                first_name=first_name)]
+        if patient:
+            message.respond(u" Il existe %(nber)s patient(s) du prénom %(first_name)s: %(patient)s." \
+                        % {'nber': patient.__len__(), 'first_name': first_name, \
+                            'patient': ', '.join(patient)})
+        else:
+            message.respond(u"Il n'existe aucun patient du prénom %(first_name)s" \
                         % {'first_name': first_name})
-    if surname_mother != "n" and last_name != "n" and first_name == "n":
-        try:
-            patient = Patient.objects.get(last_name=last_name, \
-                                             surname_mother=surname_mother)
-            message.respond(u"Il à pour id %(id)s." \
-                                    % {'id': patient.id})
-        except:
-            message.respond(u"%(last_name)s n'est pas enregistrer" \
-                            % {'last_name': last_name})
-
+    #Si tout est remplis
     if first_name != "n" and surname_mother != "n" and last_name != "n":
-        try:
-            patient = Patient.objects.get(last_name=last_name, \
-                                          surname_mother=surname_mother, \
-                                             first_name=first_name)
-            message.respond(u"Il à pour id %(id)s." \
-                                    % {'id': patient.id})
-        except:
-            message.respond(u"%(first_name)s n'est pas enregistrer" \
-                            % {'first_name': first_name})
+        patient = [(u"l'id %(id)s " % {"id":op.id}) for op in \
+                        Patient.objects.filter(seat__code=code_seat, \
+                                               last_name=last_name, \
+                                               surname_mother=surname_mother, \
+                                                    first_name=first_name)]
+        if patient:
+            message.respond(u" Il existe %(nber)s patient(s) du prénom %(first_name)s" \
+                            u", nom %(last_name)s et nom de mère "
+                            u"%(last_name)s: %(patient)s." \
+                            % {'nber': patient.__len__(), \
+                            'first_name': first_name, \
+                            'last_name': last_name, \
+                            'surname_mother': surname_mother, \
+                            'patient': ', '.join(patient)})
+        else:
+            message.respond(u"Il n'existe aucun patient du prénom %(first_name)s " \
+                            u" nom %(last_name)s et nom de mère %(surname_mother)s"
+                            % {'last_name': last_name, \
+                                            'first_name': first_name, \
+                                            'surname_mother': surname_mother})
 
     return True
 
