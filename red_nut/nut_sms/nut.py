@@ -112,8 +112,12 @@ def nut_stock(message):
 
 
 def nut_register(message):
-    """ Ajout d'un nouveau patient
-    params: nut + register + code siège + nom + prénom + prénom mère +DDN/age"""
+    """ Incomming:
+            nut register seat first_name last_name surname_mother DDN_Age
+        Outgoing:
+            [SUCCES] Le rapport de Asacotoqua a été enregistre. Son id est 8.
+            or [ERROR] xxxx n'est un code siège valid """
+
     nut, register, code_seat, first_name, last_name, surname_mother, \
                         DDN_Age = message.text.strip().lower().split()
     try:
@@ -132,59 +136,90 @@ def nut_register(message):
         report.DDN_Age = DDN_Age
         report.seat = seat
         report.save()
-        message.respond(u"[SUCCES] Le rapport de %(seat)s a ete "
-                        u"enregistre. Le du est #%(code)s." \
-                        % {'seat': seat, 'code': report.id})
+        message.respond(u"[SUCCES] Le rapport de %(seat)s a été "
+                        u"enregistre. Son id est %(id)s." \
+                        % {'seat': seat, 'id': report.id})
     return True
 
 
 def id_information_research(message):
-    """Infos pour recherche ID
-    params: nut + research + code_seat + nom(optionel) + prénom(optionel) \
-                                            + prénom mère(optionel)"""
+    """ Incomming:
+            nut register seat first_name(op) last_name(op) surname_mother(op)
+            None = n
+        Outgoing:
+            [SUCCES] Le rapport de Asacotoqua a été enregistre. Son id est 8.
+            or  xxx n'est pas enregistrer"""
 
     nut, research, code_seat, first_name, last_name, \
                     surname_mother = message.text.strip().lower().split()
 
-    if last_name == "n" and first_name == "n":
-        try:
-            patient = Patient.objects.get(surname_mother=surname_mother)
-            message.respond(u"%(surname_mother)s à pour code %(code)s." \
-                                % {'surname_mother': surname_mother, \
-                                'code': patient.id})
-        except:
-            message.respond(u"%(surname_mother)s n'est pas enregistrer" \
-                        % {'surname_mother': surname_mother})
-
-    if last_name == "n" and surname_mother == "n":
-        try:
-            patient = Patient.objects.get(first_name=first_name)
-            message.respond(u"%(first_name)s à pour code %(code)s." \
-                            % {'first_name': first_name, 'code': patient.id})
-        except:
-            message.respond(u"%(first_name)s n'est pas enregistrer" \
-                        % {'first_name': first_name})
-
-    if first_name == "n" and surname_mother =="n":
+    if first_name == "n" and surname_mother == "n":
         try:
             patient = Patient.objects.get(last_name=last_name)
-            message.respond(u"%(last_name)s à pour code %(code)s." \
-                            % {'last_name': last_name, 'code': patient.id})
+            message.respond(u"%(last_name)s à pour id %(id)s." \
+                            % {'last_name': last_name, 'id': patient.id})
         except:
             message.respond(u"%(last_name)s n'est pas enregistrer" \
                         % {'last_name': last_name})
+    if first_name != "n" and surname_mother != "n" and last_name == "n":
+        try:
+            patient = Patient.objects.get(surname_mother=surname_mother, \
+                                             first_name=first_name)
+            message.respond(u"Il à pour id %(id)s." \
+                                    % {'id': patient.id})
+        except:
+            message.respond(u"%(first_name)s"
+                            u"n'est pas enregistrer" \
+                            % {'first_name': first_name})
+
+    if first_name == "n" and last_name == "n":
+        try:
+            patient = Patient.objects.get(surname_mother=surname_mother)
+            message.respond(u"%(surname_mother)s à pour id %(id)s." \
+                                % {'surname_mother': surname_mother, \
+                                'id': patient.id})
+        except:
+            message.respond(u"%(surname_mother)s n'est pas enregistrer" \
+                        % {'surname_mother': surname_mother})
+    if first_name != "n" and last_name != "n" and surname_mother == "n":
+        try:
+            patient = Patient.objects.get(last_name=last_name, \
+                                          first_name=first_name)
+            message.respond(u"Il à pour id %(id)s." \
+                                    % {'id': patient.id})
+        except:
+            message.respond(u"%(first_name)s n'est pas enregistrer" \
+                            % {'first_name': first_name})
+
+    if surname_mother == "n" and last_name == "n":
+        try:
+            patient = Patient.objects.get(first_name=first_name)
+            message.respond(u"%(first_name)s à pour id %(id)s." \
+                                % {'first_name': first_name, \
+                                'id': patient.id})
+        except:
+            message.respond(u"%(first_name)s n'est pas enregistrer" \
+                        % {'first_name': first_name})
+    if surname_mother != "n" and last_name != "n" and first_name == "n":
+        try:
+            patient = Patient.objects.get(last_name=last_name, \
+                                             surname_mother=surname_mother)
+            message.respond(u"Il à pour id %(id)s." \
+                                    % {'id': patient.id})
+        except:
+            message.respond(u"%(last_name)s n'est pas enregistrer" \
+                            % {'last_name': last_name})
+
     if first_name != "n" and surname_mother != "n" and last_name != "n":
         try:
             patient = Patient.objects.get(last_name=last_name, \
                                           surname_mother=surname_mother, \
                                              first_name=first_name)
-            message.respond(u"Il à pour code %(code)s." \
-                                    % {'code': patient.id})
+            message.respond(u"Il à pour id %(id)s." \
+                                    % {'id': patient.id})
         except:
-            message.respond(u"%(last_name)s  %(last_name)s "
-                            u"n'est pas enregistrer" \
-                            % {'first_name': first_name,\
-                                'last_name': last_name})
+            message.respond(u"%(first_name)s n'est pas enregistrer" \
+                            % {'first_name': first_name})
 
     return True
 
