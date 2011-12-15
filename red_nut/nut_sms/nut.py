@@ -260,7 +260,7 @@ def id_information_research(message):
 
 def followed_child(message):
     """ Incomming:
-            nut fol id date weight heught pb danger_sign
+            nut fol id weight heught pb danger_sign
         Outgoing:
             [SUCCES] Les données nutritionnelles de full_name ont
             ete bien enregistre.
@@ -269,7 +269,7 @@ def followed_child(message):
     # common start of error message
     error_start = u"Impossible d'enregistrer les donnees. "
     try:
-        args_names = ['kw1', 'kw2', 'id', 'date', 'weight', \
+        args_names = ['kw1', 'kw2', 'id', 'weight', \
         'heught', 'pb', 'danger_sign']
         args_values = message.text.strip().lower().split()
         arguments = dict(zip(args_names, args_values))
@@ -283,8 +283,6 @@ def followed_child(message):
         for key, value in arguments.items():
             if key.split('_')[0] in ('id', 'weight', 'heught', 'pb'):
                 arguments[key] = int(value)
-        d, m, y = arguments.get('date').split('/')
-        date_ = date(int(y), int(m), int(d))
     except:
         # failure to convert means non-numeric value which we can't process.
         message.respond(error_start + u" Les données sont malformées.")
@@ -293,7 +291,7 @@ def followed_child(message):
     try:
         datanut = DataNut()
         datanut.patient = Patient.objects.get(id=arguments.get('id'))
-        datanut.date = date_
+        datanut.date = date.today()
         datanut.weight = arguments.get('weight')
         datanut.heught = arguments.get('heught')
         datanut.pb = arguments.get('pb')
