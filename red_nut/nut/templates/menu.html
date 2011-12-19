@@ -1,0 +1,8 @@
+
+<ul>
+    <li {% if category = 'dashboard' %}class="hover"{% endif %}><a href="{% url index %}">Accueil</a></li>
+    <li {% if category = 'children' %}class="hover"{% endif %}><a href="{% url children %}">Enfants</a></li>
+    <li {% if category = 'details_child' %}class="hover"{% endif %}><a href="{% url details_child %}">Détail Enfant</a></li>
+    <li {% if category = 'health_center' %}class="hover"{% endif %}><a href="{% url health_center %}">Centre de santé</a></li>
+    <li {% if category = 'details_health_center' %}class="hover"{% endif %}><a href="{% url details_health_center %}">Détail de centre de santé</a></li>
+</ul>
