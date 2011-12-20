@@ -228,6 +228,7 @@ def nut_register(message):
         report.last_name = last_name
         report.surname_mother = surname_mother
         report.DDN_Age = DDN_Age
+        report.create_date = date.today()
         report.seat = seat
         report.save()
         message.respond(u"[SUCCES] Le rapport de %(seat)s a été "
@@ -461,6 +462,7 @@ def disable_child(message):
         return True
 
     patient.status = False
+    patient.release_date = date.today()
     patient.save()
 
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "

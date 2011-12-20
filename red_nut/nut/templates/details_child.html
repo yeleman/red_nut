@@ -45,10 +45,34 @@
         </tr>
         <tr>
             <th>
+                Date d'enregistrement
+            </th>
+            <td>
+                {{patient.create_date}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Date de sortie
+            </th>
+            <td>
+                {{patient.off_date}}
+            </td>
+        </tr>
+        <tr>
+            <th>
                 Status
             </th>
             <td>
                 {{patient.status}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                CSCOM
+            </th>
+            <td>
+                {{patient.seat}}
             </td>
         </tr>
     </table>
@@ -56,13 +80,14 @@
 {% endif %}
 
 {% if datanut %}
+<h2>Details nutritionnel</h2>
     <table>
         <tr>
             <th>
                 Poids
             </th>
             <td>
-                {{datanut.weight}}
+                {{datanut.weight}} kg
             </td>
         </tr>
         <tr>
@@ -70,7 +95,7 @@
                 Taille
             </th>
             <td>
-                {{datanut.heught}}
+                {{datanut.heught}} cm
             </td>
         </tr>
         <tr>
@@ -78,7 +103,7 @@
                 PB
             </th>
             <td>
-                {{datanut.pb}}
+                {{datanut.pb}} cm
             </td>
         </tr>
         <tr>
@@ -124,13 +149,13 @@
         {% for datanut in datanuts %}
             <tr>
                 <td>
-                    {{datanut.weight}}
+                    {{datanut.weight}} kg
                 </td>
                 <td>
-                    {{datanut.heught}}
+                    {{datanut.heught}} cm
                 </td>
                 <td>
-                    {{datanut.pb}}
+                    {{datanut.pb}} cm
                 </td>
                 <td>
                     {{datanut.danger_sign}}

@@ -17,8 +17,8 @@ def details_child(request, *args, **kwargs):
     context = {}
     try:
         patient = Patient.objects.filter(id = num)[0]
-        datanut = DataNut.objects.filter(patient__id=num)[0]
-        datanuts = DataNut.objects.filter(patient__id=num)
+        datanuts = DataNut.objects.filter(patient__id=num).order_by('-date')
+        datanut = datanuts.latest('date')
         context.update({'category': category,
                     'patient': patient,
                     'datanut': datanut,
@@ -26,6 +26,5 @@ def details_child(request, *args, **kwargs):
     except:
         context.update({'error': 'aucun details nutritionnel',
                         'patient': patient,})
-
 
     return render(request, 'details_child.html', context)
