@@ -10,12 +10,10 @@
 
 <h2>Enfants</h2>
 <table>
-    <tr>
-    <form action="" method="post">{% csrf_token %}
-        <td>{{form.seat.label}} {{form.seat}}</td>
-        <td><input class= "buttons" type="submit" value="ok"/></td>
-        </form>
-    </tr>
+    <tr><form action="" method="post" id="id_patient">{% csrf_token %}<td style=" border-left-width: 585px;">{{error}}{{message}} {{form_r.id_patient}}</td><td><input class= "buttons" id="id_patient" type="submit" value="ok"/></td></form></tr>
+</table>
+<table>
+    <tr><form action="" method="post" id="seat">{% csrf_token %}<td>{{form.seat.label}} {{form.seat}}</td><td><input class= "buttons" id="seat" type="submit" value="ok"/></td></form></tr>
 </table>
 <table>
 <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>DDN/Age</th><th>Centre de santé</th><th>Status</th></tr>
