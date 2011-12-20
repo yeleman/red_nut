@@ -1,13 +1,144 @@
 {% extends "base.html" %}
 {% load babel %}
 
-{% block title %}Détail Enfant{% endblock %}
+{% block title %}Enfants{% endblock %}
 {% block pagetitle %}<h1 class="pagetitle">Croix-Rouge Malienne pour le suivi de la sécurité alimentaire et nutritionnelle de la population</h1>{% endblock %}
 
 {% block content %}
 
 <div id="context">
-<h2>Détail Enfant</h2>
+
+
+{% if error %}
+    <h2>{{error}}</h2>
+{% endif %}
+{% if patient %}
+<h2>Details</h2>
+<table>
+    <tr>
+        <th>
+            Nom
+        </th>
+        <td>
+            {{patient.last_name}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Prenom
+        </th>
+        <td>
+            {{patient.first_name}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Nom de la mere
+        </th>
+        <td>
+            {{patient.surname_mother}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Age
+        </th>
+        <td>
+            {{patient.DDN_Age}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Status
+        </th>
+        <td>
+            {{patient.status}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Poids
+        </th>
+        <td>
+            {{datanut.weight}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Taille
+        </th>
+        <td>
+            {{datanut.heught}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            PB
+        </th>
+        <td>
+            {{datanut.pb}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Signe de danger
+        </th>
+        <td>
+            {{datanut.danger_sign}}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Date
+        </th>
+        <td>
+            {{datanut.date}}
+        </td>
+    </tr>
+
+</table>
+{% endif %}
+{% if datanuts %}
+<h2>Tableau des données nutritionnelles</h2>
+<table>
+    <tr>
+        <th>
+            Poids
+        </th>
+        <th>
+            Taille
+        </th>
+        <th>
+            PB
+        </th>
+        <th>
+            Signe de danger
+        </th>
+        <th>
+            Date
+        </th>
+    </tr>
+    {% for datanut in datanuts %}
+        <tr>
+            <td>
+                {{datanut.weight}}
+            </td>
+            <td>
+                {{datanut.heught}}
+            </td>
+            <td>
+                {{datanut.pb}}
+            </td>
+            <td>
+                {{datanut.danger_sign}}
+            </td>
+            <td>
+                {{datanut.date}}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
 </div>
 
 {% endblock %}
