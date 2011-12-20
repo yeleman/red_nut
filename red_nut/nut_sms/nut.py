@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# maintainer: Fad/Alou
+# maintainer: Fadiga/Alou
 
 import datetime
 import logging
@@ -45,12 +45,16 @@ def nosms_handler(message):
 
 def nut_stock(message):
     """ Incomming:
-            nut stock type_seat code_seat month year #intrant stock_initial stock_received stock_used stock_lost#intrant stock_initial stock_received stock_used stock_lost
+            nut stock type_seat code_seat month year #intrant stock_initial
+            stock_received stock_used stock_lost#intrant stock_initial
+            stock_received stock_used stock_lost
         Outgoing:
             [SUCCES] Le rapport de stock de seat a ete bien enregistre.
             or error message """
 
     def format_dict(values):
+        """ forme un dictionnaire avec une liste de valeur """
+        # create variables from text messages.
         args_names = ['intrant',
                    'stock_initial',
                    'stock_received',
@@ -83,14 +87,15 @@ def nut_stock(message):
             list_dict.append(dict_p5)
             dict_p6 = format_dict(p6)
             list_dict.append(dict_p6)
-
         except ValueError:
             # failure to split means we proabably lack a data or more
             # we can't process it.
             message.respond(error_start + u" Le format du SMS est incorrect.")
             return True
+
     if len(part) == 8:
-        debut, p1, p2, p3, p4, p5, p6, p7 = message.text.strip().lower().split("#")
+        debut, p1, p2, p3, p4, p5, p6, p7 = message.text.strip()\
+                                            .lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -109,12 +114,12 @@ def nut_stock(message):
             list_dict.append(dict_p6)
             dict_p7 = format_dict(p7)
             list_dict.append(dict_p7)
-
         except ValueError:
             # failure to split means we proabably lack a data or more
             # we can't process it.
             message.respond(error_start + u" Le format du SMS est incorrect.")
             return True
+
     if len(part) == 2:
         debut, p1 = message.text.strip().lower().split("#")
         try:
@@ -141,18 +146,18 @@ def nut_stock(message):
             list_dict.append(dict_p2)
             dict_p3 = format_dict(p3)
             list_dict.append(dict_p3)
-
         except ValueError:
             # failure to split means we proabably lack a data or more
             # we can't process it.
             message.respond(error_start + u" Le format du SMS est incorrect.")
             return True
+
     try:
         for di in list_dict:
 
             for key, value in di.items():
                 if key in ('stock_initial', 'stock_received', \
-                                    'stock_used', 'stock_used', 'month', 'year'):
+                           'stock_used', 'stock_used', 'month', 'year'):
                     di[key] = int(value)
         for key, value in dict_debut.items():
             if key in ('month', 'year'):
@@ -162,13 +167,13 @@ def nut_stock(message):
         message.respond(error_start + u" Les données sont malformées.")
         return True
 
-    # create the report
+    # save report stock
     try:
         for di in list_dict:
             stock = Stock()
             stock.period = MonthPeriod. \
-                                    find_create_from(year=dict_debut.get('year'), \
-                                    month=dict_debut.get('month'))
+                           find_create_from(year=dict_debut.get('year'), \
+                           month=dict_debut.get('month'))
             stock.seat = Seat.objects.get(code=dict_debut.get('code'))
 
             stock.intrant = Input.objects.get(code=di.get('intrant'))
@@ -178,12 +183,11 @@ def nut_stock(message):
             stock.stock_lost = di.get('stock_lost')
 
             stock.save()
-
     except Exception as e:
         raise
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
-                        u"contactez YELEMAN si le probleme persiste.")
+                        u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
                      % (message.text, e))
         return True
@@ -191,7 +195,7 @@ def nut_stock(message):
         raise
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
-                        u"contactez YELEMAN si le probleme persiste.")
+                        u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
                      % (message.text, e))
         return True
@@ -422,14 +426,14 @@ def followed_child(message):
     except Exception as e:
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
-                        u"contactez YELEMAN si le probleme persiste.")
+                        u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
                      % (message.text, e))
         return True
     except Exception as e:
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
-                        u"contactez YELEMAN si le probleme persiste.")
+                        u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
                      % (message.text, e))
         return True
