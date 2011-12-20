@@ -24,7 +24,8 @@ def details_child(request, *args, **kwargs):
                     'datanut': datanut,
                     'datanuts': datanuts})
     except:
-        context.update({'error': 'aucun details'})
+        context.update({'error': 'aucun details nutritionnel',
+                        'patient': patient,})
 
 
     return render(request, 'details_child.html', context)
