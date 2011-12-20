@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^/?$', views.dashboard.dashboard, name='index'),
     url(r'^children?$', views.children.children, name='children'),
-    url(r'^details_child?$', views.details_child.details_child, \
+    url(r'^details_child/(?P<id>\d+)$', views.details_child.details_child, \
                                                         name='details_child'),
     url(r'^health_center?$', views.health_center.health_center, \
                                                         name='health_center'),

@@ -20,7 +20,7 @@
 <table>
 <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>DDN/Age</th><th>Centre de santé</th><th>Status</th></tr>
 {% for patient in patients %}
-<tr><td><a href="#">{{ patient.id }}</a></td><td>{{ patient.first_name }}</td><td>{{ patient.last_name}}</td><td>{{ patient.surname_mother}}</td><td>{{ patient.DDN_Age}}</td><td>{{ patient.seat}}</td><td>{{ patient.status }}</td></tr>
+<tr><td><a href="{{patient.url_patient }}">{{ patient.id }}</a></td><td>{{ patient.first_name }}</td><td>{{ patient.last_name}}</td><td>{{ patient.surname_mother}}</td><td>{{ patient.DDN_Age}}</td><td>{{ patient.seat}}</td><td>{{ patient.status }}</td></tr>
 {% endfor %}
 </table>
 </div>
