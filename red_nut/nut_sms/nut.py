@@ -5,13 +5,13 @@
 import datetime
 import logging
 import locale
-from datetime import date
+from datetime import date, datetime
 import reversion
 from django.conf import settings
 
 from nosms.models import Message
 from nosms.utils import send_sms
-from red_nut.nut.models import Stock, DataNut, Patient, Seat, Input
+from red_nut.nut.models import *
 from red_nut.nut.models.Period import MonthPeriod
 
 logger = logging.getLogger(__name__)
@@ -223,17 +223,24 @@ def nut_register(message):
                                                         {'seat': code_seat})
         seat = None
     if seat != None:
-        report = Patient()
-        report.first_name = first_name
-        report.last_name = last_name
-        report.surname_mother = surname_mother
-        report.DDN_Age = DDN_Age
-        report.create_date = date.today()
-        report.seat = seat
-        report.save()
+        patient = Patient()
+        patient.first_name = first_name
+        patient.last_name = last_name
+        patient.surname_mother = surname_mother
+        patient.DDN_Age = DDN_Age
+        patient.create_date = date.today()
+        patient.seat = seat
+        patient.save()
+
+        input_ =  InputOutputProgram()
+        input_.patient_id = patient.id
+        input_.event = "e"
+        input_.date = datetime.today()
+        input_.save()
+
         message.respond(u"[SUCCES] Le rapport de %(seat)s a été "
                         u"enregistre. Son id est %(id)s." \
-                        % {'seat': seat, 'id': report.id})
+                        % {'seat': seat, 'id': patient.id})
     return True
 
 

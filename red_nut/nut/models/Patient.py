@@ -21,9 +21,7 @@ class Patient(models.Model):
     seat = models.ForeignKey(Seat,
                             related_name='patient',\
                             verbose_name=("Seat"))
-    status = models.BooleanField(default=True, verbose_name=("Status"))
     create_date = models.DateField(verbose_name=("Date d'enregistrement"))
-    release_date = models.DateField(verbose_name=("Date de sortie"), blank=True, null=True)
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(age)s \
                                                         %(seat)s') % \

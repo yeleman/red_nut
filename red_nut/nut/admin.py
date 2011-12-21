@@ -19,7 +19,7 @@ class SeatAdmin(admin.ModelAdmin):
 
 class PatientAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'first_name', 'last_name', \
-                        'surname_mother', 'DDN_Age', 'seat', 'status')
+                        'surname_mother', 'DDN_Age', 'seat')
 
 
 class InputOutputProgramAdmin(admin.ModelAdmin):
