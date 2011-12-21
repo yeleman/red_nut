@@ -12,6 +12,6 @@ from django.conf import settings
 def dashboard(request):
     category = 'dashboard'
     context = {}
-    context.update({"category":category})
+    context.update({"category": category})
 
     return render(request, 'dashboard.html', context)

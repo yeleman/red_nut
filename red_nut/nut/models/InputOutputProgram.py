@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: Alou/Fadiga
 
-import datetime
+from datetime import datetime
 from django.db import models
 
 from Patient import Patient
@@ -28,7 +28,8 @@ class InputOutputProgram(models.Model):
                     (HEALING, u"guérison"), (TANSFER, "transfer"), \
                     (DEATH, u"deces"), (NON_RESPONDENT, u"non-repondant"))
 
-    date = models.DateField(blank=True, null=True, verbose_name=(u"Date"))
+    date = models.DateField(blank=True, null=True, verbose_name=(u"Date"),
+                            default=datetime.today())
     event = models.CharField(max_length=30, verbose_name=(u"Evenement"),\
                                             choices=Event_type, default=N)
     reason = models.CharField(max_length=30, verbose_name=(u"Raison"),\

@@ -7,7 +7,6 @@
 {% block content %}
 
 <div id="context">
-
 {% if patient %}
 <h2>Information enfant</h2>
     <table>
@@ -51,22 +50,16 @@
                 {{patient.create_date}}
             </td>
         </tr>
-        <tr>
-            <th>
-                Date de sortie
-            </th>
-            <td>
-                {{patient.off_date}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Status
-            </th>
-            <td>
-                {{patient.status}}
-            </td>
-        </tr>
+        {% if input_ %}
+            <tr>
+                <th>
+                    Date de sortie
+                </th>
+                <td>
+                    {{input_.date}}
+                </td>
+            </tr>
+        {% endif %}
         <tr>
             <th>
                 CSCOM

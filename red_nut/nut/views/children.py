@@ -3,11 +3,8 @@
 # maintainer: Fadiga
 
 from django import forms
-from django.contrib import messages
-from django.shortcuts import render, RequestContext, redirect, \
-                                                    HttpResponseRedirect
+from django.shortcuts import render, RequestContext, HttpResponseRedirect
 from django.utils.translation import ugettext as _, ugettext_lazy
-from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from nut.models import Patient, Seat
@@ -29,7 +26,7 @@ class ResearchForm(forms.Form):
 def children(request):
     category = 'children'
     context = {}
-    context.update({"category":category, "message": u"L'identifiant"})
+    context.update({"category": category, "message": u"L'identifiant"})
 
     patients = Patient.objects.all()
     if request.method == "POST":
@@ -41,7 +38,8 @@ def children(request):
         if "id_patient" in request.POST:
             if request.POST.get('id_patient'):
                 try:
-                    patient = patients.filter(id=request.POST.get('id_patient'))
+                    patient = patients.filter(id=request.POST \
+                                              .get('id_patient'))
                     return HttpResponseRedirect(reverse("details_child", \
                                                         args=[patient[0].id]))
                 except:
@@ -55,5 +53,5 @@ def children(request):
     for patient in patients:
         patient.url_patient = reverse("details_child", \
                                                 args=[patient.id])
-    context.update({"patients": patients,"form_r":form_r, "form":form})
+    context.update({"patients": patients, "form_r": form_r, "form": form})
     return render(request, 'children.html', context)

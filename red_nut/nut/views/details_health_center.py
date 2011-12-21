@@ -3,15 +3,12 @@
 # maintainer: Fadiga
 
 from django import forms
-from django.contrib import messages
-from django.shortcuts import render, RequestContext, redirect
-from django.utils.translation import ugettext as _, ugettext_lazy
-from django.conf import settings
+from django.shortcuts import render
 
 
 def details_health_center(request):
     category = 'details_health_center'
     context = {}
-    context.update({"category":category})
+    context.update({"category": category})
 
     return render(request, 'details_health_center.html', context)

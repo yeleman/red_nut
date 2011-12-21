@@ -2,29 +2,35 @@
 # encoding=utf-8
 # maintainer: Alou
 
-from django import forms
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, RequestContext, redirect
-from django.utils.translation import ugettext as _, ugettext_lazy
-from django.conf import settings
+from django.shortcuts import render
 
-from nut.models import Patient, DataNut
+from nut.models import Patient, DataNut, InputOutputProgram
+
 
 def details_child(request, *args, **kwargs):
     num = kwargs["id"]
     category = 'details_child'
     context = {}
+    patient = Patient.objects.filter(id=num)[0]
     try:
-        patient = Patient.objects.filter(id = num)[0]
+        input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
+                                   .latest('date')
+        print input_.date
         datanuts = DataNut.objects.filter(patient__id=num).order_by('-date')
         datanut = datanuts.latest('date')
         context.update({'category': category,
                     'patient': patient,
+                    'input_': input_,
                     'datanut': datanut,
                     'datanuts': datanuts})
-    except:
+    except DataNut.DoesNotExist:
+        input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
+                                   .latest('date')
+        print input_.date
         context.update({'error': 'aucun details nutritionnel',
-                        'patient': patient,})
+                        'patient': patient, "input_": input_})
+    except InputOutputProgram.DoesNotExist:
+        context.update({'error': 'aucun details nutritionnel',
+                        'patient': patient})
 
     return render(request, 'details_child.html', context)

@@ -2,7 +2,6 @@
 # encoding: utf-8
 # maintainer: Fadiga/Alou
 
-import datetime
 import logging
 import locale
 from datetime import date, datetime
@@ -454,23 +453,33 @@ def followed_child(message):
 
 def disable_child(message):
     """  Incomming:
-            nut off id
+            nut off id reason
          Outgoing:
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
 
     # common start of error message
-    error_start = u"Impossible de desactiver. "
-    kw1, kw2, id_ = message.text.strip().lower().split()
+    error_start = u"Impossible de desactiver."
+    kw1, kw2, id_, reason = message.text.strip().lower().split()
     try:
         patient = Patient.objects.get(id=id_)
+        input_ = InputOutputProgram()
+        if reason == "abandon":
+            input_.reason = "a"
+        elif reason == "tranfer":
+            input_.reason = "t"
+        elif reason == "guerison":
+            input_.reason = "h"
+        elif reason == "non-repondant":
+            input_.reason = "n"
+        elif reason == "deces":
+            input_.reason = "d"
+        input_.event = "s"
+        input_.patient_id = id_
+        input_.save()
     except:
         message.respond(u"Cet enfant n'existe pas dans le programme")
         return True
-
-    patient.status = False
-    patient.release_date = date.today()
-    patient.save()
 
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
                     u"du programme." %
