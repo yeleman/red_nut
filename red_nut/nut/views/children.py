@@ -30,18 +30,14 @@ def children(request):
     category = 'children'
     context = {}
     context.update({"category":category, "message": u"L'identifiant"})
-    if request.method == "POST":
 
-        patients = Patient.objects.all()
+    patients = Patient.objects.all()
+    if request.method == "POST":
         form_r = ResearchForm(request.POST)
         form = ChildrenForm(request.POST)
         if "seat" in request.POST:
             if request.POST.get('seat'):
                 patients = patients.filter(seat__code=request.POST.get('seat'))
-                for patient in patients:
-                    patient.url_patient = reverse("details_child", \
-                                                            args=[patient.id])
-                context.update({"patients": patients})
         if "id_patient" in request.POST:
             if request.POST.get('id_patient'):
                 try:
@@ -56,6 +52,8 @@ def children(request):
         form = ChildrenForm()
         form_r = ResearchForm()
 
-    context.update({"form_r":form_r, "form":form})
-
+    for patient in patients:
+        patient.url_patient = reverse("details_child", \
+                                                args=[patient.id])
+    context.update({"patients": patients,"form_r":form_r, "form":form})
     return render(request, 'children.html', context)

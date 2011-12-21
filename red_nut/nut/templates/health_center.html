@@ -7,8 +7,12 @@
 {% block content %}
 
 <div id="context">
-
-<h2>Centre de santé</h2>
+    <h2>Centre de santé</h2>
+    <table>
+        <tr><th>Centre de santé</th><th>Nb d'enfants enregistres</th><th>Suivi</th><th>Abandon</th>
+        </tr>{% for seat in seats %}<tr><td>{{seat.name}}</td><td>2555</td><td>55</td><td>655</td></tr>{% endfor %}
+    </table>
 </div>
+
 
 {% endblock %}
