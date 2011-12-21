@@ -3,12 +3,12 @@
 # maintainer: Fadiga
 
 from django import forms
-from django.contrib import messages
+#~ from django.contrib import meseatages
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 
-from nut.models import Seat
+from nut.models import Seat, InputOutputProgram
 
 
 def health_center(request):
@@ -17,6 +17,14 @@ def health_center(request):
     context.update({"category": category})
 
     seats = Seat.objects.all()
-
-    context.update({"seats": seats})
+    inp_out = InputOutputProgram.objects.all()
+    liste_seat = []
+    for seat in seats:
+        dict_ = {}
+        dict_["seat"] = seat.name
+        dict_["nb_child"] = inp_out.filter(patient__seat__id = seat.id).count()
+        dict_["input"] = inp_out.filter(patient__seat__id = seat.id, event ="e").count()
+        dict_["nb_healing"] = inp_out.filter(patient__seat__id=seat.id, reason="a").count()
+        liste_seat.append(dict_)
+    context.update({"liste_seat": liste_seat})
     return render(request, 'health_center.html', context)
