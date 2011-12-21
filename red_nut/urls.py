@@ -23,7 +23,7 @@ urlpatterns = patterns('',
                                                         name='details_child'),
     url(r'^health_center?$', views.health_center.health_center, \
                                                         name='health_center'),
-    url(r'^details_health_center?$', views.details_health_center \
+    url(r'^details_health_center(?P<id>\d+)$', views.details_health_center \
                                                     .details_health_center, \
                                                 name='details_health_center'),
     # url(r'^red_nut/', include('red_nut.foo.urls')),

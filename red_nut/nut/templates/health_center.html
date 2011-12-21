@@ -10,7 +10,7 @@
     <h2>Centre de santé</h2>
     <table>
         <tr><th>Centre de santé</th><th>Nb d'enfants enregistres</th><th>Suivi</th><th>Abandon</th>
-        </tr>{% for seat in liste_seat %}<tr><td>{{seat.seat}}</td><td>{{seat.nb_child}}</td><td>{{seat.input}}</td><td>{{seat.nb_healing}}</td></tr>{% endfor %}
+        </tr>{% for seat in liste_seat %}<tr><td><a href="{{seat.url }}">{{seat.seat}}</td><td>{{seat.nb_child}}</td><td>{{seat.input}}</td><td>{{seat.nb_healing}}</td></tr>{% endfor %}
     </table>
 </div>
 

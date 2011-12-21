@@ -6,7 +6,7 @@ from django import forms
 from django.shortcuts import render
 
 
-def details_health_center(request):
+def details_health_center(request, *args, **kwargs):
     category = 'details_health_center'
     context = {}
     context.update({"category": category})
