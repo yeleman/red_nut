@@ -6,41 +6,62 @@ from django import forms
 from django.shortcuts import render
 
 from nut.tools.utils import diagnose_patient
-from nut.models import Seat, InputOutputProgram, DataNut
+from nut.models import Seat, InputOutputProgram, DataNut,Patient
 
 def details_health_center(request, *args, **kwargs):
+    """ Details of a health center """
+
+    def taux(v1, v2):
+        return (v1  * 100) / v2
+
+    def count_reason(reason):
+        inp_out = InputOutputProgram.objects.filter(patient__seat=seat)
+        return inp_out.filter(reason=reason).count()
+
+    context = {}
+    dict_ = {}
+    list_mam_sam = []
     num = kwargs["id"]
     seat = Seat.objects.get(id=num)
-    dict_ = {}
-    inp_out = InputOutputProgram.objects \
-                                         .filter(patient__seat=seat)
-    datanut = DataNut.objects \
-                                         .filter(patient__seat=seat)
-    li = []
-    for d in datanut:
-        li.append(diagnose_patient(d.muac, d.oedema))
-    dict_["MAM_count"] = li.count('MAM')
-    dict_["SAM_count"] = li.count('SAM')
-    dict_["SAM_"] = li.count('SAM+')
+    datanuts = DataNut.objects.filter(patient__seat=seat)
 
-    count_registered = inp_out.count()
+    for datanut in datanuts:
+        list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
+
+    dict_["MAM_count"] = list_mam_sam.count('MAM')
+    dict_["SAM_count"] = list_mam_sam.count('SAM')
+    dict_["SAM_"] = list_mam_sam.count('SAM+')
+    dict_["actif"] = Patient.objects.filter(seat=seat).count()
     dict_["seat"] = seat.name
-    dict_["abandon"] = inp_out.filter(reason='a').count()
-    dict_["guerison"] = inp_out.filter(reason='h').count()
-    dict_["deces"] = inp_out.filter(reason='d').count()
-    dict_["non_repondant"] = inp_out.filter(reason='n').count()
-    dict_["actif"] = inp_out.filter(event='e').count()
+    dict_["abandon"] = count_reason('a')
+    dict_["guerison"] = count_reason('h')
+    dict_["deces"] = count_reason('d')
+    dict_["non_repondant"] = count_reason('n')
+
     try:
-        dict_["taux_abandon"] = (dict_["abandon"]  * 100) / dict_["actif"]
-        dict_["taux_guerison"] = (dict_["guerison"] * 100) / dict_["actif"]
-        dict_["taux_deces"] = (dict_["deces"] * 100) / dict_["actif"]
-        dict_["taux_non_repondant"] = (dict_["non_repondant"] * 100) / dict_["actif"]
+        dict_["taux_abandon"] = taux(dict_["abandon"] , dict_["actif"])
     except ZeroDivisionError:
         dict_["taux_abandon"] = 0
-        pass
+
+    try:
+        dict_["taux_guerison"] = taux(dict_["guerison"], dict_["actif"])
+    except ZeroDivisionError:
+        dict_["taux_guerison"] = 0
+
+    try:
+        dict_["taux_deces"] = taux(dict_["deces"], dict_["actif"])
+    except ZeroDivisionError:
+        dict_["taux_deces"] = 0
+
+    try:
+        dict_["taux_non_repondant"] = taux(dict_["non_repondant"], dict_["actif"])
+    except ZeroDivisionError:
+        dict_["taux_non_repondant"] = 0
 
     category = 'details_health_center'
-    context = {}
+
     context.update({"category": category, 'dict_': dict_})
 
     return render(request, 'details_health_center.html', context)
+
+
