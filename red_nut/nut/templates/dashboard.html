@@ -8,7 +8,23 @@
 
 <div id="context">
 
-<h2>Tableau de bord</h2>
+    <h2>Tableau de bord</h2>
+    <table>
+        <tr><th></th><th> guerison</th><th>abandon</th><th>déces</th><th>non repondant</th>
+        </tr>
+        <tr><th>Taux</th><td>{{healing_rates}} %</td><td>{{abandonment_rates}} %</td><td>{{deaths_rates}} %</td><td>{{non_response_rates}} %</td></tr>
+
+        <tr><th> </th><th> MAM</th><th>SAM</th><th>SAM+</th>
+        </tr>
+        <tr><th>Nbre enfant</th><td>{{MAM_count}}</td><td>{{SAM_count}}</td><td>{{NI_count}}</td></tr>
+
+        <tr><th> </th><th>recu</th><th>envoyés</th>
+        </tr>
+        <tr><th>Nbre SMS</th><td>{{sent}}</td><td>{{received}}</td>
+        <tr><th>Nbre enfant dans le programme</th><td>{{children_in_program}}</td></tr>
+        <tr><th>Durée moyenne dans le programme</th><td></td>
+        <tr><th>Gain de poids moyen</th><td></td>
+    </table>
 </div>
 
 {% endblock %}
