@@ -25,8 +25,13 @@ class PatientAdmin(admin.ModelAdmin):
 class InputOutputProgramAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'date', 'event', 'reason')
 
+
+class DataNutAdmin(admin.ModelAdmin):
+    list_display = ('patient', 'date', 'weight', \
+                                'heught', 'oedema', 'muac', 'danger_sign')
+
 admin.site.register(Seat, SeatAdmin)
-admin.site.register(DataNut)
+admin.site.register(DataNut, DataNutAdmin)
 admin.site.register(Input)
 admin.site.register(InputOutputProgram, InputOutputProgramAdmin)
 admin.site.register(Patient, PatientAdmin)
