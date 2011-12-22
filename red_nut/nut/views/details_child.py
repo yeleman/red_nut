@@ -15,7 +15,6 @@ def details_child(request, *args, **kwargs):
     try:
         input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
                                    .latest('date')
-        print input_.date
         datanuts = DataNut.objects.filter(patient__id=num).order_by('-date')
         datanut = datanuts.latest('date')
         context.update({'category': category,
@@ -26,7 +25,6 @@ def details_child(request, *args, **kwargs):
     except DataNut.DoesNotExist:
         input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
                                    .latest('date')
-        print input_.date
         context.update({'error': 'aucun details nutritionnel',
                         'patient': patient, "input_": input_})
     except InputOutputProgram.DoesNotExist:

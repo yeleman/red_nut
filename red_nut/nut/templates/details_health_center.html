@@ -7,6 +7,76 @@
 {% block content %}
 
 <div id="context">
+{% if dict_ %}
+<h2>Détails du centre de santé {{dict_.seat}}</h2>
+    <table>
+        <tr>
+            <th>
+                Nombre enfants enregistres
+            </th>
+            <td>
+                {{dict_.actif}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Nombre enfants dans le programme: MAM, SAM, SAM+
+            </th>
+            <td>
+                {{dict_.MAM_count}}, {{dict_.SAM_count}}, {{dict_.SAM_}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Nombre abandon / taux abandon
+            </th>
+            <td>
+                {{dict_.abandon}} / {{dict_.taux_abandon}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Taux guerison
+            </th>
+            <td>
+                {{dict_.taux_guerison}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Taux déces
+            </th>
+            <td>
+                {{dict_.taux_deces}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Taux non repondant
+            </th>
+            <td>
+                {{dict_.taux_non_repondant}}
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Durée moyenne dans le programme
+            </th>
+            <td>
+                2jours
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Gain de poids moyen
+            </th>
+            <td>
+                1 kg
+            </td>
+        </tr>
+    </table>
+
+{% endif %}
 
 <h2>Détail de centre de santé</h2>
 </div>

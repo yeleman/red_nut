@@ -36,3 +36,15 @@ def next_month(year, month):
         return (year, month + 1)
     else:
         return (year + 1, 1)
+
+
+def diagnose_patient(muac, oedema):
+    '''Diagnosis of the patient'''
+    if muac is None or muac == 0:
+        return None
+    elif oedema == 'Y' or muac < 110:
+        return "SAM"
+    elif muac < 125:
+        return "MAM"
+    elif muac < 80:
+        return "SAM+"
