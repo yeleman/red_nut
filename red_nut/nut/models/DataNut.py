@@ -26,7 +26,7 @@ class DataNut(models.Model):
                                 verbose_name=("Patient"))
     date = models.DateField(verbose_name=("Date"))
     weight = models.FloatField(u"Poids (kg)", blank=True, null=True)
-    heught = models.FloatField(u"Taille (kg)", blank=True, null=True)
+    heught = models.FloatField(u"Taille (cm)", blank=True, null=True)
     oedema = models.CharField(u"Oedema", max_length=1, \
                               choices=OEDEMA_CHOICES)
     muac = models.SmallIntegerField(u"MUAC (mm)", blank=True, null=True)

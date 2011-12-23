@@ -68,14 +68,16 @@
                 </td>
             </tr>
         {% endif %}
-        <tr>
-            <th>
-                Gain de poids moyen
-            </th>
-            <td>
-                1 kg
-            </td>
-        </tr>
+        {% if dict_.avg_poids != None %}
+            <tr>
+                <th>
+                    Gain de poids moyen
+                </th>
+                <td>
+                    {{dict_.avg_poids}} kg
+                </td>
+            </tr>
+        {% endif %}
     </table>
 
 {% endif %}

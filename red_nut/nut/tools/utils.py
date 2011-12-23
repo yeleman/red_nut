@@ -53,3 +53,7 @@ def number_days(begin, end):
     ''' return the number of days in two dates '''
     number = end - begin
     return number.days
+
+def diff_weight(p1, p2):
+    return p2 - p1
+

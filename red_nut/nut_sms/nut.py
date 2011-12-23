@@ -392,7 +392,7 @@ def id_information_research(message):
 
 def followed_child(message):
     """ Incomming:
-            nut fol id weight heught pb danger_sign
+            nut fol id weight heught oedema muac danger_sign
         Outgoing:
             [SUCCES] Les données nutritionnelles de full_name ont
             ete bien enregistre.
@@ -402,7 +402,7 @@ def followed_child(message):
     error_start = u"Impossible d'enregistrer les donnees. "
     try:
         args_names = ['kw1', 'kw2', 'id', 'weight', \
-        'heught', 'pb', 'danger_sign']
+        'heught', 'oedema', 'muac', 'danger_sign']
         args_values = message.text.strip().lower().split()
         arguments = dict(zip(args_names, args_values))
     except ValueError:
@@ -413,7 +413,7 @@ def followed_child(message):
 
     try:
         for key, value in arguments.items():
-            if key.split('_')[0] in ('id', 'weight', 'heught', 'pb'):
+            if key.split('_')[0] in ('id', 'weight', 'heught', 'muac'):
                 arguments[key] = int(value)
     except:
         # failure to convert means non-numeric value which we can't process.
@@ -426,7 +426,8 @@ def followed_child(message):
         datanut.date = date.today()
         datanut.weight = arguments.get('weight')
         datanut.heught = arguments.get('heught')
-        datanut.pb = arguments.get('pb')
+        datanut.oedema = arguments.get('oedema').upper()
+        datanut.muac = arguments.get('muac')
         datanut.danger_sign = arguments.get('danger_sign')
 
         datanut.save()

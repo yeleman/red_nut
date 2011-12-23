@@ -93,10 +93,35 @@
         </tr>
         <tr>
             <th>
+                Oedema
+            </th>
+            {% if datanut.oedema == '' %}
+                    <td>
+
+                    </td>
+                {% endif %}
+                {% if datanut.oedema == 'U' %}
+                    <td>
+                        Unknown
+                    </td>
+                {% endif %}
+                {% if datanut.oedema == 'N' %}
+                    <td>
+                        NO
+                    </td>
+                {% endif %}
+                {% if datanut.oedema == 'Y' %}
+                    <td>
+                        YES
+                    </td>
+                {% endif %}
+        </tr>
+        <tr>
+            <th>
                 PB
             </th>
             <td>
-                {{datanut.pb}} cm
+                {{datanut.muac}} mm
             </td>
         </tr>
         <tr>
@@ -130,6 +155,9 @@
                 Taille
             </th>
             <th>
+                Oedema
+            </th>
+            <th>
                 PB
             </th>
             <th>
@@ -147,8 +175,28 @@
                 <td>
                     {{datanut.heught}} cm
                 </td>
+                {% if datanut.oedema == '' %}
+                    <td>
+
+                    </td>
+                {% endif %}
+                {% if datanut.oedema == 'U' %}
+                    <td>
+                        Unknown
+                    </td>
+                {% endif %}
+                {% if datanut.oedema == 'N' %}
+                    <td>
+                        NO
+                    </td>
+                {% endif %}
+                {% if datanut.oedema == 'Y' %}
+                    <td>
+                        YES
+                    </td>
+                {% endif %}
                 <td>
-                    {{datanut.pb}} cm
+                    {{datanut.muac}} mm
                 </td>
                 <td>
                     {{datanut.danger_sign}}

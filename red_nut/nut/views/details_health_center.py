@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # encoding=utf-8
-# maintainer: Fadiga
+# maintainer: Alou
 
 from django import forms
 from django.shortcuts import render
 
-from nut.tools.utils import diagnose_patient, number_days
+from nut.tools.utils import diagnose_patient, number_days, diff_weight
+
 from nut.models import Seat, InputOutputProgram, DataNut,Patient
 
 def details_health_center(request, *args, **kwargs):
@@ -20,36 +21,44 @@ def details_health_center(request, *args, **kwargs):
         inp_out = InputOutputProgram.objects.filter(patient__seat=seat)
         return inp_out.filter(reason=reason).count()
 
-    def avg_days(list_):
+    def avg_(list_):
         ''' calcule la moyenne de jours'''
-        sum_ = 0
         if list_ != []:
-            for li in list_:
-                sum_ = sum_ + li
-            return sum_ / len(list_)
+            return sum(list_) / len(list_)
         else:
             return None
 
     context = {}
     dict_ = {}
     list_mam_sam = []
+    list_num_days = []
+    list_weight = []
     num = kwargs["id"]
     seat = Seat.objects.get(id=num)
+    patients = Patient.objects.filter(seat=seat)
     datanuts = DataNut.objects.filter(patient__seat=seat)
 
     output_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
                                                         event='s')
 
-    list_num_days = []
     for out in output_programs:
         begin = Patient.objects.get(id=out.patient_id).create_date
         list_num_days.append(number_days(begin, out.date))
 
-    dict_["avg_days"] = avg_days(list_num_days)
+    for patient in patients:
+        datanut_patient = datanuts.filter(patient__id=patient.id) \
+                                  .order_by('date')
+
+        if datanut_patient:
+            weight = diff_weight(datanut_patient[0].weight,
+                            datanut_patient[len(datanut_patient) - 1].weight)
+            list_weight.append(weight)
 
     for datanut in datanuts:
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
 
+    dict_["avg_days"] = "%.2f" % avg_(list_num_days)
+    dict_["avg_diff_weight"] = "%.2f" % avg_(list_weight)
     dict_["MAM_count"] = list_mam_sam.count('MAM')
     dict_["SAM_count"] = list_mam_sam.count('SAM')
     dict_["SAM_"] = list_mam_sam.count('SAM+')
@@ -76,7 +85,8 @@ def details_health_center(request, *args, **kwargs):
         dict_["taux_deces"] = 0
 
     try:
-        dict_["taux_non_repondant"] = taux(dict_["non_repondant"], dict_["actif"])
+        dict_["taux_non_repondant"] = taux(dict_["non_repondant"], \
+                                           dict_["actif"])
     except ZeroDivisionError:
         dict_["taux_non_repondant"] = 0
 
