@@ -3,13 +3,11 @@
 
 {% block title %}Accueil{% endblock %}
 {% block pagetitle %}<h1 class="pagetitle">Croix-Rouge Malienne pour le suivi de la sécurité alimentaire et nutritionnelle de la population</h1>{% endblock %}
-
 {% block content %}
-
 <div id="context">
 
     <h2>Tableau de bord</h2>
-    <table>
+    <table class="center">
         <tr><th></th><th> guerison</th><th>abandon</th><th>déces</th><th>non repondant</th>
         </tr>
         <tr><th>Taux</th><td>{{healing_rates}} %</td><td>{{abandonment_rates}} %</td><td>{{deaths_rates}} %</td><td>{{non_response_rates}} %</td></tr>
@@ -22,7 +20,7 @@
         </tr>
         <tr><th>Nbre SMS</th><td>{{sent}}</td><td>{{received}}</td>
         <tr><th>Nbre enfant dans le programme</th><td>{{children_in_program}}</td></tr>
-        <tr><th>Durée moyenne dans le programme</th><td></td>
+        <tr><th>Durée moyenne dans le programme</th><td>{{avg_days}} jr</td>
         <tr><th>Gain de poids moyen</th><td></td>
     </table>
 </div>

@@ -48,13 +48,13 @@
 </body>
 <script type="text/javascript" src="{% url media 'jquery-1.6.2.min.js' %}"></script>
 <script type="text/javascript" src="{% url media 'red_nut.js' %}"></script>
-{% if category == 'indicator_data' %}<script type="text/javascript" src="{% url media 'highcharts.js' %}"></script>{% endif %}
+{% if category == 'dashboard' %}<script type="text/javascript" src="{% url media 'highcharts.js' %}"></script>{% endif %}
 <script type="text/javascript">
 $(document).ready(function(){
     addMessagesClickEvent();
     addLogoClickEvent('{% url index %}');
     {% block jqueryonload %}{% endblock %}
-    {% if category != 'indicator_data' %}addJavascript("{% url media 'highcharts.js' %}", 'head');{% endif %}
+    {% if category != 'dashboard' %}addJavascript("{% url media 'highcharts.js' %}", 'head');{% endif %}
 });
 </script>
 </html>

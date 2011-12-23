@@ -10,23 +10,24 @@ from django.conf import settings
 
 from nut.models import Seat, InputOutputProgram, Patient, DataNut
 from nosms.models import Message
-from nut.tools.utils import diagnose_patient
+from nut.tools.utils import diagnose_patient, number_days
 
 
 def dashboard(request):
+    """  """
     category = 'dashboard'
     context = {}
     context.update({"category": category})
 
     inp_out = InputOutputProgram.objects.all()
     datanut = DataNut.objects.all()
-
+    # Diagnose
     li_diagnose = [(diagnose_patient(d.muac, d.oedema)) for d in datanut]
     MAM_count = li_diagnose.count('MAM')
     SAM_count = li_diagnose.count('SAM')
     NI_count = li_diagnose.count('SAM+')
     context.update({"MAM_count": MAM_count, "SAM_count": SAM_count, \
-                                                    "NI_count": NI_count,})
+                                                    "NI_count": NI_count})
     # Nbre enfant dans le programme
     children_in_program = inp_out.filter(event="e").count()
     # Taux guerison
@@ -39,8 +40,15 @@ def dashboard(request):
     nbr_deaths = inp_out.filter(event="s", reason="d").count()
     deaths_rates = calculation_of_rates(nbr_deaths)
     # Taux non repondant
-    nbr_non_response = inp_out.filter(event="s", reason="d").count()
+    nbr_non_response = inp_out.filter(event="s", reason="n").count()
     non_response_rates = calculation_of_rates(nbr_non_response)
+    # Durée moyenne dans le programme
+    list_num_days = [(number_days(Patient.objects.get(id=out.patient_id) \
+                                         .create_date, out.date)) \
+                                         for out in InputOutputProgram.objects\
+                                         .filter(event='s')]
+    avg_days = sum(list_num_days) / list_num_days.__len__()
+    context.update({"avg_days": avg_days})
     #message
     messages = Message.objects.all()
     received = messages.filter(direction=Message.DIRECTION_INCOMING).count()
@@ -50,10 +58,9 @@ def dashboard(request):
                     "healing_rates": healing_rates, \
                     "abandonment_rates": abandonment_rates, \
                     "deaths_rates": deaths_rates, \
-                    "non_response_rates":non_response_rates, \
-                    "sent":sent, \
-                    "received":received
-                    })
+                    "non_response_rates": non_response_rates, \
+                    "sent": sent, \
+                    "received": received})
 
     return render(request, 'dashboard.html', context)
 

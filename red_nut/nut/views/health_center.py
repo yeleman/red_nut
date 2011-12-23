@@ -24,10 +24,11 @@ def health_center(request):
         dict_ = {}
         dict_["seat"] = seat.name
         dict_["nb_child"] = inp_out.filter(patient__seat__id = seat.id).count()
-        dict_["input"] = inp_out.filter(patient__seat__id = seat.id, event ="e").count()
-        dict_["nb_healing"] = inp_out.filter(patient__seat__id=seat.id, reason="a").count()
-        dict_["url"] = reverse("details_health_center", \
-                                                args=[seat.id])
+        dict_["input"] = inp_out.filter(patient__seat__id = seat.id, \
+                                                        event ="e").count()
+        dict_["nb_healing"] = inp_out.filter(patient__seat__id=seat.id, \
+                                                        reason="a").count()
+        dict_["url"] = reverse("details_health_center", args=[seat.id])
         liste_seat.append(dict_)
     context.update({"liste_seat": liste_seat})
     return render(request, 'health_center.html', context)
