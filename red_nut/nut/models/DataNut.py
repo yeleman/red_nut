@@ -6,7 +6,7 @@ from Patient import Patient
 
 
 class DataNut(models.Model):
-    """ """
+    """ Données nutritionneles d'un enfant """
     class Meta:
         app_label = 'nut'
         verbose_name = u"DataNut"
