@@ -81,8 +81,72 @@
     </table>
 
 {% endif %}
-
-<h2>Détail de centre de santé</h2>
+{% if stocks %}
+    <h2>tableau des consomations d'intrants.</h2>
+    <table>
+        <tr>
+            <th>
+                Intrant
+            </th>
+            <th>
+                Stock initial
+            </th>
+            <th>
+                Stock reçu
+            </th>
+            <th>
+                Stock utilisé
+            </th>
+            <th>
+                Stock perdu
+            </th>
+            <th>
+                Stock restant
+            </th>
+            <th>
+                Periode
+            </th>
+        </tr>
+        {% for stock in stocks %}
+            <tr>
+                <td>
+                    {{stock.intrant.name}} (
+                    {% if stock.intrant.unit == 'ba' %}
+                        sachet
+                    {% endif %}
+                    {% if stock.intrant.unit == 'g' %}
+                        kg
+                    {% endif %}
+                    {% if stock.intrant.unit == 'bo' %}
+                        boite
+                    {% endif %}
+                    {% if stock.intrant.unit == 'l' %}
+                        litre
+                    {% endif %}
+                    )
+                </td>
+                <td>
+                    {{stock.stock_initial}}
+                </td>
+                <td>
+                    {{stock.stock_received}}
+                </td>
+                <td>
+                    {{stock.stock_used}}
+                </td>
+                <td>
+                    {{stock.stock_lost}}
+                </td>
+                <td>
+                    {{stock.remaining}}
+                </td>
+                <td>
+                    {{stock.period}}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
 </div>
 
 {% endblock %}

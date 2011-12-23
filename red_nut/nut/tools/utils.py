@@ -51,8 +51,10 @@ def diagnose_patient(muac, oedema):
 
 def number_days(begin, end):
     ''' return the number of days in two dates '''
-    number = end - begin
-    return number.days
+    if end and begin:
+        number = end - begin
+        return number.days
+    return None
 
 def diff_weight(p1, p2):
     return p2 - p1

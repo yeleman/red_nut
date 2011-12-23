@@ -26,17 +26,17 @@ class DataNut(models.Model):
                                 verbose_name=("Patient"))
     date = models.DateField(verbose_name=("Date"))
     weight = models.FloatField(u"Poids (kg)", blank=True, null=True)
-    heught = models.FloatField(u"Taille (cm)", blank=True, null=True)
+    height = models.FloatField(u"Taille (cm)", blank=True, null=True)
     oedema = models.CharField(u"Oedema", max_length=1, \
                               choices=OEDEMA_CHOICES)
     muac = models.SmallIntegerField(u"MUAC (mm)", blank=True, null=True)
     danger_sign = models.CharField(max_length=30, verbose_name=("Danger sign"))
 
     def __unicode__(self):
-        return u"%(patient)s %(weight)skg/%(heught)scm %(pb)smm "\
+        return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\
         "%(danger_sign)s %(date)s" % {"date": self.date,
                                       "patient": self.patient,
-                                      "heught": self.heught,
+                                      "height": self.height,
                                       "weight": self.weight,
                                       "pb": self.muac,
                                       "danger_sign": self.danger_sign}

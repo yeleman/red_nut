@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 from nut.tools.utils import diagnose_patient, number_days, diff_weight
 
-from nut.models import Seat, InputOutputProgram, DataNut,Patient
+from nut.models import Seat, InputOutputProgram, DataNut, Patient, Stock
 
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
@@ -37,6 +37,7 @@ def details_health_center(request, *args, **kwargs):
     seat = Seat.objects.get(id=num)
     patients = Patient.objects.filter(seat=seat)
     datanuts = DataNut.objects.filter(patient__seat=seat)
+    stocks = Stock.objects.filter(seat=seat)
 
     output_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
                                                         event='s')
@@ -56,9 +57,12 @@ def details_health_center(request, *args, **kwargs):
 
     for datanut in datanuts:
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
-
-    dict_["avg_days"] = "%.2f" % avg_(list_num_days)
-    dict_["avg_diff_weight"] = "%.2f" % avg_(list_weight)
+    try:
+        dict_["avg_days"] = "%.2f" % avg_(list_num_days)
+        dict_["avg_diff_weight"] = "%.2f" % avg_(list_weight)
+    except:
+        dict_["avg_days"] = 0
+        dict_["avg_diff_weight"] = 0
     dict_["MAM_count"] = list_mam_sam.count('MAM')
     dict_["SAM_count"] = list_mam_sam.count('SAM')
     dict_["SAM_"] = list_mam_sam.count('SAM+')
@@ -92,7 +96,7 @@ def details_health_center(request, *args, **kwargs):
 
     category = 'details_health_center'
 
-    context.update({"category": category, 'dict_': dict_})
+    context.update({"category": category, 'dict_': dict_, 'stocks': stocks})
 
     return render(request, 'details_health_center.html', context)
 
