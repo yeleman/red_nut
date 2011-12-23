@@ -58,14 +58,16 @@
                 {{dict_.taux_non_repondant}} %
             </td>
         </tr>
-        <tr>
-            <th>
-                Durée moyenne dans le programme
-            </th>
-            <td>
-                2jours
-            </td>
-        </tr>
+         {% if dict_.avg_days != None %}
+            <tr>
+                <th>
+                    Durée moyenne dans le programme
+                </th>
+                <td>
+                    {{dict_.avg_days}} jours
+                </td>
+            </tr>
+        {% endif %}
         <tr>
             <th>
                 Gain de poids moyen

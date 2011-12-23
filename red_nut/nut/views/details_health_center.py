@@ -5,18 +5,30 @@
 from django import forms
 from django.shortcuts import render
 
-from nut.tools.utils import diagnose_patient
+from nut.tools.utils import diagnose_patient, number_days
 from nut.models import Seat, InputOutputProgram, DataNut,Patient
 
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
 
     def taux(v1, v2):
+        ''' calcule le taux '''
         return (v1  * 100) / v2
 
     def count_reason(reason):
+        ''' compte le nobre de fois d'une raison '''
         inp_out = InputOutputProgram.objects.filter(patient__seat=seat)
         return inp_out.filter(reason=reason).count()
+
+    def avg_days(list_):
+        ''' calcule la moyenne de jours'''
+        sum_ = 0
+        if list_ != []:
+            for li in list_:
+                sum_ = sum_ + li
+            return sum_ / len(list_)
+        else:
+            return None
 
     context = {}
     dict_ = {}
@@ -24,6 +36,16 @@ def details_health_center(request, *args, **kwargs):
     num = kwargs["id"]
     seat = Seat.objects.get(id=num)
     datanuts = DataNut.objects.filter(patient__seat=seat)
+
+    output_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
+                                                        event='s')
+
+    list_num_days = []
+    for out in output_programs:
+        begin = Patient.objects.get(id=out.patient_id).create_date
+        list_num_days.append(number_days(begin, out.date))
+
+    dict_["avg_days"] = avg_days(list_num_days)
 
     for datanut in datanuts:
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding=utf-8
 # maintainer: rgaudin
-
+from datetime import date
 
 def week_from_weeknum(year, weeknum, is_iso=False):
     """ datetime tuple of start/end of week from a week number (and year) """
@@ -48,3 +48,8 @@ def diagnose_patient(muac, oedema):
         return "SAM"
     elif muac < 125:
         return "MAM"
+
+def number_days(begin, end):
+    ''' return the number of days in two dates '''
+    number = end - begin
+    return number.days
