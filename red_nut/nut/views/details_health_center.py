@@ -41,7 +41,6 @@ def details_health_center(request, *args, **kwargs):
 
     output_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
                                                         event='s')
-
     for out in output_programs:
         begin = Patient.objects.get(id=out.patient_id).create_date
         list_num_days.append(number_days(begin, out.date))
@@ -59,8 +58,12 @@ def details_health_center(request, *args, **kwargs):
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
     try:
         dict_["avg_days"] = "%.2f" % avg_(list_num_days)
+    except:
+        dict_["avg_days"] = 0
+    try:
         dict_["avg_diff_weight"] = "%.2f" % avg_(list_weight)
     except:
+        raise
         dict_["avg_days"] = 0
         dict_["avg_diff_weight"] = 0
     dict_["MAM_count"] = list_mam_sam.count('MAM')
