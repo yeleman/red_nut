@@ -63,7 +63,6 @@ def dashboard(request):
     context.update({"avg_weight": avg_weight})
     # graph
 
-    context.update({"date":date})
      # message
     messages = Message.objects.all()
     received = messages.filter(direction=Message.DIRECTION_INCOMING).count()
