@@ -3,6 +3,7 @@
 
 {% block title %}Accueil{% endblock %}
 {% block pagetitle %}<h1 class="pagetitle">Croix-Rouge Malienne pour le suivi de la sécurité alimentaire et nutritionnelle de la population</h1>{% endblock %}
+{% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id %}{% endblock %}
 {% block content %}
 <div id="context">
 
@@ -21,8 +22,10 @@
         <tr><th>Nbre SMS</th><td>{{sent}}</td><td>{{received}}</td>
         <tr><th>Nbre enfant dans le programme</th><td>{{children_in_program}}</td></tr>
         <tr><th>Durée moyenne dans le programme</th><td>{{avg_days}} jr</td>
-        <tr><th>Gain de poids moyen</th><td></td>
+        <tr><th>Gain de poids moyen</th><td>{{avg_weight}} kg</td>
     </table>
+    <h3 class="caption"><strong>Figure 1.</strong> Courbe enfants dans le programme</h3>
+    <div id="graph"></div>
 </div>
 
 {% endblock %}

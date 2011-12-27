@@ -7,7 +7,7 @@ from django.shortcuts import render, RequestContext, HttpResponseRedirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 
-from nut.models import Patient, Seat
+from nut.models import Patient, Seat, InputOutputProgram
 
 
 class ChildrenForm(forms.Form):
@@ -51,7 +51,11 @@ def children(request):
         form_r = ResearchForm()
 
     for patient in patients:
+        patient_last = InputOutputProgram.objects.filter(patient__id=patient.id).order_by('-date')
+        if patient_last:
+            patient.status = patient_last[0].event
         patient.url_patient = reverse("details_child", \
                                                 args=[patient.id])
+
     context.update({"patients": patients, "form_r": form_r, "form": form})
     return render(request, 'children.html', context)

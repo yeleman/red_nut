@@ -10,7 +10,7 @@ from django.conf import settings
 
 from nut.models import Seat, InputOutputProgram, Patient, DataNut
 from nosms.models import Message
-from nut.tools.utils import diagnose_patient, number_days
+from nut.tools.utils import diagnose_patient, number_days, diff_weight
 
 
 def dashboard(request):
@@ -20,9 +20,9 @@ def dashboard(request):
     context.update({"category": category})
 
     inp_out = InputOutputProgram.objects.all()
-    datanut = DataNut.objects.all()
+    datanuts = DataNut.objects.all()
     # Diagnose
-    li_diagnose = [(diagnose_patient(d.muac, d.oedema)) for d in datanut]
+    li_diagnose = [(diagnose_patient(d.muac, d.oedema)) for d in datanuts]
     MAM_count = li_diagnose.count('MAM')
     SAM_count = li_diagnose.count('SAM')
     NI_count = li_diagnose.count('SAM+')
@@ -49,7 +49,22 @@ def dashboard(request):
                                          .filter(event='s')]
     avg_days = sum(list_num_days) / list_num_days.__len__()
     context.update({"avg_days": avg_days})
-    #message
+    # Gain de poids moyen
+    patients = Patient.objects.all()
+    list_weight = []
+    for patient in patients:
+        datanut_patient = datanuts.filter(patient__id=patient.id) \
+                                  .order_by('date')
+        if datanut_patient:
+            weight = diff_weight(datanut_patient[0].weight, \
+                            datanut_patient[len(datanut_patient) - 1].weight)
+            list_weight.append(weight)
+    avg_weight = sum(list_weight) / list_weight.__len__()
+    context.update({"avg_weight": avg_weight})
+    # graph
+
+    context.update({"date":date})
+     # message
     messages = Message.objects.all()
     received = messages.filter(direction=Message.DIRECTION_INCOMING).count()
     sent = messages.filter(direction=Message.DIRECTION_OUTGOING).count()

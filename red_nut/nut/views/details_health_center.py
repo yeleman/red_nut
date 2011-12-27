@@ -58,7 +58,7 @@ def details_health_center(request, *args, **kwargs):
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
 
     dict_["avg_days"] = "%.2f" % avg_(list_num_days)
-    dict_["avg_diff_weight"] = "%.2f" % avg_(list_weight)
+    dict_["avg_weight"] = "%.2f" % avg_(list_weight)
     dict_["MAM_count"] = list_mam_sam.count('MAM')
     dict_["SAM_count"] = list_mam_sam.count('SAM')
     dict_["SAM_"] = list_mam_sam.count('SAM+')
