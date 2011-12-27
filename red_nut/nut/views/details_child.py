@@ -8,6 +8,7 @@ from nut.models import Patient, DataNut, InputOutputProgram
 
 
 def details_child(request, *args, **kwargs):
+    """ Details sur un enfant """
     num = kwargs["id"]
     category = 'details_child'
     context = {}

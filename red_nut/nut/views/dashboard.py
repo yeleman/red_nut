@@ -47,7 +47,10 @@ def dashboard(request):
                                          .create_date, out.date)) \
                                          for out in InputOutputProgram.objects\
                                          .filter(event='s')]
-    avg_days = sum(list_num_days) / list_num_days.__len__()
+    try:
+        avg_days = sum(list_num_days) / list_num_days.__len__()
+    except:
+        avg_days = 0
     context.update({"avg_days": avg_days})
     # Gain de poids moyen
     patients = Patient.objects.all()
