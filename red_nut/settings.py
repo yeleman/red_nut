@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # maintainer: alou
 # Django settings for red_nut project.
-
+import locale
 import os
 abs_path = os.path.abspath(__file__)
 ROOT_DIR = os.path.dirname(abs_path)
@@ -18,7 +18,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': '',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
@@ -107,11 +107,10 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'nut',
-    'nosms',
+    'nosmsd',
     'reversion',
     'babeldjango',
 
@@ -152,7 +151,6 @@ LOGGING = {
 }
 
 DEFAULT_LOCALE = 'fr_FR.UTF-8'
-
 NOSMS_HANDLER = 'nut_sms.nut.nosms_handler'
 NOSMS_TRANSPORT_HOST = 'localhost'
 NOSMS_TRANSPORT_PORT = 13013

@@ -3,13 +3,13 @@
 # maintainer: Fadiga
 
 from django import forms
-from django.contrib import messages
+#~ from django.contrib import messages
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 
 from nut.models import Seat, InputOutputProgram, Patient, DataNut
-from nosms.models import Message
+from nosmsd.models import Inbox, SentItems
 from nut.tools.utils import diagnose_patient, number_days, diff_weight
 
 
@@ -67,9 +67,8 @@ def dashboard(request):
     # graph
 
      # message
-    messages = Message.objects.all()
-    received = messages.filter(direction=Message.DIRECTION_INCOMING).count()
-    sent = messages.filter(direction=Message.DIRECTION_OUTGOING).count()
+    received = Inbox.objects.count()
+    sent = SentItems.objects.count()
 
     context.update({"children_in_program": children_in_program, \
                     "healing_rates": healing_rates, \

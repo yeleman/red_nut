@@ -8,8 +8,8 @@ from datetime import date, datetime
 import reversion
 from django.conf import settings
 
-from nosms.models import Message
-from nosms.utils import send_sms
+from nosmsd.utils import send_sms
+
 from red_nut.nut.models import *
 from red_nut.nut.models.Period import MonthPeriod
 
@@ -17,24 +17,24 @@ logger = logging.getLogger(__name__)
 locale.setlocale(locale.LC_ALL, settings.DEFAULT_LOCALE)
 
 
-def nosms_handler(message):
+def handler(message):
     def main_nut_handler(message):
-        if message.text.lower().startswith('nut '):
-            if message.text.lower().startswith('nut stock'):
+        if message.content.lower().startswith('nut '):
+            if message.content.lower().startswith('nut stock'):
                 return nut_stock(message)
-            elif message.text.lower().startswith('nut fol'):
+            elif message.content.lower().startswith('nut fol'):
                 return followed_child(message)
-            elif message.text.lower().startswith('nut register'):
+            elif message.content.lower().startswith('nut register'):
                 return nut_register(message)
-            elif message.text.lower().startswith('nut research'):
+            elif message.content.lower().startswith('nut research'):
                 return id_information_research(message)
-            elif message.text.lower().startswith('nut off'):
+            elif message.content.lower().startswith('nut off'):
                 return disable_child(message)
         else:
             return False
 
     if main_nut_handler(message):
-        message.status = Message.STATUS_PROCESSED
+        message.status = message.STATUS_PROCESSED
         message.save()
         logger.info(u"[HANDLED] msg: %s" % message)
         return True
@@ -63,13 +63,13 @@ def nut_stock(message):
         dict_ = dict(zip(args_names, args_values))
         return dict_
 
-    part = message.text.strip().lower().split("#")
+    part = message.content.strip().lower().split("#")
     list_dict = []
 
     # common start of error message
     error_start = u"Impossible d'enregistrer le rapport. "
     if len(part) == 7:
-        debut, p1, p2, p3, p4, p5, p6 = message.text.strip().lower().split("#")
+        debut, p1, p2, p3, p4, p5, p6 = message.content.strip().lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -93,7 +93,7 @@ def nut_stock(message):
             return True
 
     if len(part) == 8:
-        debut, p1, p2, p3, p4, p5, p6, p7 = message.text.strip()\
+        debut, p1, p2, p3, p4, p5, p6, p7 = message.content.strip()\
                                             .lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
@@ -120,7 +120,7 @@ def nut_stock(message):
             return True
 
     if len(part) == 2:
-        debut, p1 = message.text.strip().lower().split("#")
+        debut, p1 = message.content.strip().lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -134,7 +134,7 @@ def nut_stock(message):
             return True
 
     if len(part) == 4:
-        debut, p1, p2, p3 = message.text.strip().lower().split("#")
+        debut, p1, p2, p3 = message.content.strip().lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -188,7 +188,7 @@ def nut_stock(message):
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
+                     % (message.content, e))
         return True
     except Exception as e:
         raise
@@ -196,7 +196,7 @@ def nut_stock(message):
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
+                     % (message.content, e))
         return True
     message.respond(u"[SUCCES] Le rapport de stock de %(seat)s "
                     u"a ete bien enregistre. " %
@@ -212,7 +212,7 @@ def nut_register(message):
             or  xxx n'est pas enregistrer"""
 
     nut, register, code_seat, first_name, last_name, surname_mother, \
-                        DDN_Age = message.text.strip().lower().split()
+                        DDN_Age = message.content.strip().lower().split()
     try:
         # On essai prendre le seat
         seat = Seat.objects.get(code=code_seat)
@@ -253,7 +253,7 @@ def id_information_research(message):
             or  Il n'existe aucun patient du prénom first_name """
 
     nut, research, code_seat, first_name, last_name, \
-                    surname_mother = message.text.strip().lower().split()
+                    surname_mother = message.content.strip().lower().split()
     #Si SMS ne contient que le nom
     if first_name == "n" and surname_mother == "n":
         patient = [(u"%(first)s %(mother)s de l'id %(id)s" % \
@@ -392,7 +392,7 @@ def id_information_research(message):
 
 def followed_child(message):
     """ Incomming:
-            nut fol id weight heught oedema muac danger_sign
+            nut fol id weight height oedema muac danger_sign
         Outgoing:
             [SUCCES] Les données nutritionnelles de full_name ont
             ete bien enregistre.
@@ -402,8 +402,8 @@ def followed_child(message):
     error_start = u"Impossible d'enregistrer les donnees. "
     try:
         args_names = ['kw1', 'kw2', 'id', 'weight', \
-        'heught', 'oedema', 'muac', 'danger_sign']
-        args_values = message.text.strip().lower().split()
+        'height', 'oedema', 'muac', 'danger_sign']
+        args_values = message.content.strip().lower().split()
         arguments = dict(zip(args_names, args_values))
     except ValueError:
         # failure to split means we proabably lack a data or more
@@ -413,7 +413,7 @@ def followed_child(message):
 
     try:
         for key, value in arguments.items():
-            if key.split('_')[0] in ('id', 'weight', 'heught', 'muac'):
+            if key.split('_')[0] in ('id', 'weight', 'height', 'muac'):
                 arguments[key] = int(value)
     except:
         # failure to convert means non-numeric value which we can't process.
@@ -425,7 +425,7 @@ def followed_child(message):
         datanut.patient = Patient.objects.get(id=arguments.get('id'))
         datanut.date = date.today()
         datanut.weight = arguments.get('weight')
-        datanut.heught = arguments.get('heught')
+        datanut.height = arguments.get('height')
         datanut.oedema = arguments.get('oedema').upper()
         datanut.muac = arguments.get('muac')
         datanut.danger_sign = arguments.get('danger_sign')
@@ -436,14 +436,14 @@ def followed_child(message):
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
+                     % (message.content, e))
         return True
     except Exception as e:
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
+                     % (message.content, e))
         return True
 
     message.respond(u"[SUCCES] Les données nutritionnelles de %(full_name)s "
@@ -461,7 +461,7 @@ def disable_child(message):
 
     # common start of error message
     error_start = u"Impossible de desactiver."
-    kw1, kw2, id_, reason = message.text.strip().lower().split()
+    kw1, kw2, id_, reason = message.content.strip().lower().split()
     try:
         patient = Patient.objects.get(id=id_)
         input_ = InputOutputProgram()

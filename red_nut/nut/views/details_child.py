@@ -23,6 +23,10 @@ def details_child(request, *args, **kwargs):
                     'input_': input_,
                     'datanut': datanut,
                     'datanuts': datanuts})
+        list_muac = [datanut.muac for datanut in datanuts]
+        list_weight = [datanut.weight for datanut in datanuts]
+        print 'Muac', list_muac
+        print 'Weight', list_weight
     except DataNut.DoesNotExist:
         input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
                                    .latest('date')
