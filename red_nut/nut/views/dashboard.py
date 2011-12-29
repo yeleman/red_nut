@@ -8,7 +8,7 @@ from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 
-from nut.models import Seat, InputOutputProgram, Patient, DataNut
+from nut.models import Seat, InputOutputProgram, Patient, DataNut, Period
 from nosms.models import Message
 from nut.tools.utils import diagnose_patient, number_days, diff_weight
 
@@ -62,11 +62,37 @@ def dashboard(request):
             weight = diff_weight(datanut_patient[0].weight, \
                             datanut_patient[len(datanut_patient) - 1].weight)
             list_weight.append(weight)
-    avg_weight = sum(list_weight) / list_weight.__len__()
+    try:
+        avg_weight = sum(list_weight) / list_weight.__len__()
+    except:
+        avg_weight = 0
     context.update({"avg_weight": avg_weight})
-    # graph
+    # graphic
+    diagnose_man = []
+    diagnose_sam = []
+    diagnose_ni = []
+    total_ = []
+    graph_date = []
+    l_diagnose = []
+    for el in  DataNut.objects.all().order_by('date'):
 
-     # message
+        if el.patient_id in [(i.patient.id) for i in InputOutputProgram.objects.filter(event="e")]:
+            data = DataNut.objects.order_by('date').filter(date__lt=el.date)
+            graph_date.append(el.date.strftime('%d/%m'))
+            l_diagnose.append(diagnose_patient(el.muac, el.oedema))
+            diagnose_man.append(l_diagnose.count('MAM'))
+            diagnose_sam.append(l_diagnose.count('SAM'))
+            diagnose_ni.append(l_diagnose.count('SAM+'))
+            total_.append(data.__len__())
+        else:
+            print el
+
+    graph_data = [{'name': "Total", 'data': total_}, \
+                  {'name': "MAM", 'data': diagnose_man}, \
+                  {'name': "SAM", 'data': diagnose_sam}, \
+                  {'name': "SAM+", 'data': diagnose_ni}]
+    context.update({"graph_date": graph_date, "graph_data":graph_data})
+    # message
     messages = Message.objects.all()
     received = messages.filter(direction=Message.DIRECTION_INCOMING).count()
     sent = messages.filter(direction=Message.DIRECTION_OUTGOING).count()

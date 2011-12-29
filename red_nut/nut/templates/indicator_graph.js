@@ -1,10 +1,10 @@
 toto = new Highcharts.Chart(
         {chart: {renderTo: 'graph', defaultSeriesType: 'line', backgroundColor: '#ebebeb', },
             legend: {}, title: {text: null},
-            xAxis: {categories: ["un", "deux", "trois"]},
+            xAxis: {categories: [{% for p in graph_date %}"{{ p }}",{% endfor %}]},
             yAxis: {title: {text: null},},
-            series: [{name: 'premier', data: [12, 73, 89]}],
-            tooltip: {formatter: function() { return ''+ this.series.name;} },
+            series: [{%for line in graph_data %}{name: "{{ line.name }}", data: {{ line.data }} },{% endfor %}],
+            tooltip: {formatter: function() {return ''+ this.series.name;} },
             plotOptions: {line: {animation: false, dataLabels: {enabled: true}, enableMouseTracking: false },
                           column: {animation: false, enableMouseTracking: false,
                           dataLabels: {enabled: true, formatter: function()
