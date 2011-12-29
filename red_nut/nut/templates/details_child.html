@@ -3,214 +3,217 @@
 
 {% block title %}Enfants{% endblock %}
 {% block pagetitle %}<h1 class="pagetitle">Croix-Rouge Malienne pour le suivi de la sécurité alimentaire et nutritionnelle de la population</h1>{% endblock %}
-
+{% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id %}{% endblock %}
 {% block content %}
 
 <div id="context">
-{% if patient %}
-<h2>Information enfant</h2>
-    <table>
-        <tr>
-            <th>
-                Nom
-            </th>
-            <td>
-                {{patient.last_name}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Prenom
-            </th>
-            <td>
-                {{patient.first_name}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Nom de la mere
-            </th>
-            <td>
-                {{patient.surname_mother}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Age
-            </th>
-            <td>
-                {{patient.DDN_Age}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Date d'enregistrement
-            </th>
-            <td>
-                {{patient.create_date}}
-            </td>
-        </tr>
-        {% if input_ %}
+    {% if patient %}
+    <h2>Information enfant</h2>
+        <table>
             <tr>
                 <th>
-                    Date de sortie
+                    Nom
                 </th>
                 <td>
-                    {{input_.date}}
+                    {{patient.last_name.capitalize}}
                 </td>
             </tr>
-        {% endif %}
-        <tr>
-            <th>
-                CSCOM
-            </th>
-            <td>
-                {{patient.seat}}
-            </td>
-        </tr>
-    </table>
-
-{% endif %}
-
-{% if datanut %}
-<h2>Details nutritionnel</h2>
-    <table>
-        <tr>
-            <th>
-                Poids
-            </th>
-            <td>
-                {{datanut.weight}} kg
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Taille
-            </th>
-            <td>
-                {{datanut.height}} cm
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Oedema
-            </th>
-            {% if datanut.oedema == '' %}
-                    <td>
-
-                    </td>
-                {% endif %}
-                {% if datanut.oedema == 'U' %}
-                    <td>
-                        Unknown
-                    </td>
-                {% endif %}
-                {% if datanut.oedema == 'N' %}
-                    <td>
-                        NO
-                    </td>
-                {% endif %}
-                {% if datanut.oedema == 'Y' %}
-                    <td>
-                        YES
-                    </td>
-                {% endif %}
-        </tr>
-        <tr>
-            <th>
-                PB
-            </th>
-            <td>
-                {{datanut.muac}} mm
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Signe de danger
-            </th>
-            <td>
-                {{datanut.danger_sign}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Date
-            </th>
-            <td>
-                {{datanut.date}}
-            </td>
-        </tr>
-
-    </table>
-{% endif %}
-
-{% if datanuts %}
-    <h2>Tableau des données nutritionnelles</h2>
-    <table>
-        <tr>
-            <th>
-                Poids
-            </th>
-            <th>
-                Taille
-            </th>
-            <th>
-                Oedema
-            </th>
-            <th>
-                PB
-            </th>
-            <th>
-                Signe de danger
-            </th>
-            <th>
-                Date
-            </th>
-        </tr>
-        {% for datanut in datanuts %}
             <tr>
+                <th>
+                    Prenom
+                </th>
+                <td>
+                    {{patient.first_name.capitalize}}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Nom de la mere
+                </th>
+                <td>
+                    {{patient.surname_mother.capitalize}}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Age
+                </th>
+                <td>
+                    {{patient.DDN_Age}}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Date d'enregistrement
+                </th>
+                <td>
+                    {{patient.create_date}}
+                </td>
+            </tr>
+            {% if input_ %}
+                <tr>
+                    <th>
+                        Date de sortie
+                    </th>
+                    <td>
+                        {{input_.date}}
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <th>
+                    CSCOM
+                </th>
+                <td>
+                    {{patient.seat}}
+                </td>
+            </tr>
+        </table>
+
+    {% endif %}
+
+    {% if datanut %}
+    <h2>Details nutritionnel</h2>
+        <table>
+            <tr>
+                <th>
+                    Poids
+                </th>
                 <td>
                     {{datanut.weight}} kg
                 </td>
+            </tr>
+            <tr>
+                <th>
+                    Taille
+                </th>
                 <td>
                     {{datanut.height}} cm
                 </td>
+            </tr>
+            <tr>
+                <th>
+                    Oedema
+                </th>
                 {% if datanut.oedema == '' %}
-                    <td>
+                        <td>
 
-                    </td>
-                {% endif %}
-                {% if datanut.oedema == 'U' %}
-                    <td>
-                        Unknown
-                    </td>
-                {% endif %}
-                {% if datanut.oedema == 'N' %}
-                    <td>
-                        NO
-                    </td>
-                {% endif %}
-                {% if datanut.oedema == 'Y' %}
-                    <td>
-                        YES
-                    </td>
-                {% endif %}
+                        </td>
+                    {% endif %}
+                    {% if datanut.oedema == 'U' %}
+                        <td>
+                            Unknown
+                        </td>
+                    {% endif %}
+                    {% if datanut.oedema == 'N' %}
+                        <td>
+                            NO
+                        </td>
+                    {% endif %}
+                    {% if datanut.oedema == 'Y' %}
+                        <td>
+                            YES
+                        </td>
+                    {% endif %}
+            </tr>
+            <tr>
+                <th>
+                    PB
+                </th>
                 <td>
                     {{datanut.muac}} mm
                 </td>
+            </tr>
+            <tr>
+                <th>
+                    Signe de danger
+                </th>
                 <td>
                     {{datanut.danger_sign}}
                 </td>
+            </tr>
+            <tr>
+                <th>
+                    Date
+                </th>
                 <td>
                     {{datanut.date}}
                 </td>
             </tr>
-        {% endfor %}
-    </table>
-{% endif %}
-{% if error %}
-    <h2>{{error}}</h2>
-{% endif %}
+
+        </table>
+    {% endif %}
+
+    {% if datanuts %}
+        <h2>Tableau des données nutritionnelles</h2>
+        <table>
+            <tr>
+                <th>
+                    Poids
+                </th>
+                <th>
+                    Taille
+                </th>
+                <th>
+                    Oedema
+                </th>
+                <th>
+                    PB
+                </th>
+                <th>
+                    Signe de danger
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+            {% for datanut in datanuts %}
+                <tr>
+                    <td>
+                        {{datanut.weight}} kg
+                    </td>
+                    <td>
+                        {{datanut.height}} cm
+                    </td>
+                    {% if datanut.oedema == '' %}
+                        <td>
+
+                        </td>
+                    {% endif %}
+                    {% if datanut.oedema == 'U' %}
+                        <td>
+                            Unknown
+                        </td>
+                    {% endif %}
+                    {% if datanut.oedema == 'N' %}
+                        <td>
+                            NO
+                        </td>
+                    {% endif %}
+                    {% if datanut.oedema == 'Y' %}
+                        <td>
+                            YES
+                        </td>
+                    {% endif %}
+                    <td>
+                        {{datanut.muac}} mm
+                    </td>
+                    <td>
+                        {{datanut.danger_sign}}
+                    </td>
+                    <td>
+                        {{datanut.date}}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    {% endif %}
+    {% if error %}
+        <h2>{{error}}</h2>
+    {% endif %}
+    <h3 class="caption"><strong>Figure 1.</strong> Courbe enfants dans le programme</h3>
+    <div id="graph"></div>
 </div>
 
 {% endblock %}

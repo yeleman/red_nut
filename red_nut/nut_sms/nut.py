@@ -45,7 +45,7 @@ def handler(message):
 def nut_stock(message):
     """ Incomming:
             nut stock type_seat code_seat month year #intrant stock_initial
-            stock_received stock_used stock_lost#intrant stock_initial
+            stock_received stock_used stock_lost #intrant stock_initial
             stock_received stock_used stock_lost
         Outgoing:
             [SUCCES] Le rapport de stock de seat a ete bien enregistre.
@@ -69,7 +69,8 @@ def nut_stock(message):
     # common start of error message
     error_start = u"Impossible d'enregistrer le rapport. "
     if len(part) == 7:
-        debut, p1, p2, p3, p4, p5, p6 = message.content.strip().lower().split("#")
+        debut, p1, p2, p3, p4, p5, p6 = message.content.strip() \
+                                               .lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -183,7 +184,6 @@ def nut_stock(message):
 
             stock.save()
     except Exception as e:
-        raise
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
@@ -191,7 +191,6 @@ def nut_stock(message):
                      % (message.content, e))
         return True
     except Exception as e:
-        raise
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
@@ -218,7 +217,7 @@ def nut_register(message):
         seat = Seat.objects.get(code=code_seat)
     except:
         # On envoi un sms pour signaler que le code n'est pas valid
-        message.respond(u"[ERROR] %(seat)s n'est un code siège valid" % \
+        message.respond(u"[ERROR] %(seat)s n'est pas un code centre valide" % \
                                                         {'seat': code_seat})
         seat = None
     if seat != None:
@@ -254,6 +253,7 @@ def id_information_research(message):
 
     nut, research, code_seat, first_name, last_name, \
                     surname_mother = message.content.strip().lower().split()
+    print surname_mother
     #Si SMS ne contient que le nom
     if first_name == "n" and surname_mother == "n":
         patient = [(u"%(first)s %(mother)s de l'id %(id)s" % \
@@ -279,7 +279,7 @@ def id_information_research(message):
                                                first_name=first_name)]
         if patient:
             message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s et nom de sa mère "
+                            u"%(first_name)s et du nom de mère "
                             u"%(surname_mother)s: %(patient)s." % \
                                             {'nber': patient.__len__(), \
                                             'first_name': first_name, \
@@ -287,7 +287,7 @@ def id_information_research(message):
                                             'patient': ', '.join(patient)})
         else:
             message.respond(u"Il n'existe aucun patient du prénom "
-                            u"%(first_name)s et nom de sa mère "
+                            u"%(first_name)s et du nom de mère "
                             u"%(surname_mother)s" % {'surname_mother': \
                                     surname_mother, 'first_name': first_name})
     #Si SMS ne contient que le nom de sa mère
@@ -460,7 +460,7 @@ def disable_child(message):
             or error message """
 
     # common start of error message
-    error_start = u"Impossible de desactiver."
+    error_start = u"Impossible de desactiver. "
     kw1, kw2, id_, reason = message.content.strip().lower().split()
     try:
         patient = Patient.objects.get(id=id_)
@@ -479,7 +479,8 @@ def disable_child(message):
         input_.patient_id = id_
         input_.save()
     except:
-        message.respond(u"Cet enfant n'existe pas dans le programme")
+        message.respond(error_start + u"Cet enfant n'existe" \
+                                      u" pas dans le programme")
         return True
 
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
