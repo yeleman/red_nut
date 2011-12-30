@@ -3,3 +3,5 @@ django-reversion==1.4
 Babel==0.9.6
 BabelDjango==0.2.2
 django-mptt==0.5.1
+nosmsd
+

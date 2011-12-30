@@ -10,7 +10,8 @@ from django.conf import settings
 
 from nut.models import Seat, InputOutputProgram, Patient, DataNut
 from nosmsd.models import Inbox, SentItems
-from nut.tools.utils import diagnose_patient, number_days, diff_weight, date_graphic
+from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
+                                                            date_graphic
 
 
 def dashboard(request):
@@ -107,9 +108,6 @@ def dashboard(request):
 
     # Nbre enfant dans le programme
     children_in_program = total_[-1]
-    context.update({"MAM_count": MAM_count, "SAM_count": SAM_count, \
-                                                    "NI_count": NI_count})
-
     # message
     received = Inbox.objects.count()
     sent = SentItems.objects.count()
@@ -120,7 +118,9 @@ def dashboard(request):
                     "deaths_rates": deaths_rates, \
                     "non_response_rates": non_response_rates, \
                     "sent": sent, \
-                    "received": received})
+                    "received": received, \
+                    "MAM_count": MAM_count, "SAM_count": SAM_count, \
+                                                "NI_count": NI_count})
 
     return render(request, 'dashboard.html', context)
 
