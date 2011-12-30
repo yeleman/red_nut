@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # encoding=utf-8
-# maintainer: rgaudin
-from datetime import date
+# maintainer: Fadiga
+
+from datetime import date,timedelta
+
 
 def week_from_weeknum(year, weeknum, is_iso=False):
     """ datetime tuple of start/end of week from a week number (and year) """
@@ -49,6 +51,7 @@ def diagnose_patient(muac, oedema):
     elif muac < 125:
         return "MAM"
 
+
 def number_days(begin, end):
     ''' return the number of days in two dates '''
     if end and begin:
@@ -56,6 +59,14 @@ def number_days(begin, end):
         return number.days
     return None
 
+
 def diff_weight(p1, p2):
     return p2 - p1
 
+
+def date_graphic(date_on):
+    l_date = [date_on]
+    while(date_on != date.today()):
+        date_on += timedelta(1)
+        l_date.append(date_on)
+    return l_date

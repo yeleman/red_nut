@@ -10,7 +10,8 @@ from django.conf import settings
 
 from nut.models import Seat, InputOutputProgram, Patient, DataNut, Period
 from nosms.models import Message
-from nut.tools.utils import diagnose_patient, number_days, diff_weight
+from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
+                                                            date_graphic
 
 
 def dashboard(request):
@@ -68,27 +69,28 @@ def dashboard(request):
         avg_weight = 0
     context.update({"avg_weight": avg_weight})
     # graphic
-    diagnose_man = []
-    diagnose_sam = []
-    diagnose_ni = []
+    l_date = date_graphic(InputOutputProgram.objects.order_by("date")[0].date)
     total_ = []
     graph_date = []
-    l_diagnose = []
-    for el in  DataNut.objects.all().order_by('date'):
-
-        if el.patient_id in [(i.patient.id) for i in InputOutputProgram.objects.filter(event="e")]:
-            data = DataNut.objects.order_by('date').filter(date__lt=el.date)
-            graph_date.append(el.date.strftime('%d/%m'))
-            l_diagnose.append(diagnose_patient(el.muac, el.oedema))
-            diagnose_man.append(l_diagnose.count('MAM'))
+    diagnose_mam = []
+    diagnose_sam = []
+    diagnose_ni = []
+    for da in l_date:
+        input_in_prog = InputOutputProgram.objects.filter(event="e").filter(date__lte=da)
+        out_in_prog = InputOutputProgram.objects.filter(event="s").filter(date__lte=da)
+        data = DataNut.objects.order_by('date').filter(date__lte=da)
+        total_.append(input_in_prog.__len__() - out_in_prog.__len__())
+        graph_date.append(da.strftime('%d/%m'))
+        l_diagnose = []
+        for d in data:
+            if d.patient.id in [(i.patient.id) for i in input_in_prog]:
+                l_diagnose.append(diagnose_patient(d.muac, d.oedema))
+        if l_diagnose:
+            diagnose_mam.append(l_diagnose.count('MAM'))
             diagnose_sam.append(l_diagnose.count('SAM'))
             diagnose_ni.append(l_diagnose.count('SAM+'))
-            total_.append(data.__len__())
-        else:
-            print el
-
     graph_data = [{'name': "Total", 'data': total_}, \
-                  {'name': "MAM", 'data': diagnose_man}, \
+                  {'name': "MAM", 'data': diagnose_mam}, \
                   {'name': "SAM", 'data': diagnose_sam}, \
                   {'name': "SAM+", 'data': diagnose_ni}]
     context.update({"graph_date": graph_date, "graph_data":graph_data})
