@@ -10,7 +10,7 @@ from django.conf import settings
 
 from nut.models import Seat, InputOutputProgram, Patient, DataNut
 from nosmsd.models import Inbox, SentItems
-from nut.tools.utils import diagnose_patient, number_days, diff_weight
+from nut.tools.utils import diagnose_patient, number_days, diff_weight, date_graphic
 
 
 def dashboard(request):
@@ -21,15 +21,7 @@ def dashboard(request):
 
     inp_out = InputOutputProgram.objects.all()
     datanuts = DataNut.objects.all()
-    # Diagnose
-    li_diagnose = [(diagnose_patient(d.muac, d.oedema)) for d in datanuts]
-    MAM_count = li_diagnose.count('MAM')
-    SAM_count = li_diagnose.count('SAM')
-    NI_count = li_diagnose.count('SAM+')
-    context.update({"MAM_count": MAM_count, "SAM_count": SAM_count, \
-                                                    "NI_count": NI_count})
-    # Nbre enfant dans le programme
-    children_in_program = inp_out.filter(event="e").count()
+
     # Taux guerison
     nbr_healing = inp_out.filter(event="s", reason="h").count()
     healing_rates = calculation_of_rates(nbr_healing)
@@ -68,30 +60,57 @@ def dashboard(request):
         avg_weight = 0
     context.update({"avg_weight": avg_weight})
     # graphic
-    diagnose_man = []
-    diagnose_sam = []
-    diagnose_ni = []
+    l_date = date_graphic(InputOutputProgram.objects.order_by("date")[0].date)
     total_ = []
     graph_date = []
-    l_diagnose = []
-    for el in  DataNut.objects.all().order_by('date'):
-
-        if el.patient_id in [(i.patient.id) for i in InputOutputProgram.objects.filter(event="e")]:
-            data = DataNut.objects.order_by('date').filter(date__lt=el.date)
-            graph_date.append(el.date.strftime('%d/%m'))
-            l_diagnose.append(diagnose_patient(el.muac, el.oedema))
-            diagnose_man.append(l_diagnose.count('MAM'))
+    diagnose_mam = []
+    diagnose_sam = []
+    diagnose_ni = []
+    for da in l_date:
+        input_in_prog = InputOutputProgram.objects.filter(event="e", \
+                                                            date__lte=da)
+        out_in_prog = InputOutputProgram.objects.filter(event="s", \
+                                                            date__lte=da)
+        input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
+                             not in [i.patient.id for i in out_in_prog]]
+        data = DataNut.objects.order_by('date').filter(date__lte=da)
+        total_.append(input_in_prog.__len__() - out_in_prog.__len__())
+        graph_date.append(da.strftime('%d/%m'))
+        l_diagnose = []
+        for d in data:
+            if d.patient.id in [(i.patient.id) for i in input_out_in_prog]:
+                l_diagnose.append(diagnose_patient(d.muac, d.oedema))
+        if l_diagnose:
+            diagnose_mam.append(l_diagnose.count('MAM'))
             diagnose_sam.append(l_diagnose.count('SAM'))
             diagnose_ni.append(l_diagnose.count('SAM+'))
-            total_.append(data.__len__())
-        else:
-            pass
 
     graph_data = [{'name': "Total", 'data': total_}, \
-                  {'name': "MAM", 'data': diagnose_man}, \
+                  {'name': "MAM", 'data': diagnose_mam}, \
                   {'name': "SAM", 'data': diagnose_sam}, \
                   {'name': "SAM+", 'data': diagnose_ni}]
     context.update({"graph_date": graph_date, "graph_data":graph_data})
+    # Diagnose
+    try:
+        MAM_count = diagnose_mam[-1]
+    except:
+        MAM_count = 0
+
+    try:
+        SAM_count = diagnose_sam[-1]
+    except:
+        SAM_count = 0
+
+    try:
+        NI_count = diagnose_ni[-1]
+    except:
+        NI_count = 0
+
+    # Nbre enfant dans le programme
+    children_in_program = total_[-1]
+    context.update({"MAM_count": MAM_count, "SAM_count": SAM_count, \
+                                                    "NI_count": NI_count})
+
     # message
     received = Inbox.objects.count()
     sent = SentItems.objects.count()

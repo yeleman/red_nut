@@ -60,6 +60,7 @@ def details_health_center(request, *args, **kwargs):
 
     for datanut in datanuts:
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
+    print list_mam_sam
     try:
         dict_["avg_days"] = "%.0f" % avg_(list_num_days)
     except:

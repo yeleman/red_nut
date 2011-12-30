@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding=utf-8
-# maintainer: rgaudin
+# maintainer: Fadiga
 
 from datetime import datetime, date, timedelta
 
