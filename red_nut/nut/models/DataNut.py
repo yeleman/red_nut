@@ -23,7 +23,7 @@ class DataNut(models.Model):
 
     patient = models.ForeignKey(Patient,
                                 related_name='patient',\
-                                verbose_name=("Patient"))
+                                verbose_name=("Patients"))
     date = models.DateField(verbose_name=("Date"))
     weight = models.FloatField(u"Poids (kg)", blank=True, null=True)
     height = models.FloatField(u"Taille (cm)", blank=True, null=True)

@@ -85,7 +85,7 @@ def dashboard(request):
             diagnose_ni.append(l_diagnose.count('SAM+'))
             total_.append(data.__len__())
         else:
-            print el
+            pass
 
     graph_data = [{'name': "Total", 'data': total_}, \
                   {'name': "MAM", 'data': diagnose_man}, \

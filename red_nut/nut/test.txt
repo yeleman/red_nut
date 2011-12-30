@@ -1,0 +1,31 @@
+test SMS:
+	-SMS pour ajouter un rapport de stock:
+		sms recu: nut stock URENI pmib 1 2011 #l75 121 12 12 0 #l100 180 12 130 0 #pln 200 30 209 11
+		sms reponse: [SUCCES] Le rapport de stock de Pmi Badala a ete bien enregistre. 
+		sms recu: nut stock URENI test 1 2011 #l75 121 12 12 0 #l100 180 12 130 0 #pln 200 30 209 11
+		reponse: [ERREUR] Ce centre de santé n'est pas dans le programme.
+		
+	-SMS pour enregistrer un enfant:
+		sms recu: nut register pmib ibrahim traore diarra 7ans
+		reponse: [SUCCES] Ibrahim Traore a été ajouté à la liste des enfants du programme. Son id est 12
+		sms recu: nut register ada alou dolo diarra 7ans
+		reponse: [ERREUR] ada n'est pas un code centre valide.
+	
+	-SMS pour rechercher id d'un enfant dans le programme
+		sms recu: nut research pmib alou n n
+		reponse: Il existe 2 patient(s) du prénom alou: dolo diarra de l'id 9, dolo diarra de l'id 14
+		sms recu: nut research pmib papa n n
+		reponse: [ERREUR] Il n'existe aucun patient du prénom papa
+		sms recu: nut research pmib n papa n
+		reponse: [ERREUR] Il n'existe aucun patient du nom papa
+		sms recu: nut research pmib n n mama
+		reponse: [ERREUR] Il n'existe aucun patient du nom de sa mère mama
+		
+	-SMS pour desactiver un enfant du programme
+		sms recu: nut off 11 h
+		reponse: [SUCCES] Ibrahim Traore ne fait plus. partie du programme.
+		sms recu: nut off 110 t
+		reponse: [ERREUR] Cet enfant n'existe pas dans le programme.
+	
+	-SMS pour ajouter des données nutritionnelles
+		sms recu: nut fol 1 45 165 n 130 rien 

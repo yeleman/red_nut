@@ -440,6 +440,7 @@ def followed_child(message):
         return True
     # create the datanut
     try:
+        print arguments.get('oedema').upper()
         datanut = DataNut()
         datanut.patient = Patient.objects.get(id=arguments.get('id'))
         datanut.date = date.today()
