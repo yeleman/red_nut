@@ -77,10 +77,9 @@ def dashboard(request):
         data = DataNut.objects.order_by('date').filter(date__lte=da)
         total_.append(input_in_prog.__len__() - out_in_prog.__len__())
         graph_date.append(da.strftime('%d/%m'))
-        l_diagnose = []
-        for d in data:
-            if d.patient.id in [(i.patient.id) for i in input_out_in_prog]:
-                l_diagnose.append(diagnose_patient(d.muac, d.oedema))
+        l_diagnose = [diagnose_patient(d.muac, d.oedema) for d in data \
+                                    if d.patient.id in [(i.patient.id) \
+                                            for i in input_out_in_prog]]
         if l_diagnose:
             diagnose_mam.append(l_diagnose.count('MAM'))
             diagnose_sam.append(l_diagnose.count('SAM'))
