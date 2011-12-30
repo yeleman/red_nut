@@ -42,6 +42,8 @@ def details_health_center(request, *args, **kwargs):
 
     output_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
                                                         event='s')
+    input_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
+                                                        event='e')
 
     for out in output_programs:
         begin = Patient.objects.get(id=out.patient_id).create_date

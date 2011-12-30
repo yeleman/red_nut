@@ -181,14 +181,10 @@ def nut_stock(message):
             stock.stock_received = di.get('stock_received')
             stock.stock_used = di.get('stock_used')
             stock.stock_lost = di.get('stock_lost')
-
             stock.save()
-    except Exception as e:
-        message.respond(error_start + u"Une erreur technique s'est " \
-                        u"produite. Reessayez plus tard et " \
-                        u"contactez Croix-Rouge si le probleme persiste.")
-        logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.content, e))
+    except Seat.DoesNotExist:
+        message.respond(u"[ERREUR] Ce centre de santé n'est" \
+                                      u" pas dans le programme.")
         return True
     except Exception as e:
         message.respond(error_start + u"Une erreur technique s'est " \
@@ -197,6 +193,7 @@ def nut_stock(message):
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
                      % (message.content, e))
         return True
+
     message.respond(u"[SUCCES] Le rapport de stock de %(seat)s "
                     u"a ete bien enregistre. " %
                     {'seat': stock.seat.name})
@@ -217,9 +214,10 @@ def nut_register(message):
         seat = Seat.objects.get(code=code_seat)
     except:
         # On envoi un sms pour signaler que le code n'est pas valid
-        message.respond(u"[ERROR] %(seat)s n'est pas un code centre valide" % \
-                                                        {'seat': code_seat})
+        message.respond(u"[ERREUR] %(seat)s n'est pas un code centre "
+                        u"valide." % {'seat': code_seat})
         seat = None
+        return True
     if seat != None:
         patient = Patient()
         patient.first_name = first_name
@@ -236,9 +234,9 @@ def nut_register(message):
         input_.date = datetime.today()
         input_.save()
 
-        message.respond(u"[SUCCES] Le rapport de %(seat)s a été "
-                        u"enregistre. Son id est %(id)s." \
-                        % {'seat': seat, 'id': patient.id})
+        message.respond(u"[SUCCES] %(full_name)s a été ajouté à la liste des" \
+                        u" enfants du programme. Son id est %(id)s." \
+                        % {'full_name': patient.full_name(), 'id': patient.id})
     return True
 
 
@@ -253,7 +251,7 @@ def id_information_research(message):
 
     nut, research, code_seat, first_name, last_name, \
                     surname_mother = message.content.strip().lower().split()
-    print surname_mother
+
     #Si SMS ne contient que le nom
     if first_name == "n" and surname_mother == "n":
         patient = [(u"%(first)s %(mother)s de l'id %(id)s" % \
@@ -262,14 +260,17 @@ def id_information_research(message):
                              Patient.objects.filter(seat__code=code_seat, \
                              last_name=last_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du nom "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du nom "
                             u"%(last_name)s: %(patient)s." \
                                 % {'nber': patient.__len__(), \
                                    'last_name': last_name, \
                                    'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du nom %(last_name)s" \
+            message.respond(u"[ERREUR] Il n'existe aucun patient du nom " \
+                            u"%(last_name)s" \
                                                 % {'last_name': last_name})
+            return True
     #Si SMS ne contient que le prénom et nom de sa mère
     if first_name != "n" and surname_mother != "n" and last_name == "n":
         patient = [(u"%(last)s de l'id %(id)s" % \
@@ -278,18 +279,21 @@ def id_information_research(message):
                                                surname_mother=surname_mother, \
                                                first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s et du nom de mère "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s et du nom de mère " \
                             u"%(surname_mother)s: %(patient)s." % \
                                             {'nber': patient.__len__(), \
                                             'first_name': first_name, \
                                             'surname_mother': surname_mother, \
                                             'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
                             u"%(first_name)s et du nom de mère "
                             u"%(surname_mother)s" % {'surname_mother': \
                                     surname_mother, 'first_name': first_name})
+            return True
+
     #Si SMS ne contient que le nom de sa mère
     if first_name == "n" and last_name == "n":
 
@@ -299,15 +303,18 @@ def id_information_research(message):
                     for op in Patient.objects.filter(seat__code=code_seat, \
                                             surname_mother=surname_mother)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du nom de"
-                            u" mère %(surname_mother)s: %(patient)s." \
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du nom " \
+                            u"de mère %(surname_mother)s: %(patient)s." \
                                 % {'nber': patient.__len__(), \
                                    'surname_mother': surname_mother, \
                                    'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du nom de sa mère "
-                            u"%(surname_mother)s" % {'surname_mother': \
+            message.respond(u"[ERREUR] Il n'existe aucun patient du nom de " \
+                            u"sa mère %(surname_mother)s" % {'surname_mother': \
                                                         surname_mother})
+            return True
+
     #Si SMS ne cotient que le prénom et nom
     if first_name != "n" and last_name != "n" and surname_mother == "n":
         patient = [(u"%(mother)s de l'id %(id)s" % \
@@ -317,17 +324,20 @@ def id_information_research(message):
                                                      last_name=last_name, \
                                                      first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s et nom %(last_name)s: "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s et nom %(last_name)s: "
                             u"%(patient)s." % {'nber': patient.__len__(), \
                                                'first_name': first_name, \
                                                'last_name': last_name, \
                                                'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
                             u"%(first_name)s et nom %(last_name)s"
                                             % {'last_name': last_name, \
                                                'first_name': first_name})
+            return True
+
     #Si SMS ne cotient que prénom
     if surname_mother == "n" and last_name == "n":
         patient = [(u"%(last)s %(mother)s de l'id %(id)s" % \
@@ -337,14 +347,17 @@ def id_information_research(message):
                                             .filter(seat__code=code_seat, \
                                                     first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s: %(patient)s." \
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s: %(patient)s." \
                                             % {'nber': patient.__len__(), \
                                                'first_name': first_name, \
                                                'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
                             u"%(first_name)s" % {'first_name': first_name})
+            return True
+
     #Si SMS ne cotient que nom et le nom de la mère
     if surname_mother != "n" and last_name != "n" and first_name == "n":
         patient = [(u"%(first_name)s de l'id %(id)s" % \
@@ -353,18 +366,22 @@ def id_information_research(message):
                         .filter(seat__code=code_seat, last_name=last_name, \
                                             surname_mother=surname_mother)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du nom "
-                            u"%(last_name)s et nom de sa mère "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du nom " \
+                            u"%(last_name)s et nom de sa mère " \
                             u"%(surname_mother)s: %(patient)s." \
                                 % {'nber': patient.__len__(), \
                                    'surname_mother': surname_mother, \
                                    'last_name': last_name, \
                                    'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du nom %(last_name)s"
-                            u" et nom de sa mère %(surname_mother)s"
+            message.respond(u"[ERREUR] Il n'existe aucun patient du nom" \
+                            u"%(last_name)s et nom de sa mère " \
+                            u"%(surname_mother)s"
                                         % {'last_name': last_name, \
                                            'surname_mother': surname_mother})
+            return True
+
     #Si tout est remplis
     if first_name != "n" and surname_mother != "n" and last_name != "n":
         patient = [(u"l'id %(id)s " % {"id":op.id}) for op in \
@@ -373,20 +390,22 @@ def id_information_research(message):
                                                surname_mother=surname_mother, \
                                                     first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s, nom %(last_name)s et nom "
-                            u"de sa mère %(last_name)s: %(patient)s." \
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s, nom %(last_name)s et " \
+                            u"nom de sa mère %(last_name)s: %(patient)s." \
                                             % {'nber': patient.__len__(), \
                                             'first_name': first_name, \
                                             'last_name': last_name, \
                                             'surname_mother': surname_mother, \
                                             'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
                             u"%(first_name)s nom %(last_name)s et nom de"
                             u" sa mère %(surname_mother)s" % {'last_name': \
                                         last_name, 'first_name': first_name, \
                                         'surname_mother': surname_mother})
+            return True
     return True
 
 
@@ -431,12 +450,9 @@ def followed_child(message):
         datanut.danger_sign = arguments.get('danger_sign')
 
         datanut.save()
-    except Exception as e:
-        message.respond(error_start + u"Une erreur technique s'est " \
-                        u"produite. Reessayez plus tard et " \
-                        u"contactez Croix-Rouge si le probleme persiste.")
-        logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.content, e))
+    except Patient.DoesNotExist:
+        message.respond(u"[ERREUR] Ce patient n'existe pas" \
+                                      u" dans le programme.")
         return True
     except Exception as e:
         message.respond(error_start + u"Une erreur technique s'est " \
@@ -459,8 +475,6 @@ def disable_child(message):
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
 
-    # common start of error message
-    error_start = u"Impossible de desactiver. "
     kw1, kw2, id_, reason = message.content.strip().lower().split()
     try:
         patient = Patient.objects.get(id=id_)
@@ -479,8 +493,8 @@ def disable_child(message):
         input_.patient_id = id_
         input_.save()
     except:
-        message.respond(error_start + u"Cet enfant n'existe" \
-                                      u" pas dans le programme")
+        message.respond(u"[ERREUR] Cet enfant n'existe" \
+                                      u" pas dans le programme.")
         return True
 
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "

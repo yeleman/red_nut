@@ -17,16 +17,19 @@ def details_child(request, *args, **kwargs):
         input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
                                    .latest('date')
         datanuts = DataNut.objects.filter(patient__id=num).order_by('-date')
+        datanuts_ = DataNut.objects.filter(patient__id=num).order_by('date')
         datanut = datanuts.latest('date')
         context.update({'category': category,
                     'patient': patient,
                     'input_': input_,
                     'datanut': datanut,
                     'datanuts': datanuts})
-        list_muac = [datanut.muac for datanut in datanuts]
-        list_weight = [datanut.weight for datanut in datanuts]
-        print 'Muac', list_muac
-        print 'Weight', list_weight
+        list_muac = [datanut.muac for datanut in datanuts_]
+        list_weight = [datanut.weight for datanut in datanuts_]
+        graph_date = [datanut.date.strftime('%d/%m') for datanut in datanuts_]
+        graph_data = [{'name': "Poids", 'data': list_weight}, \
+                  {'name': "MUAC", 'data': list_muac}]
+        context.update({"graph_date": graph_date, "graph_data":graph_data})
     except DataNut.DoesNotExist:
         input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
                                    .latest('date')

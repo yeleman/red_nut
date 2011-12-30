@@ -3,29 +3,29 @@
 
 {% block title %}Accueil{% endblock %}
 {% block pagetitle %}<h1 class="pagetitle">Croix-Rouge Malienne pour le suivi de la sécurité alimentaire et nutritionnelle de la population</h1>{% endblock %}
-{% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id %}{% endblock %}
+{% block jqueryonload %}{% include "indicator_graph.js" with graph_data=graph_data graph_date=graph_date %}{% endblock %}
 {% block content %}
 <div id="context">
 
     <h2>Tableau de bord</h2>
     <table class="center">
-        <tr><th></th><th> guerison</th><th>abandon</th><th>déces</th><th>non repondant</th>
-        </tr>
-        <tr><th>Taux</th><td>{{healing_rates}} %</td><td>{{abandonment_rates}} %</td><td>{{deaths_rates}} %</td><td>{{non_response_rates}} %</td></tr>
-
-        <tr><th> </th><th> MAM</th><th>SAM</th><th>SAM+</th>
-        </tr>
-        <tr><th>Nbre enfant</th><td>{{MAM_count}}</td><td>{{SAM_count}}</td><td>{{NI_count}}</td></tr>
-
-        <tr><th> </th><th>recu</th><th>envoyés</th>
-        </tr>
-        <tr><th>Nbre SMS</th><td>{{sent}}</td><td>{{received}}</td>
         <tr><th>Nbre enfant dans le programme</th><td>{{children_in_program}}</td></tr>
+        <tr><th>Nbre enfant MAM</th><td>{{MAM_count}}</td></tr>
+        <tr><th>Nbre enfant SAM</th><td>{{SAM_count}}</td></tr>
+        <tr><th>Nbre enfant SAM+</th><td>{{NI_count}}</td></tr>
+
+        <tr><th>Nbre SMS reçu</th><td>{{received}}</td><tr>
+        <tr><th>Nbre SMS envoyés</th><td>{{sent}}</td></tr>
+
+        <tr><th>Taux guerison</th><td>{{healing_rates}} %</td></tr>
+        <tr><th>Taux abandon</th><td>{{abandonment_rates}} %</td></tr>
+        <tr><th>Taux déces</th><td>{{deaths_rates}} %</td></tr>
+        <tr><th>Taux non repondant</th><td>{{non_response_rates}} %</td></tr>
+
         <tr><th>Durée moyenne dans le programme</th><td>{{avg_days}} jr</td>
         <tr><th>Gain de poids moyen</th><td>{{avg_weight}} kg</td>
     </table>
     <h3 class="caption"><strong>Figure 1.</strong> Courbe enfants dans le programme</h3>
     <div id="graph"></div>
-</div>
-
+</div>{{graph_data}}<br> {{graph_date}}
 {% endblock %}
