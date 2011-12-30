@@ -34,6 +34,7 @@ def details_health_center(request, *args, **kwargs):
     list_num_days = []
     list_weight = []
     num = kwargs["id"]
+    category = 'details_health_center'
     seat = Seat.objects.get(id=num)
     patients = Patient.objects.filter(seat=seat)
     datanuts = DataNut.objects.filter(patient__seat=seat)
@@ -41,6 +42,8 @@ def details_health_center(request, *args, **kwargs):
 
     output_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
                                                         event='s')
+    input_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
+                                                        event='e')
 
     for out in output_programs:
         begin = Patient.objects.get(id=out.patient_id).create_date
@@ -57,15 +60,14 @@ def details_health_center(request, *args, **kwargs):
 
     for datanut in datanuts:
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
+    print list_mam_sam
     try:
-        dict_["avg_days"] = "%.2f" % avg_(list_num_days)
+        dict_["avg_days"] = "%.0f" % avg_(list_num_days)
     except:
         dict_["avg_days"] = 0
     try:
         dict_["avg_diff_weight"] = "%.2f" % avg_(list_weight)
     except:
-        raise
-        dict_["avg_days"] = 0
         dict_["avg_diff_weight"] = 0
     dict_["MAM_count"] = list_mam_sam.count('MAM')
     dict_["SAM_count"] = list_mam_sam.count('SAM')
@@ -97,8 +99,6 @@ def details_health_center(request, *args, **kwargs):
                                            dict_["actif"])
     except ZeroDivisionError:
         dict_["taux_non_repondant"] = 0
-
-    category = 'details_health_center'
 
     context.update({"category": category, 'dict_': dict_, 'stocks': stocks})
 

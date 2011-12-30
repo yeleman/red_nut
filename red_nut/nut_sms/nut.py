@@ -8,8 +8,8 @@ from datetime import date, datetime
 import reversion
 from django.conf import settings
 
-from nosms.models import Message
-from nosms.utils import send_sms
+from nosmsd.utils import send_sms
+
 from red_nut.nut.models import *
 from red_nut.nut.models.Period import MonthPeriod
 
@@ -17,24 +17,24 @@ logger = logging.getLogger(__name__)
 locale.setlocale(locale.LC_ALL, settings.DEFAULT_LOCALE)
 
 
-def nosms_handler(message):
+def handler(message):
     def main_nut_handler(message):
-        if message.text.lower().startswith('nut '):
-            if message.text.lower().startswith('nut stock'):
+        if message.content.lower().startswith('nut '):
+            if message.content.lower().startswith('nut stock'):
                 return nut_stock(message)
-            elif message.text.lower().startswith('nut fol'):
+            elif message.content.lower().startswith('nut fol'):
                 return followed_child(message)
-            elif message.text.lower().startswith('nut register'):
+            elif message.content.lower().startswith('nut register'):
                 return nut_register(message)
-            elif message.text.lower().startswith('nut research'):
+            elif message.content.lower().startswith('nut research'):
                 return id_information_research(message)
-            elif message.text.lower().startswith('nut off'):
+            elif message.content.lower().startswith('nut off'):
                 return disable_child(message)
         else:
             return False
 
     if main_nut_handler(message):
-        message.status = Message.STATUS_PROCESSED
+        message.status = message.STATUS_PROCESSED
         message.save()
         logger.info(u"[HANDLED] msg: %s" % message)
         return True
@@ -45,7 +45,7 @@ def nosms_handler(message):
 def nut_stock(message):
     """ Incomming:
             nut stock type_seat code_seat month year #intrant stock_initial
-            stock_received stock_used stock_lost#intrant stock_initial
+            stock_received stock_used stock_lost #intrant stock_initial
             stock_received stock_used stock_lost
         Outgoing:
             [SUCCES] Le rapport de stock de seat a ete bien enregistre.
@@ -63,13 +63,14 @@ def nut_stock(message):
         dict_ = dict(zip(args_names, args_values))
         return dict_
 
-    part = message.text.strip().lower().split("#")
+    part = message.content.strip().lower().split("#")
     list_dict = []
 
     # common start of error message
     error_start = u"Impossible d'enregistrer le rapport. "
     if len(part) == 7:
-        debut, p1, p2, p3, p4, p5, p6 = message.text.strip().lower().split("#")
+        debut, p1, p2, p3, p4, p5, p6 = message.content.strip() \
+                                               .lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -93,7 +94,7 @@ def nut_stock(message):
             return True
 
     if len(part) == 8:
-        debut, p1, p2, p3, p4, p5, p6, p7 = message.text.strip()\
+        debut, p1, p2, p3, p4, p5, p6, p7 = message.content.strip()\
                                             .lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
@@ -120,7 +121,7 @@ def nut_stock(message):
             return True
 
     if len(part) == 2:
-        debut, p1 = message.text.strip().lower().split("#")
+        debut, p1 = message.content.strip().lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -134,7 +135,7 @@ def nut_stock(message):
             return True
 
     if len(part) == 4:
-        debut, p1, p2, p3 = message.text.strip().lower().split("#")
+        debut, p1, p2, p3 = message.content.strip().lower().split("#")
         try:
             args_debut = ['kw1', 'kw2', "type", "code", 'month', 'year']
             args_values = debut.split()
@@ -180,24 +181,19 @@ def nut_stock(message):
             stock.stock_received = di.get('stock_received')
             stock.stock_used = di.get('stock_used')
             stock.stock_lost = di.get('stock_lost')
-
             stock.save()
+    except Seat.DoesNotExist:
+        message.respond(u"[ERREUR] Ce centre de santé n'est" \
+                                      u" pas dans le programme.")
+        return True
     except Exception as e:
-        raise
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
+                     % (message.content, e))
         return True
-    except Exception as e:
-        raise
-        message.respond(error_start + u"Une erreur technique s'est " \
-                        u"produite. Reessayez plus tard et " \
-                        u"contactez Croix-Rouge si le probleme persiste.")
-        logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
-        return True
+
     message.respond(u"[SUCCES] Le rapport de stock de %(seat)s "
                     u"a ete bien enregistre. " %
                     {'seat': stock.seat.name})
@@ -212,15 +208,16 @@ def nut_register(message):
             or  xxx n'est pas enregistrer"""
 
     nut, register, code_seat, first_name, last_name, surname_mother, \
-                        DDN_Age = message.text.strip().lower().split()
+                        DDN_Age = message.content.strip().lower().split()
     try:
         # On essai prendre le seat
         seat = Seat.objects.get(code=code_seat)
     except:
         # On envoi un sms pour signaler que le code n'est pas valid
-        message.respond(u"[ERROR] %(seat)s n'est un code siège valid" % \
-                                                        {'seat': code_seat})
+        message.respond(u"[ERREUR] %(seat)s n'est pas un code centre "
+                        u"valide." % {'seat': code_seat})
         seat = None
+        return True
     if seat != None:
         patient = Patient()
         patient.first_name = first_name
@@ -237,9 +234,9 @@ def nut_register(message):
         input_.date = datetime.today()
         input_.save()
 
-        message.respond(u"[SUCCES] Le rapport de %(seat)s a été "
-                        u"enregistre. Son id est %(id)s." \
-                        % {'seat': seat, 'id': patient.id})
+        message.respond(u"[SUCCES] %(full_name)s a été ajouté à la liste des" \
+                        u" enfants du programme. Son id est %(id)s." \
+                        % {'full_name': patient.full_name(), 'id': patient.id})
     return True
 
 
@@ -253,7 +250,8 @@ def id_information_research(message):
             or  Il n'existe aucun patient du prénom first_name """
 
     nut, research, code_seat, first_name, last_name, \
-                    surname_mother = message.text.strip().lower().split()
+                    surname_mother = message.content.strip().lower().split()
+
     #Si SMS ne contient que le nom
     if first_name == "n" and surname_mother == "n":
         patient = [(u"%(first)s %(mother)s de l'id %(id)s" % \
@@ -262,14 +260,17 @@ def id_information_research(message):
                              Patient.objects.filter(seat__code=code_seat, \
                              last_name=last_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du nom "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du nom "
                             u"%(last_name)s: %(patient)s." \
                                 % {'nber': patient.__len__(), \
                                    'last_name': last_name, \
                                    'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du nom %(last_name)s" \
+            message.respond(u"[ERREUR] Il n'existe aucun patient du nom " \
+                            u"%(last_name)s" \
                                                 % {'last_name': last_name})
+            return True
     #Si SMS ne contient que le prénom et nom de sa mère
     if first_name != "n" and surname_mother != "n" and last_name == "n":
         patient = [(u"%(last)s de l'id %(id)s" % \
@@ -278,18 +279,21 @@ def id_information_research(message):
                                                surname_mother=surname_mother, \
                                                first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s et nom de sa mère "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s et du nom de mère " \
                             u"%(surname_mother)s: %(patient)s." % \
                                             {'nber': patient.__len__(), \
                                             'first_name': first_name, \
                                             'surname_mother': surname_mother, \
                                             'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
-                            u"%(first_name)s et nom de sa mère "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
+                            u"%(first_name)s et du nom de mère "
                             u"%(surname_mother)s" % {'surname_mother': \
                                     surname_mother, 'first_name': first_name})
+            return True
+
     #Si SMS ne contient que le nom de sa mère
     if first_name == "n" and last_name == "n":
 
@@ -299,15 +303,18 @@ def id_information_research(message):
                     for op in Patient.objects.filter(seat__code=code_seat, \
                                             surname_mother=surname_mother)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du nom de"
-                            u" mère %(surname_mother)s: %(patient)s." \
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du nom " \
+                            u"de mère %(surname_mother)s: %(patient)s." \
                                 % {'nber': patient.__len__(), \
                                    'surname_mother': surname_mother, \
                                    'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du nom de sa mère "
-                            u"%(surname_mother)s" % {'surname_mother': \
+            message.respond(u"[ERREUR] Il n'existe aucun patient du nom de " \
+                            u"sa mère %(surname_mother)s" % {'surname_mother': \
                                                         surname_mother})
+            return True
+
     #Si SMS ne cotient que le prénom et nom
     if first_name != "n" and last_name != "n" and surname_mother == "n":
         patient = [(u"%(mother)s de l'id %(id)s" % \
@@ -317,17 +324,20 @@ def id_information_research(message):
                                                      last_name=last_name, \
                                                      first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s et nom %(last_name)s: "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s et nom %(last_name)s: "
                             u"%(patient)s." % {'nber': patient.__len__(), \
                                                'first_name': first_name, \
                                                'last_name': last_name, \
                                                'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
                             u"%(first_name)s et nom %(last_name)s"
                                             % {'last_name': last_name, \
                                                'first_name': first_name})
+            return True
+
     #Si SMS ne cotient que prénom
     if surname_mother == "n" and last_name == "n":
         patient = [(u"%(last)s %(mother)s de l'id %(id)s" % \
@@ -337,14 +347,17 @@ def id_information_research(message):
                                             .filter(seat__code=code_seat, \
                                                     first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s: %(patient)s." \
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s: %(patient)s." \
                                             % {'nber': patient.__len__(), \
                                                'first_name': first_name, \
                                                'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
                             u"%(first_name)s" % {'first_name': first_name})
+            return True
+
     #Si SMS ne cotient que nom et le nom de la mère
     if surname_mother != "n" and last_name != "n" and first_name == "n":
         patient = [(u"%(first_name)s de l'id %(id)s" % \
@@ -353,18 +366,22 @@ def id_information_research(message):
                         .filter(seat__code=code_seat, last_name=last_name, \
                                             surname_mother=surname_mother)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du nom "
-                            u"%(last_name)s et nom de sa mère "
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du nom " \
+                            u"%(last_name)s et nom de sa mère " \
                             u"%(surname_mother)s: %(patient)s." \
                                 % {'nber': patient.__len__(), \
                                    'surname_mother': surname_mother, \
                                    'last_name': last_name, \
                                    'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du nom %(last_name)s"
-                            u" et nom de sa mère %(surname_mother)s"
+            message.respond(u"[ERREUR] Il n'existe aucun patient du nom" \
+                            u"%(last_name)s et nom de sa mère " \
+                            u"%(surname_mother)s"
                                         % {'last_name': last_name, \
                                            'surname_mother': surname_mother})
+            return True
+
     #Si tout est remplis
     if first_name != "n" and surname_mother != "n" and last_name != "n":
         patient = [(u"l'id %(id)s " % {"id":op.id}) for op in \
@@ -373,26 +390,28 @@ def id_information_research(message):
                                                surname_mother=surname_mother, \
                                                     first_name=first_name)]
         if patient:
-            message.respond(u" Il existe %(nber)s patient(s) du prénom "
-                            u"%(first_name)s, nom %(last_name)s et nom "
-                            u"de sa mère %(last_name)s: %(patient)s." \
+            message.respond(u"[SUCCES] Il existe %(nber)s patient(s) du " \
+                            u"prénom %(first_name)s, nom %(last_name)s et " \
+                            u"nom de sa mère %(last_name)s: %(patient)s." \
                                             % {'nber': patient.__len__(), \
                                             'first_name': first_name, \
                                             'last_name': last_name, \
                                             'surname_mother': surname_mother, \
                                             'patient': ', '.join(patient)})
+            return True
         else:
-            message.respond(u"Il n'existe aucun patient du prénom "
+            message.respond(u"[ERREUR] Il n'existe aucun patient du prénom "
                             u"%(first_name)s nom %(last_name)s et nom de"
                             u" sa mère %(surname_mother)s" % {'last_name': \
                                         last_name, 'first_name': first_name, \
                                         'surname_mother': surname_mother})
+            return True
     return True
 
 
 def followed_child(message):
     """ Incomming:
-            nut fol id weight heught oedema muac danger_sign
+            nut fol id weight height oedema muac danger_sign
         Outgoing:
             [SUCCES] Les données nutritionnelles de full_name ont
             ete bien enregistre.
@@ -402,8 +421,8 @@ def followed_child(message):
     error_start = u"Impossible d'enregistrer les donnees. "
     try:
         args_names = ['kw1', 'kw2', 'id', 'weight', \
-        'heught', 'oedema', 'muac', 'danger_sign']
-        args_values = message.text.strip().lower().split()
+        'height', 'oedema', 'muac', 'danger_sign']
+        args_values = message.content.strip().lower().split()
         arguments = dict(zip(args_names, args_values))
     except ValueError:
         # failure to split means we proabably lack a data or more
@@ -413,7 +432,7 @@ def followed_child(message):
 
     try:
         for key, value in arguments.items():
-            if key.split('_')[0] in ('id', 'weight', 'heught', 'muac'):
+            if key.split('_')[0] in ('id', 'weight', 'height', 'muac'):
                 arguments[key] = int(value)
     except:
         # failure to convert means non-numeric value which we can't process.
@@ -421,29 +440,27 @@ def followed_child(message):
         return True
     # create the datanut
     try:
+        print arguments.get('oedema').upper()
         datanut = DataNut()
         datanut.patient = Patient.objects.get(id=arguments.get('id'))
         datanut.date = date.today()
         datanut.weight = arguments.get('weight')
-        datanut.heught = arguments.get('heught')
+        datanut.height = arguments.get('height')
         datanut.oedema = arguments.get('oedema').upper()
         datanut.muac = arguments.get('muac')
         datanut.danger_sign = arguments.get('danger_sign')
 
         datanut.save()
-    except Exception as e:
-        message.respond(error_start + u"Une erreur technique s'est " \
-                        u"produite. Reessayez plus tard et " \
-                        u"contactez Croix-Rouge si le probleme persiste.")
-        logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
+    except Patient.DoesNotExist:
+        message.respond(u"[ERREUR] Ce patient n'existe pas" \
+                                      u" dans le programme.")
         return True
     except Exception as e:
         message.respond(error_start + u"Une erreur technique s'est " \
                         u"produite. Reessayez plus tard et " \
                         u"contactez Croix-Rouge si le probleme persiste.")
         logger.error(u"Unable to save report to DB. Message: %s | Exp: %r" \
-                     % (message.text, e))
+                     % (message.content, e))
         return True
 
     message.respond(u"[SUCCES] Les données nutritionnelles de %(full_name)s "
@@ -459,9 +476,7 @@ def disable_child(message):
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
 
-    # common start of error message
-    error_start = u"Impossible de desactiver."
-    kw1, kw2, id_, reason = message.text.strip().lower().split()
+    kw1, kw2, id_, reason = message.content.strip().lower().split()
     try:
         patient = Patient.objects.get(id=id_)
         input_ = InputOutputProgram()
@@ -479,7 +494,8 @@ def disable_child(message):
         input_.patient_id = id_
         input_.save()
     except:
-        message.respond(u"Cet enfant n'existe pas dans le programme")
+        message.respond(u"[ERREUR] Cet enfant n'existe" \
+                                      u" pas dans le programme.")
         return True
 
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "

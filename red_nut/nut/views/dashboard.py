@@ -3,15 +3,14 @@
 # maintainer: Fadiga
 
 from django import forms
-from django.contrib import messages
+#~ from django.contrib import messages
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 
-from nut.models import Seat, InputOutputProgram, Patient, DataNut, Period
-from nosms.models import Message
-from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
-                                                            date_graphic
+from nut.models import Seat, InputOutputProgram, Patient, DataNut
+from nosmsd.models import Inbox, SentItems
+from nut.tools.utils import diagnose_patient, number_days, diff_weight, date_graphic
 
 
 def dashboard(request):
@@ -91,18 +90,29 @@ def dashboard(request):
                   {'name': "SAM+", 'data': diagnose_ni}]
     context.update({"graph_date": graph_date, "graph_data":graph_data})
     # Diagnose
-    MAM_count = diagnose_mam[-1]
-    SAM_count = diagnose_sam[-1]
-    NI_count = diagnose_ni[-1]
+    try:
+        MAM_count = diagnose_mam[-1]
+    except:
+        MAM_count = 0
+
+    try:
+        SAM_count = diagnose_sam[-1]
+    except:
+        SAM_count = 0
+
+    try:
+        NI_count = diagnose_ni[-1]
+    except:
+        NI_count = 0
+
     # Nbre enfant dans le programme
     children_in_program = total_[-1]
     context.update({"MAM_count": MAM_count, "SAM_count": SAM_count, \
                                                     "NI_count": NI_count})
 
     # message
-    messages = Message.objects.all()
-    received = messages.filter(direction=Message.DIRECTION_INCOMING).count()
-    sent = messages.filter(direction=Message.DIRECTION_OUTGOING).count()
+    received = Inbox.objects.count()
+    sent = SentItems.objects.count()
 
     context.update({"children_in_program": children_in_program, \
                     "healing_rates": healing_rates, \

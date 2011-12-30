@@ -3,150 +3,154 @@
 
 {% block title %}Détail de centre de santé{% endblock %}
 {% block pagetitle %}<h1 class="pagetitle">Croix-Rouge Malienne pour le suivi de la sécurité alimentaire et nutritionnelle de la population</h1>{% endblock %}
-
+{% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id %}{% endblock %}
 {% block content %}
 
 <div id="context">
-{% if dict_ %}
-<h2>Détails du centre de santé {{dict_.seat}}</h2>
-    <table>
-        <tr>
-            <th>
-                Nombre enfants enregistres
-            </th>
-            <td>
-                {{dict_.actif}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Nombre enfants dans le programme: MAM, SAM, SAM+
-            </th>
-            <td>
-                {{dict_.MAM_count}}, {{dict_.SAM_count}}, {{dict_.SAM_}}
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Nombre abandon / taux abandon
-            </th>
-            <td>
-                {{dict_.abandon}} / {{dict_.taux_abandon}} %
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Taux guerison
-            </th>
-            <td>
-                {{dict_.taux_guerison}} %
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Taux déces
-            </th>
-            <td>
-                {{dict_.taux_deces}} %
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Taux non repondant
-            </th>
-            <td>
-                {{dict_.taux_non_repondant}} %
-            </td>
-        </tr>
-         {% if dict_.avg_days != None %}
+    {% if dict_ %}
+    <h2>Détails du centre de santé {{dict_.seat}}</h2>
+        <table>
             <tr>
                 <th>
-                    Durée moyenne dans le programme
+                    Nombre enfants enregistres
                 </th>
                 <td>
-                    {{dict_.avg_days}} jours
+                    {{dict_.actif}}
                 </td>
             </tr>
-        {% endif %}
-        {% if dict_.avg_diff_weight != None %}
             <tr>
                 <th>
-                    Gain de poids moyen
+                    Nombre enfants dans le programme: MAM, SAM, SAM+
                 </th>
                 <td>
-                    {{dict_.avg_diff_weight}} kg
+                    {{dict_.MAM_count}}, {{dict_.SAM_count}}, {{dict_.SAM_}}
                 </td>
             </tr>
-        {% endif %}
-    </table>
+            <tr>
+                <th>
+                    Nombre abandon / taux abandon
+                </th>
+                <td>
+                    {{dict_.abandon}} / {{dict_.taux_abandon}} %
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Taux guerison
+                </th>
+                <td>
+                    {{dict_.taux_guerison}} %
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Taux déces
+                </th>
+                <td>
+                    {{dict_.taux_deces}} %
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Taux non repondant
+                </th>
+                <td>
+                    {{dict_.taux_non_repondant}} %
+                </td>
+            </tr>
+             {% if dict_.avg_days != None %}
+                <tr>
+                    <th>
+                        Durée moyenne dans le programme
+                    </th>
+                    <td>
+                        {{dict_.avg_days}} jours
+                    </td>
+                </tr>
+            {% endif %}
+            {% if dict_.avg_diff_weight != None %}
+                <tr>
+                    <th>
+                        Gain de poids moyen
+                    </th>
+                    <td>
+                        {{dict_.avg_diff_weight}} kg
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
 
-{% endif %}
-{% if stocks %}
-    <h2>tableau des consomations d'intrants.</h2>
-    <table>
-        <tr>
-            <th>
-                Intrant
-            </th>
-            <th>
-                Stock initial
-            </th>
-            <th>
-                Stock reçu
-            </th>
-            <th>
-                Stock utilisé
-            </th>
-            <th>
-                Stock perdu
-            </th>
-            <th>
-                Stock restant
-            </th>
-            <th>
-                Periode
-            </th>
-        </tr>
-        {% for stock in stocks %}
+    {% endif %}
+    {% if stocks %}
+        <h2>tableau des consomations d'intrants.</h2>
+        <table>
             <tr>
-                <td>
-                    {{stock.intrant.name}} (
-                    {% if stock.intrant.unit == 'ba' %}
-                        sachet
-                    {% endif %}
-                    {% if stock.intrant.unit == 'g' %}
-                        kg
-                    {% endif %}
-                    {% if stock.intrant.unit == 'bo' %}
-                        boite
-                    {% endif %}
-                    {% if stock.intrant.unit == 'l' %}
-                        litre
-                    {% endif %}
-                    )
-                </td>
-                <td>
-                    {{stock.stock_initial}}
-                </td>
-                <td>
-                    {{stock.stock_received}}
-                </td>
-                <td>
-                    {{stock.stock_used}}
-                </td>
-                <td>
-                    {{stock.stock_lost}}
-                </td>
-                <td>
-                    {{stock.remaining}}
-                </td>
-                <td>
-                    {{stock.period}}
-                </td>
+                <th>
+                    Intrant
+                </th>
+                <th>
+                    Stock initial
+                </th>
+                <th>
+                    Stock reçu
+                </th>
+                <th>
+                    Stock utilisé
+                </th>
+                <th>
+                    Stock perdu
+                </th>
+                <th>
+                    Stock restant
+                </th>
+                <th>
+                    Periode
+                </th>
             </tr>
-        {% endfor %}
-    </table>
-{% endif %}
+            {% for stock in stocks %}
+                <tr>
+                    <td>
+                        {{stock.intrant.name}} (
+                        {% if stock.intrant.unit == 'ba' %}
+                            sachet
+                        {% endif %}
+                        {% if stock.intrant.unit == 'g' %}
+                            kg
+                        {% endif %}
+                        {% if stock.intrant.unit == 'bo' %}
+                            boite
+                        {% endif %}
+                        {% if stock.intrant.unit == 'l' %}
+                            litre
+                        {% endif %}
+                        )
+                    </td>
+                    <td>
+                        {{stock.stock_initial}}
+                    </td>
+                    <td>
+                        {{stock.stock_received}}
+                    </td>
+                    <td>
+                        {{stock.stock_used}}
+                    </td>
+                    <td>
+                        {{stock.stock_lost}}
+                    </td>
+                    <td>
+                        {{stock.remaining}}
+                    </td>
+                    <td>
+                        {{stock.period}}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if graph_data %}
+        <h3 class="caption"><strong>Figure</strong> Courbes évolution de l'enfant dans le programme</h3>
+        <div id="graph"></div>
+    {% endif %}
 </div>
 
 {% endblock %}
