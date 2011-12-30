@@ -22,15 +22,7 @@ def dashboard(request):
 
     inp_out = InputOutputProgram.objects.all()
     datanuts = DataNut.objects.all()
-    # Diagnose
-    li_diagnose = [(diagnose_patient(d.muac, d.oedema)) for d in datanuts]
-    MAM_count = li_diagnose.count('MAM')
-    SAM_count = li_diagnose.count('SAM')
-    NI_count = li_diagnose.count('SAM+')
-    context.update({"MAM_count": MAM_count, "SAM_count": SAM_count, \
-                                                    "NI_count": NI_count})
-    # Nbre enfant dans le programme
-    children_in_program = inp_out.filter(event="e").count()
+
     # Taux guerison
     nbr_healing = inp_out.filter(event="s", reason="h").count()
     healing_rates = calculation_of_rates(nbr_healing)
@@ -76,24 +68,38 @@ def dashboard(request):
     diagnose_sam = []
     diagnose_ni = []
     for da in l_date:
-        input_in_prog = InputOutputProgram.objects.filter(event="e").filter(date__lte=da)
-        out_in_prog = InputOutputProgram.objects.filter(event="s").filter(date__lte=da)
+        input_in_prog = InputOutputProgram.objects.filter(event="e", \
+                                                            date__lte=da)
+        out_in_prog = InputOutputProgram.objects.filter(event="s", \
+                                                            date__lte=da)
+        input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
+                             not in [i.patient.id for i in out_in_prog]]
         data = DataNut.objects.order_by('date').filter(date__lte=da)
         total_.append(input_in_prog.__len__() - out_in_prog.__len__())
         graph_date.append(da.strftime('%d/%m'))
         l_diagnose = []
         for d in data:
-            if d.patient.id in [(i.patient.id) for i in input_in_prog]:
+            if d.patient.id in [(i.patient.id) for i in input_out_in_prog]:
                 l_diagnose.append(diagnose_patient(d.muac, d.oedema))
         if l_diagnose:
             diagnose_mam.append(l_diagnose.count('MAM'))
             diagnose_sam.append(l_diagnose.count('SAM'))
             diagnose_ni.append(l_diagnose.count('SAM+'))
+
     graph_data = [{'name': "Total", 'data': total_}, \
                   {'name': "MAM", 'data': diagnose_mam}, \
                   {'name': "SAM", 'data': diagnose_sam}, \
                   {'name': "SAM+", 'data': diagnose_ni}]
     context.update({"graph_date": graph_date, "graph_data":graph_data})
+    # Diagnose
+    MAM_count = diagnose_mam[-1]
+    SAM_count = diagnose_sam[-1]
+    NI_count = diagnose_ni[-1]
+    # Nbre enfant dans le programme
+    children_in_program = total_[-1]
+    context.update({"MAM_count": MAM_count, "SAM_count": SAM_count, \
+                                                    "NI_count": NI_count})
+
     # message
     messages = Message.objects.all()
     received = messages.filter(direction=Message.DIRECTION_INCOMING).count()
