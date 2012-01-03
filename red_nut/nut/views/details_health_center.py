@@ -5,7 +5,7 @@
 from django import forms
 from django.shortcuts import render
 
-from nut.tools.utils import diagnose_patient, number_days, diff_weight
+from nut.tools.utils import diagnose_patient, number_days, diff_weight, date_graphic
 
 from nut.models import Seat, InputOutputProgram, DataNut, Patient, Stock
 
@@ -45,6 +45,28 @@ def details_health_center(request, *args, **kwargs):
     input_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
                                                         event='e')
 
+    # graph
+    try:
+        l_date = date_graphic(InputOutputProgram.objects \
+                                            .filter(patient__seat=seat) \
+                                            .order_by("date")[0].date)
+    except:
+        l_date = []
+    total_ = []
+    graph_date = []
+    if l_date:
+        for da in l_date:
+            input_in_prog = InputOutputProgram.objects.filter(event="e", \
+                                                                date__lte=da)
+            out_in_prog = InputOutputProgram.objects.filter(event="s", \
+                                                                date__lte=da)
+
+            total_.append(input_in_prog.__len__() - out_in_prog.__len__())
+            graph_date.append(da.strftime('%d/%m'))
+
+        graph_data = [{'name': "Total", 'data': total_}]
+        context.update({"graph_date": graph_date, "graph_data":graph_data})
+
     for out in output_programs:
         begin = Patient.objects.get(id=out.patient_id).create_date
         list_num_days.append(number_days(begin, out.date))
@@ -60,7 +82,6 @@ def details_health_center(request, *args, **kwargs):
 
     for datanut in datanuts:
         list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
-    print list_mam_sam
     try:
         dict_["avg_days"] = "%.0f" % avg_(list_num_days)
     except:
