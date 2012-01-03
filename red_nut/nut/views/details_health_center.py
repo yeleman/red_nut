@@ -56,10 +56,12 @@ def details_health_center(request, *args, **kwargs):
     graph_date = []
     if l_date:
         for da in l_date:
-            input_in_prog = InputOutputProgram.objects.filter(event="e", \
-                                                                date__lte=da)
-            out_in_prog = InputOutputProgram.objects.filter(event="s", \
-                                                                date__lte=da)
+            input_in_prog = InputOutputProgram.objects \
+                                    .filter(patient__seat=seat, event="e", \
+                                     date__lte=da)
+            out_in_prog = InputOutputProgram.objects \
+                                    .filter(patient__seat=seat, event="s", \
+                                     date__lte=da)
 
             total_.append(input_in_prog.__len__() - out_in_prog.__len__())
             graph_date.append(da.strftime('%d/%m'))
