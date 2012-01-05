@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from datetime import date,timedelta
+from datetime import date, timedelta
 
 
 def week_from_weeknum(year, weeknum, is_iso=False):

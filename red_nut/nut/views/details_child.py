@@ -29,7 +29,7 @@ def details_child(request, *args, **kwargs):
         graph_date = [datanut.date.strftime('%d/%m') for datanut in datanuts_]
         graph_data = [{'name': "Poids", 'data': list_weight}, \
                   {'name': "MUAC", 'data': list_muac}]
-        context.update({"graph_date": graph_date, "graph_data":graph_data})
+        context.update({"graph_date": graph_date, "graph_data": graph_data})
     except DataNut.DoesNotExist:
         input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
                                    .latest('date')

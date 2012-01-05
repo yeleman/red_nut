@@ -353,6 +353,9 @@ ul#messages {
 ul#messages li {
   list-style: square inside;
 }
+ul#pagination li {
+  list-style: none; display:inline;
+}
 ul#messages.hidden {
   display: none;
 }

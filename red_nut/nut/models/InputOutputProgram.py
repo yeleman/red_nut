@@ -17,7 +17,7 @@ class InputOutputProgram(models.Model):
     N = ""
     E = "e"
     S = "s"
-    Event_type = ((N, "----"), (E, u"Entrer"), (S, u"Sortie"))
+    Event_type = ((N, "----"), (E, u"Entrée"), (S, u"Sortie"))
 
     ADBANDONMENT = "a"
     HEALING = "h"

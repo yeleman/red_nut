@@ -1,0 +1,23 @@
+
+{% if not in_empty_case %}
+
+    <ul id="pagination">
+        {% if page.has_previous %}
+               <li><a href="{{page.url_first}}">« 1...</a></li>
+        {% endif %}
+
+        {% if page.has_previous and not page.is_before_first %}
+               <li><a href="{{page.url_previous}}">&#8249; précédente </a></li>
+        {% endif %}
+
+        <li class="selected"><strong>Page {{ page.number }}</strong></li>
+        {% if page.has_next and not page.is_before_last %}
+            <li><a href="{{page.url_next}}"> suivante &#8250;</a></li>
+        {% endif %}
+
+        {% if page.has_next %}
+            <li><a href="{{page.url_last}}"> ...{{ paginator.num_pages }} »</a></li>
+        {% endif %}
+    </ul>
+
+{% endif %}

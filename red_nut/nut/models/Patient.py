@@ -22,6 +22,7 @@ class Patient(models.Model):
                             related_name='patient',\
                             verbose_name=("Seat"))
     create_date = models.DateField(verbose_name=("Date d'enregistrement"))
+
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(age)s \
                                                         %(seat)s') % \
@@ -31,5 +32,5 @@ class Patient(models.Model):
 
     def full_name(self):
         return (u'%(first_name)s %(last_name)s' % \
-                                        {"first_name": self.first_name.capitalize(),
-                                        "last_name": self.last_name.capitalize()})
+                                {"first_name": self.first_name.capitalize(),
+                                "last_name": self.last_name.capitalize()})

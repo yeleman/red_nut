@@ -5,16 +5,17 @@
 from django import forms
 from django.shortcuts import render
 
-from nut.tools.utils import diagnose_patient, number_days, diff_weight, date_graphic
-
 from nut.models import Seat, InputOutputProgram, DataNut, Patient, Stock
+from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
+                                                            date_graphic
+
 
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
 
     def taux(v1, v2):
         ''' calcule le taux '''
-        return (v1  * 100) / v2
+        return (v1 * 100) / v2
 
     def count_reason(reason):
         ''' compte le nobre de fois d'une raison '''
@@ -67,7 +68,7 @@ def details_health_center(request, *args, **kwargs):
             graph_date.append(da.strftime('%d/%m'))
 
         graph_data = [{'name': "Total", 'data': total_}]
-        context.update({"graph_date": graph_date, "graph_data":graph_data})
+        context.update({"graph_date": graph_date, "graph_data": graph_data})
 
     for out in output_programs:
         begin = Patient.objects.get(id=out.patient_id).create_date
@@ -103,7 +104,7 @@ def details_health_center(request, *args, **kwargs):
     dict_["non_repondant"] = count_reason('n')
 
     try:
-        dict_["taux_abandon"] = taux(dict_["abandon"] , dict_["actif"])
+        dict_["taux_abandon"] = taux(dict_["abandon"], dict_["actif"])
     except ZeroDivisionError:
         dict_["taux_abandon"] = 0
 
@@ -126,5 +127,3 @@ def details_health_center(request, *args, **kwargs):
     context.update({"category": category, 'dict_': dict_, 'stocks': stocks})
 
     return render(request, 'details_health_center.html', context)
-
-

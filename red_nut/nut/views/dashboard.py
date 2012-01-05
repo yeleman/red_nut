@@ -89,7 +89,7 @@ def dashboard(request):
                   {'name': "MAM", 'data': diagnose_mam}, \
                   {'name': "SAM", 'data': diagnose_sam}, \
                   {'name': "SAM+", 'data': diagnose_ni}]
-    context.update({"graph_date": graph_date, "graph_data":graph_data})
+    context.update({"graph_date": graph_date, "graph_data": graph_data})
     # Diagnose
     try:
         MAM_count = diagnose_mam[-1]
