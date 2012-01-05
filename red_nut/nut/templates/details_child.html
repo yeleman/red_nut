@@ -16,8 +16,8 @@
             <tr><th>Nom de la mère</th><td>{{patient.surname_mother.capitalize}}</td></tr>
             <tr><th>Age</th><td>{{patient.DDN_Age}}</td></tr>
             <tr><th>Date d'enregistrement</th><td>{{patient.create_date}}</td></tr>
-            {% if input_ %}
-                <tr><th>Date de sortie</th><td>{{input_.date}}</td></tr>
+            {% if output %}
+                <tr><th>Date de sortie</th><td>{{output.date}}</td></tr>
             {% endif %}
             <tr><th> Centre de santé</th><td>{{patient.seat}}</td></tr>
         </table>

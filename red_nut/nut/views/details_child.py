@@ -14,6 +14,13 @@ def details_child(request, *args, **kwargs):
     context = {}
     patient = Patient.objects.filter(id=num)[0]
     try:
+        output = InputOutputProgram.objects.filter(patient__id=patient.id, event='s') \
+                                   .latest('date')
+        context.update({"output": output})
+    except:
+        pass
+
+    try:
         input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
                                    .latest('date')
         data_nuts =  DataNut.objects.filter(patient__id=num)
