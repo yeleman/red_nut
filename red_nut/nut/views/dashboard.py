@@ -19,32 +19,38 @@ def dashboard(request):
     context = {}
     context.update({"category": category})
 
-    inp_out = InputOutputProgram.objects.all()
+    out_program = InputOutputProgram.objects.filter(event="s")
     datanuts = DataNut.objects.all()
 
-    def calculation_of_rates(nb):
+    def calculation_of_rates(nb, tnb):
         """ """
-        tnb = Patient.objects.all().count()
         return (nb * 100) / tnb
 
+    nbr_total_out = InputOutputProgram.objects.all().count()
     # Taux guerison
-    nbr_healing = inp_out.filter(event="s", reason="h").count()
-    healing_rates = calculation_of_rates(nbr_healing)
+    nbr_healing = out_program.filter(reason="h").count()
+    healing_rates = calculation_of_rates(nbr_healing, nbr_total_out)
     # Taux abandon
-    nbr_of_abandonment = inp_out.filter(event="s", reason="a").count()
-    abandonment_rates = calculation_of_rates(nbr_of_abandonment)
+    nbr_abandonment = out_program.filter(reason="a").count()
+    abandonment_rates = calculation_of_rates(nbr_abandonment, nbr_total_out)
     # Taux déces
-    nbr_deaths = inp_out.filter(event="s", reason="d").count()
-    deaths_rates = calculation_of_rates(nbr_deaths)
+    nbr_deaths = out_program.filter(reason="d").count()
+    deaths_rates = calculation_of_rates(nbr_deaths, nbr_total_out)
     # Taux non repondant
-    nbr_non_response = inp_out.filter(event="s", reason="n").count()
-    non_response_rates = calculation_of_rates(nbr_non_response)
+    nbr_non_response = out_program.filter(reason="n").count()
+    non_response_rates = calculation_of_rates(nbr_non_response, nbr_total_out)
+    context.update({"nbr_total_out": nbr_total_out, \
+                    "nbr_healing":nbr_healing, \
+                    "healing_rates": healing_rates, \
+                    "nbr_abandonment":nbr_abandonment, \
+                    "abandonment_rates": abandonment_rates, \
+                    "nbr_deaths": nbr_deaths, \
+                    "deaths_rates": deaths_rates, \
+                    "nbr_non_response": nbr_non_response,\
+                    "non_response_rates": non_response_rates})
     # Durée moyenne dans le programme
     list_num_days = [(number_days(Patient.objects.get(id=out.patient_id) \
-                                         .create_date, out.date)) \
-                                         for out in InputOutputProgram.objects\
-                                         .filter(event='s')]
-
+                                 .create_date, out.date)) for out in out_program]
     try:
         avg_days = sum(list_num_days) / list_num_days.__len__()
     except:
@@ -118,12 +124,7 @@ def dashboard(request):
     sent = SentItems.objects.count()
 
     context.update({"children_in_program": children_in_program, \
-                    "healing_rates": healing_rates, \
-                    "abandonment_rates": abandonment_rates, \
-                    "deaths_rates": deaths_rates, \
-                    "non_response_rates": non_response_rates, \
-                    "sent": sent, \
-                    "received": received, \
+                    "sent": sent, "received": received, \
                     "MAM_count": MAM_count, "SAM_count": SAM_count, \
                                                 "NI_count": NI_count})
 

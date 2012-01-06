@@ -6,7 +6,6 @@
 {% block jqueryonload %}{% include "indicator_graph.js" with graph_data=graph_data graph_date=graph_date %}{% endblock %}
 {% block content %}
 <div id="context">
-
     <h2>Tableau de bord</h2>
     <table class="center">
         <tr><th>Nbre enfant dans le programme</th><td>{{children_in_program}}</td></tr>
@@ -17,10 +16,10 @@
         <tr><th>Nbre SMS reçu</th><td>{{received}}</td><tr>
         <tr><th>Nbre SMS envoyés</th><td>{{sent}}</td></tr>
 
-        <tr><th>Taux guerison</th><td>{{healing_rates}} %</td></tr>
-        <tr><th>Taux abandon</th><td>{{abandonment_rates}} %</td></tr>
-        <tr><th>Taux déces</th><td>{{deaths_rates}} %</td></tr>
-        <tr><th>Taux non repondant</th><td>{{non_response_rates}} %</td></tr>
+        <tr><th>Taux guerison</th><td> {{healing_rates}} % ({{nbr_healing}}/{{nbr_total_out}})</td></tr>
+        <tr><th>Taux abandon</th><td>{{abandonment_rates}} % ({{nbr_abandonment}}/{{nbr_total_out}})</td></tr>
+        <tr><th>Taux déces</th><td>{{deaths_rates}} % ({{nbr_deaths}}/{{nbr_total_out}})</td></tr>
+        <tr><th>Taux non repondant</th><td>{{non_response_rates}} % ({{nbr_non_response}}/{{nbr_total_out}})</td></tr>
 
         <tr><th>Durée moyenne dans le programme</th><td>{{avg_days}} jr</td>
         <tr><th>Gain de poids moyen</th><td>{{avg_weight}} kg</td>
