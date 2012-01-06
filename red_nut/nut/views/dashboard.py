@@ -19,14 +19,15 @@ def dashboard(request):
     context = {}
     context.update({"category": category})
 
+    # Les ptients qui ne sont plus dans le programme
     out_program = InputOutputProgram.objects.filter(event="s")
+    # Les données nutritionnelles
     datanuts = DataNut.objects.all()
 
     def calculation_of_rates(nb, tnb):
-        """ """
         return (nb * 100) / tnb
-
-    nbr_total_out = InputOutputProgram.objects.all().count()
+    # le nombre total d'enfant
+    nbr_total_out = Patient.objects.all().count()
     # Taux guerison
     nbr_healing = out_program.filter(reason="h").count()
     healing_rates = calculation_of_rates(nbr_healing, nbr_total_out)
@@ -60,6 +61,7 @@ def dashboard(request):
     patients = Patient.objects.all()
     list_weight = []
     for patient in patients:
+        # les patients qui ont une donnée nutritionnelle
         datanut_patient = datanuts.filter(patient__id=patient.id) \
                                   .order_by('date')
         if datanut_patient:
