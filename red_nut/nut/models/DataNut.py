@@ -16,16 +16,16 @@ class DataNut(models.Model):
     OEDEMA_NO = 'N'
     OEDEMA_UNKOWN = 'U'
     OEDEMA_CHOICES = (
-        (OEDEMA_YES, u"Yes"),
-        (OEDEMA_NO, u"No"),
-        (OEDEMA_UNKOWN, u"Unknown"))
+        (OEDEMA_YES, u"Oui"),
+        (OEDEMA_NO, u"Non"),
+        (OEDEMA_UNKOWN, u"Inconnu"))
 
     patient = models.ForeignKey(Patient, related_name='patient',\
                                                 verbose_name=("Patients"))
     date = models.DateField(verbose_name=("Date"))
     weight = models.FloatField(u"Poids (kg)", blank=True, null=True)
     height = models.FloatField(u"Taille (cm)", blank=True, null=True)
-    oedema = models.CharField(u"Oedema", max_length=1, \
+    oedema = models.CharField(u"oedème", max_length=1, \
                               choices=OEDEMA_CHOICES)
     muac = models.SmallIntegerField(u"MUAC (mm)", blank=True, null=True)
     danger_sign = models.CharField(max_length=30, verbose_name=("Danger sign"))

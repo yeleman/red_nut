@@ -46,7 +46,7 @@ def details_health_center(request, *args, **kwargs):
     input_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
                                                         event='e')
 
-    # graph
+    # graphic
     try:
         l_date = date_graphic(InputOutputProgram.objects \
                                             .filter(patient__seat=seat) \

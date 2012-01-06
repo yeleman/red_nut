@@ -3,7 +3,6 @@
 # maintainer: Fadiga
 
 from django import forms
-#~ from django.contrib import messages
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
@@ -23,6 +22,11 @@ def dashboard(request):
     inp_out = InputOutputProgram.objects.all()
     datanuts = DataNut.objects.all()
 
+    def calculation_of_rates(nb):
+        """ """
+        tnb = Patient.objects.all().count()
+        return (nb * 100) / tnb
+
     # Taux guerison
     nbr_healing = inp_out.filter(event="s", reason="h").count()
     healing_rates = calculation_of_rates(nbr_healing)
@@ -40,6 +44,7 @@ def dashboard(request):
                                          .create_date, out.date)) \
                                          for out in InputOutputProgram.objects\
                                          .filter(event='s')]
+
     try:
         avg_days = sum(list_num_days) / list_num_days.__len__()
     except:
@@ -59,7 +64,7 @@ def dashboard(request):
         avg_weight = sum(list_weight) / list_weight.__len__()
     except:
         avg_weight = 0
-    context.update({"avg_weight": avg_weight})
+    context.update({"avg_weight": "%.2f" % avg_weight})
     # graphic
     l_date = date_graphic(InputOutputProgram.objects.order_by("date")[0].date)
     total_ = []
@@ -123,9 +128,3 @@ def dashboard(request):
                                                 "NI_count": NI_count})
 
     return render(request, 'dashboard.html', context)
-
-
-def calculation_of_rates(nb):
-    """ """
-    tnb = Patient.objects.all().count()
-    return (nb * 100) / tnb

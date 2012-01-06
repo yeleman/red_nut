@@ -60,7 +60,7 @@ def children(request, *args, **kwargs):
 
     num = kwargs["num"] or 1
     #pour mettre 20 rapport par page
-    paginator = Paginator(patients, 3)
+    paginator = Paginator(patients, 20)
     try:
         page = paginator.page(int(num))
         # si le numero de la page est 2
