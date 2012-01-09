@@ -7,6 +7,7 @@ from django.shortcuts import render, RequestContext, HttpResponseRedirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q
 
 from nut.models import Patient, Seat, InputOutputProgram
 
@@ -21,13 +22,13 @@ class ChildrenForm(forms.Form):
 
 class ResearchForm(forms.Form):
     """  """
-    id_patient = forms.CharField(max_length=20, label="L'Identifiant")
+    search_patient = forms.CharField(max_length=20, label="Recherche")
 
 
 def children(request, *args, **kwargs):
     category = 'children'
     context = {}
-    context.update({"category": category, "message": u"L'identifiant"})
+    context.update({"category": category, "message": u"Recherche "})
 
     patients = Patient.objects.all()
     if request.method == "POST":
@@ -36,16 +37,25 @@ def children(request, *args, **kwargs):
         if "seat" in request.POST:
             if request.POST.get('seat'):
                 patients = patients.filter(seat__code=request.POST.get('seat'))
-        if "id_patient" in request.POST:
-            if request.POST.get('id_patient'):
+        if "search_patient" in request.POST:
+            if request.POST.get('search_patient'):
+                val = request.POST.get('search_patient')
+
+                query = (Q(first_name__contains=val) |
+                         Q(last_name=val) |
+                         Q(DDN_Age=val) |
+                         Q(surname_mother=val))
+
                 try:
-                    patient = patients.filter(id=request.POST \
-                                              .get('id_patient'))
-                    return HttpResponseRedirect(reverse("details_child", \
-                                                        args=[patient[0].id]))
-                except:
-                    context.update({"message": u"Cet id ne correspond à "
-                                               u"aucun patient \n\n"})
+                    query = query | Q(id=int(val))
+                except ValueError:
+                    pass
+
+                patients = Patient.objects.filter(query)
+
+                if not patients:
+                    context.update({"message": u"Votre requête ne trouve"
+                                               u"aucun patient. \n"})
     else:
         form = ChildrenForm()
         form_r = ResearchForm()
