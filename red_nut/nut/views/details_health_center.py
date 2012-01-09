@@ -82,9 +82,9 @@ def details_health_center(request, *args, **kwargs):
             weight = diff_weight(datanut_patient[0].weight,
                             datanut_patient[len(datanut_patient) - 1].weight)
             list_weight.append(weight)
+            list_mam_sam.append(diagnose_patient(datanut_patient[0].muac, \
+                                datanut_patient[0].oedema))
 
-    for datanut in datanuts:
-        list_mam_sam.append(diagnose_patient(datanut.muac, datanut.oedema))
     try:
         dict_["avg_days"] = "%.0f" % avg_(list_num_days)
     except:
@@ -96,7 +96,7 @@ def details_health_center(request, *args, **kwargs):
     dict_["MAM_count"] = list_mam_sam.count('MAM')
     dict_["SAM_count"] = list_mam_sam.count('SAM')
     dict_["SAM_"] = list_mam_sam.count('SAM+')
-    dict_["actif"] = Patient.objects.filter(seat=seat).count()
+    dict_["actif"] = patients.count()
     dict_["seat"] = seat.name
     dict_["abandon"] = count_reason('a')
     dict_["guerison"] = count_reason('h')
