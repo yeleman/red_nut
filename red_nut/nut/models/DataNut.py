@@ -28,7 +28,8 @@ class DataNut(models.Model):
     oedema = models.CharField(u"oedème", max_length=1, \
                               choices=OEDEMA_CHOICES)
     muac = models.SmallIntegerField(u"MUAC (mm)", blank=True, null=True)
-    danger_sign = models.CharField(max_length=30, verbose_name=("Danger sign"))
+    danger_sign = models.CharField(max_length=30, \
+                    verbose_name=("Danger sign"), blank=True, null=True)
 
     def __unicode__(self):
         return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\
