@@ -234,9 +234,10 @@ def nut_register(message):
         input_.date = datetime.today()
         input_.save()
 
-        message.respond(u"[SUCCES] %(full_name)s a été ajouté à la liste des" \
-                        u" enfants du programme. Son id est %(id)s." \
-                        % {'full_name': patient.full_name(), 'id': patient.id})
+        message.respond(u"[SUCCES] %(full_name)s a été bien enregistré." \
+                        u" son id est %(id)s." \
+                        % {'full_name': patient.full_name(), \
+                           'id': patient.id})
     return True
 
 
