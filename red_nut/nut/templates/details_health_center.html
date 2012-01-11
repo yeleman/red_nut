@@ -8,7 +8,7 @@
 
 <div id="context">
     {% if dict_ %}
-    <h2>Détails du centre de santé {{dict_.seat}}</h2>
+    <h2>Détails du centre de santé {{dict_.seat}}/{{dict_.code}}</h2>
         <table>
             <tr><th>Nombre enfants enregistres</th><td>{{dict_.actif}}</td></tr>
             <tr><th>Nombre enfants dans le programme: MAM, SAM, SAM+</th><td>{{dict_.MAM_count}}, {{dict_.SAM_count}}, {{dict_.SAM_}}</td></tr>
