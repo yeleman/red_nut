@@ -19,7 +19,12 @@ DATABASES = {'default': {
     'USER': 'red',
     'PASSWORD': 'red',
     'HOST': '',
-    'PORT': ''}}
+    'PORT': ''},
+    'smsd': {'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'rednutsms',
+    'USER': 'rednutsms',
+    'PASSWORD': 'rednutsms',
+    'HOST': 'localhost',}}
 
 TIME_ZONE = 'Africa/Bamako'
 
