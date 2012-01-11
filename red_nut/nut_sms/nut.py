@@ -441,7 +441,6 @@ def followed_child(message):
         return True
     # create the datanut
     try:
-        print arguments.get('oedema').upper()
         datanut = DataNut()
         datanut.patient = Patient.objects.get(id=arguments.get('id'))
         datanut.date = date.today()
@@ -450,6 +449,8 @@ def followed_child(message):
         datanut.oedema = arguments.get('oedema').upper()
         datanut.muac = arguments.get('muac')
         datanut.danger_sign = arguments.get('danger_sign')
+        if arguments.get('danger_sign')  == None:
+            datanut.danger_sign = ""
 
         datanut.save()
     except Patient.DoesNotExist:
@@ -481,16 +482,7 @@ def disable_child(message):
     try:
         patient = Patient.objects.get(id=id_)
         input_ = InputOutputProgram()
-        if reason == "abandon":
-            input_.reason = "a"
-        elif reason == "tranfer":
-            input_.reason = "t"
-        elif reason == "guerison":
-            input_.reason = "h"
-        elif reason == "non-repondant":
-            input_.reason = "n"
-        elif reason == "deces":
-            input_.reason = "d"
+        input_.reason = reason
         input_.event = "s"
         input_.patient_id = id_
         input_.save()
