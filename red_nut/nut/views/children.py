@@ -42,12 +42,11 @@ def children(request, *args, **kwargs):
                 val = request.POST.get('search_patient')
 
                 query = (Q(first_name__contains=val) |
-                         Q(last_name=val) |
-                         Q(DDN_Age=val) |
-                         Q(surname_mother=val))
+                         Q(last_name__contains=val) |
+                         Q(surname_mother__contains=val))
 
                 try:
-                    query = query | Q(id=int(val))
+                    query = query | Q(id__contains=int(val))
                 except ValueError:
                     pass
 
