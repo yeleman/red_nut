@@ -164,7 +164,7 @@ def nut_stock(message):
                     dict_debut[key] = int(value)
     except:
         # failure to convert means non-numeric value which we can't process.
-        message.respond(error_start + u" Les données sont malformées.")
+        message.respond(error_start + u" Les donnees sont malformees.")
         return True
 
     # save report stock
@@ -204,7 +204,7 @@ def nut_register(message):
     """ Incomming:
             nut register code_seat first_name last_name surname_mother DDN_Age
         Outgoing:
-            [SUCCES] Le rapport de Asacotoqua a été enregistre. Son id est 8.
+            [SUCCES] Le rapport de Asacotoqua a ete enregistre. Son id est 8.
             or  xxx n'est pas enregistrer"""
 
     nut, register, code_seat, first_name, last_name, surname_mother, \
@@ -244,9 +244,9 @@ def id_information_research(message):
             nut research seat first_name(op) last_name(op) surname_mother(op)
             None = n
         Outgoing:
-            Il existe 2 patient(s) du prénom first_name: last_name
+            Il existe 2 patient(s) du prenom first_name: last_name
             surname_mother de l'id 7, last_name surname_mother de l'id 8.
-            or  Il n'existe aucun patient du prénom first_name """
+            or  Il n'existe aucun patient du prenom first_name """
 
     nut, research, code_seat, first_name, last_name, \
                     surname_mother = message.content.strip().lower().split()
@@ -270,7 +270,7 @@ def id_information_research(message):
                             u"%(last_name)s" \
                                                 % {'last_name': last_name})
             return True
-    #Si SMS ne contient que le prénom et nom de sa mère
+    #Si SMS ne contient que le prenom et nom de sa mere
     if first_name != "n" and surname_mother != "n" and last_name == "n":
         patient = [(u"%(last)s#%(id)s" % \
                     {"id":op.id, "last": op.last_name}) for op in \
@@ -290,7 +290,7 @@ def id_information_research(message):
                                     surname_mother, 'first_name': first_name})
             return True
 
-    #Si SMS ne contient que le nom de sa mère
+    #Si SMS ne contient que le nom de sa mere
     if first_name == "n" and last_name == "n":
 
         patient = [(u"%(first)s/%(last)s#%(id)s" % \
@@ -310,7 +310,7 @@ def id_information_research(message):
                                                         surname_mother})
             return True
 
-    #Si SMS ne cotient que le prénom et nom
+    #Si SMS ne cotient que le prenom et nom
     if first_name != "n" and last_name != "n" and surname_mother == "n":
         patient = [(u"%(mother)s#%(id)s" % \
                         {"id":op.id, "mother": op.surname_mother}) \
@@ -332,7 +332,7 @@ def id_information_research(message):
                                                'first_name': first_name})
             return True
 
-    #Si SMS ne cotient que prénom
+    #Si SMS ne cotient que prenom
     if surname_mother == "n" and last_name == "n":
         patient = [(u"%(last)s/%(mother)s#%(id)s" % \
                     {"id": op.id, "last": op.last_name, \
@@ -352,7 +352,7 @@ def id_information_research(message):
                             u"%(first_name)s" % {'first_name': first_name})
             return True
 
-    #Si SMS ne cotient que nom et le nom de la mère
+    #Si SMS ne cotient que nom et le nom de la mere
     if surname_mother != "n" and last_name != "n" and first_name == "n":
         patient = [(u"%(first_name)s#%(id)s" % \
                         {"id":op.id, "first_name": op.first_name}) \
@@ -403,7 +403,7 @@ def followed_child(message):
     """ Incomming:
             nut fol id weight height oedema muac danger_sign
         Outgoing:
-            [SUCCES] Les données nutritionnelles de full_name ont
+            [SUCCES] Les donnees nutritionnelles de full_name ont
             ete bien enregistre.
             or error message """
 
@@ -426,7 +426,7 @@ def followed_child(message):
                 arguments[key] = int(value)
     except:
         # failure to convert means non-numeric value which we can't process.
-        message.respond(error_start + u" Les données sont malformées.")
+        message.respond(error_start + u" Les donnees sont malformees.")
         return True
     # create the datanut
     try:
@@ -454,7 +454,7 @@ def followed_child(message):
                      % (message.content, e))
         return True
 
-    message.respond(u"[SUCCES] Les données nutritionnelles de %(full_name)s "
+    message.respond(u"[SUCCES] Les donnees nutritionnelles de %(full_name)s "
                     u"ont ete bien enregistre. " %
                     {'full_name': datanut.patient.full_name()})
     return True
