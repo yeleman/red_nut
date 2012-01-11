@@ -14,10 +14,8 @@ from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
 
 
 def dashboard(request):
-    """  """
-    category = 'dashboard'
-    context = {}
-    context.update({"category": category})
+
+    context = {"category": 'dashboard'}
 
     # Les ptients qui ne sont plus dans le programme
     out_program = InputOutputProgram.objects.filter(event="s")
@@ -27,31 +25,35 @@ def dashboard(request):
     def calculation_of_rates(nb, tnb):
         return (nb * 100) / tnb
     # le nombre total d'enfant
-    nbr_total_out = Patient.objects.all().count()
+    nbr_total_patient = Patient.objects.all().count()
     # Taux guerison
     nbr_healing = out_program.filter(reason="h").count()
-    healing_rates = calculation_of_rates(nbr_healing, nbr_total_out)
+    healing_rates = calculation_of_rates(nbr_healing, nbr_total_patient)
     # Taux abandon
     nbr_abandonment = out_program.filter(reason="a").count()
-    abandonment_rates = calculation_of_rates(nbr_abandonment, nbr_total_out)
+    abandonment_rates = calculation_of_rates(nbr_abandonment, \
+                                                        nbr_total_patient)
     # Taux déces
     nbr_deaths = out_program.filter(reason="d").count()
-    deaths_rates = calculation_of_rates(nbr_deaths, nbr_total_out)
+    deaths_rates = calculation_of_rates(nbr_deaths, nbr_total_patient)
     # Taux non repondant
     nbr_non_response = out_program.filter(reason="n").count()
-    non_response_rates = calculation_of_rates(nbr_non_response, nbr_total_out)
-    context.update({"nbr_total_out": nbr_total_out, \
-                    "nbr_healing":nbr_healing, \
+    non_response_rates = calculation_of_rates(nbr_non_response, \
+                                                        nbr_total_patient)
+    context.update({"nbr_total_patient": nbr_total_patient, \
+                    "nbr_healing": nbr_healing, \
                     "healing_rates": healing_rates, \
-                    "nbr_abandonment":nbr_abandonment, \
+                    "nbr_abandonment": nbr_abandonment, \
                     "abandonment_rates": abandonment_rates, \
                     "nbr_deaths": nbr_deaths, \
                     "deaths_rates": deaths_rates, \
                     "nbr_non_response": nbr_non_response,\
                     "non_response_rates": non_response_rates})
     # Durée moyenne dans le programme
-    list_num_days = [(number_days(Patient.objects.get(id=out.patient_id) \
-                                 .create_date, out.date)) for out in out_program]
+    list_num_days = [(number_days(Patient.objects \
+                                         .get(id=out.patient_id) \
+                                         .create_date, out.date)) \
+                                          for out in out_program]
     try:
         avg_days = sum(list_num_days) / list_num_days.__len__()
     except:

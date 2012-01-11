@@ -6,12 +6,12 @@
     <title>nut | {% block title %}La croix rouge malienne{% endblock %}</title>
     <link rel="stylesheet" media="screen" type="text/css" href="{% url media 'red_nut.css' %}" title="nut 2011" />
     <link rel="stylesheet" media="print" type="text/css" href="{% url media 'print.css' %}" />
-    <link rel="shortcut icon" href="{% url media 'images/nut_favicon.png' %}" />
+    <link rel="shortcut icon" href="#" />
     {% block javascript %}{% endblock %}
     <meta http-equiv="Content-Language" content="fr-fr" />
     <meta name="ROBOTS" content="ALL" />
     <meta name="Copyright" content="CROIX ROUGE, ANTIM, YELEMAN" />
-    <meta name="keywords" content="CROIX ROUGE, mali, paludisme, antim, sms" />
+    <meta name="keywords" content="CROIX ROUGE, mali, antim, sms" />
     <meta name="description" content="Système d'information de routine sur le suivi de la sécurité alimentaire et nutritionnelle. Données SMS." />
 </head>
 <body>
@@ -19,28 +19,18 @@
         <div id="header" class="mainbox">
             <div id="logo"></div>
             <h1><a href="/"> </a></h1>
-
             <div id="breadcrumbs">{%block breadcrumbs %}{% endblock %}</div>
             <div id="menu">{% include "menu.html" with category=category%}</div>
         </div>
         {% block submenu %}{% endblock %}
         <div id="content" class="mainbox {% block page-name %}default{% endblock %} {% block content-class %}{% endblock %}">
-        {% if messages %}
-        <ul id="messages" title="{% trans 'Informative Messages. Click to hide.' %}">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
         {% block pagetitle %}{% endblock %}
         {% block content %}
         {% endblock %}
         </div>
         <div id="footer">
         <ul>
-            <li><a href="#" title="{% trans 'Contact Us' %}">{% trans "Contact" %}</a></li>
-            <li><a href="#" title="{% trans 'About nut' %}">{% trans "About" %}</a></li>
-            <li><a href="#" title="Documents et téléchargements">Ressources</a></li>
+            <li><a href="{% url about %}" title="À propos">À propos</a></li>
         </ul>
         </div>
         <div id="top-link"><a class="anchor" href="">↑Haut</a></div>
@@ -50,11 +40,11 @@
 <script type="text/javascript" src="{% url media 'red_nut.js' %}"></script>
 <script type="text/javascript" src="{% url media 'highcharts.js' %}"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-    addMessagesClickEvent();
-    addLogoClickEvent('{% url index %}');
-    {% block jqueryonload %}{% endblock %}
-    {% if category != 'dashboard' %}addJavascript("{% url media 'highcharts.js' %}", 'head');{% endif %}
-});
+    $(document).ready(function(){
+        addMessagesClickEvent();
+        addLogoClickEvent('{% url index %}');
+        {% block jqueryonload %}{% endblock %}
+        {% if category != 'dashboard' %}addJavascript("{% url media 'highcharts.js' %}", 'head');{% endif %}
+    });
 </script>
 </html>

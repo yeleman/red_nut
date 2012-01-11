@@ -163,6 +163,7 @@ body {
   width: 955px;
   height: 160px;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.77);
+  background: #88D16F;
 }
 .hidden {
   display: none;

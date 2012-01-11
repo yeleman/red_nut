@@ -9,8 +9,9 @@
         {% if page.has_previous and not page.is_before_first %}
                <li><a href="{{page.url_previous}}">&#8249; précédente </a></li>
         {% endif %}
-
+        {% if page.has_previous or  page.has_next %}
         <li class="selected"><strong>Page {{ page.number }}</strong></li>
+        {% endif %}
         {% if page.has_next and not page.is_before_last %}
             <li><a href="{{page.url_next}}"> suivante &#8250;</a></li>
         {% endif %}

@@ -5,6 +5,8 @@
 from django.contrib import admin
 from django.conf.urls.defaults import patterns, include, url
 from settings import MEDIA_ROOT, DEBUG
+from django.views.generic.simple import direct_to_template
+#~ from django.views.decorators.cache import cache_page
 
 from nut import views
 
@@ -28,6 +30,8 @@ urlpatterns = patterns('',
                                                 name='details_health_center'),
     # url(r'^red_nut/', include('red_nut.foo.urls')),
 
+    url(r'^about/$', direct_to_template, \
+         {'template': 'about.html'}, name='about'),
 
     # Uncomment the next line to enable the admin:
     #url(r'^admin/', include(admin.site.urls)),
