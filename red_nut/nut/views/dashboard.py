@@ -109,8 +109,8 @@ def dashboard(request):
 
     graph_data = [{'name': "Total", 'data': total_}, \
                   {'name': "MAM", 'data': diagnose_mam}, \
-                  {'name': "SAM", 'data': diagnose_sam}, \
-                  {'name': "SAM+", 'data': diagnose_ni}]
+                  {'name': "MAS", 'data': diagnose_sam}, \
+                  {'name': "MAS+", 'data': diagnose_ni}]
     context.update({"graph_date": graph_date, "graph_data": graph_data})
     # Diagnose
     try:

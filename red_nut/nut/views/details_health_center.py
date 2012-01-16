@@ -55,6 +55,9 @@ def details_health_center(request, *args, **kwargs):
         l_date = []
     total_ = []
     graph_date = []
+    diagnose_mam = []
+    diagnose_sam = []
+    diagnose_ni = []
     if l_date:
         for da in l_date:
             input_in_prog = InputOutputProgram.objects \
@@ -63,11 +66,23 @@ def details_health_center(request, *args, **kwargs):
             out_in_prog = InputOutputProgram.objects \
                                     .filter(patient__seat=seat, event="s", \
                                      date__lte=da)
-
+            input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
+                                 not in [i.patient.id for i in out_in_prog]]
+            data = DataNut.objects.order_by('date').filter(date__lte=da)
             total_.append(input_in_prog.__len__() - out_in_prog.__len__())
             graph_date.append(da.strftime('%d/%m'))
+            l_diagnose = [diagnose_patient(d.muac, d.oedema) for d in data \
+                                        if d.patient.id in [(i.patient.id) \
+                                                for i in input_out_in_prog]]
+            if l_diagnose:
+                diagnose_mam.append(l_diagnose.count('MAM'))
+                diagnose_sam.append(l_diagnose.count('SAM'))
+                diagnose_ni.append(l_diagnose.count('SAM+'))
 
-        graph_data = [{'name': "Total", 'data': total_}]
+        graph_data = [{'name': "Total", 'data': total_},
+                       {'name': "MAM", 'data': diagnose_mam}, \
+                  {'name': "MAS", 'data': diagnose_sam}, \
+                  {'name': "MAS+", 'data': diagnose_ni}]
         context.update({"graph_date": graph_date, "graph_data": graph_data})
 
     for out in output_programs:
