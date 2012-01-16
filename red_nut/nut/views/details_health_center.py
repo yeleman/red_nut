@@ -98,6 +98,7 @@ def details_health_center(request, *args, **kwargs):
     dict_["SAM_"] = list_mam_sam.count('SAM+')
     dict_["actif"] = patients.count()
     dict_["seat"] = seat.name
+    dict_["code"] = seat.code
     dict_["abandon"] = count_reason('a')
     dict_["guerison"] = count_reason('h')
     dict_["deces"] = count_reason('d')
