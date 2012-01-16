@@ -12,7 +12,12 @@ def details_child(request, *args, **kwargs):
     num = kwargs["id"]
     category = 'details_child'
     context = {}
-    patient = Patient.objects.filter(id=num)[0]
+    patient = Patient.objects.get(id=num)
+    patient_last = InputOutputProgram.objects \
+                                            .filter(patient__id=patient.id)\
+                                            .order_by('-date')
+    if patient_last:
+        patient.status = patient_last[0].get_event_display()
     try:
         output = InputOutputProgram.objects.filter(patient__id=patient.id, event='s') \
                                    .latest('date')
