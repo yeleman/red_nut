@@ -10,7 +10,7 @@ from django.conf import settings
 from nut.models import Seat, InputOutputProgram, Patient, DataNut
 from nosmsd.models import Inbox, SentItems
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
-                                                            date_graphic
+                                        date_graphic, verification_delay
 
 
 def dashboard(request):
@@ -20,7 +20,7 @@ def dashboard(request):
     # Les ptients qui ne sont plus dans le programme
     out_program = InputOutputProgram.objects.filter(event="s")
     # Les données nutritionnelles
-    datanuts = DataNut.objects.all()
+    nutritional_data = DataNut.objects.all()
 
     def calculation_of_rates(nb, tnb):
         try:
@@ -67,7 +67,7 @@ def dashboard(request):
     list_weight = []
     for patient in patients:
         # les patients qui ont une donnée nutritionnelle
-        datanut_patient = datanuts.filter(patient__id=patient.id) \
+        datanut_patient = nutritional_data.filter(patient__id=patient.id) \
                                   .order_by('date')
         if datanut_patient:
             weight = diff_weight(datanut_patient[0].weight, \
@@ -128,11 +128,16 @@ def dashboard(request):
     except:
         NI_count = 0
 
-    # Nbre enfant dans le programme
+    # Nbre d'enfant dans le programme
     try:
         children_in_program = total_[-1]
     except:
         children_in_program = 0
+
+    # Nbre d'enfant en retard de consultation
+    patients_late = [patient for patient in patients \
+                if verification_delay(patient.delay_since_last_visit()) \
+                    and patient.last_data_event().event=="e"].__len__()
     # message
     received = Inbox.objects.count()
     sent = SentItems.objects.count()
@@ -140,6 +145,6 @@ def dashboard(request):
     context.update({"children_in_program": children_in_program, \
                     "sent": sent, "received": received, \
                     "MAM_count": MAM_count, "SAM_count": SAM_count, \
-                                                "NI_count": NI_count})
+                    "patients_late": patients_late, "NI_count": NI_count})
 
     return render(request, 'dashboard.html', context)

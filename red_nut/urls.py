@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^/?$', views.dashboard, name='index'),
     url(r'^children/(?P<num>\d+)*$', views.children, name='children'),
+    url(r'^child_delay/(?P<num>\d+)*$', views.child_delay, \
+                                                        name='child_delay'),
     url(r'^details_child/(?P<id>\d+)$', views.details_child, \
                                                         name='details_child'),
     url(r'^health_center?$', views.health_center, \

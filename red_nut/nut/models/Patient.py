@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from datetime import datetime
+from datetime import date
 from django.db import models
 from Seat import Seat
 
@@ -28,18 +28,38 @@ class Patient(models.Model):
                             related_name='patient',\
                             verbose_name=("Seat"))
     create_date = models.DateField(verbose_name=("Date d'enregistrement"),\
-                                   default=datetime.today)
-    DDN_Age = models.DateField(verbose_name=(u"Date de naissance"))
+                                   default=date.today)
+    birth_date = models.DateField(verbose_name=(u"Date de naissance"))
     sex = models.CharField(u"Sexe", max_length=1, \
                               choices=SEX_CHOICES)
+
     def __unicode__(self):
-        return (u'%(first_name)s %(last_name)s %(mother)s %(age)s \
+        return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s \
                                                         %(seat)s') % \
                 {"first_name": self.first_name, "last_name": self.last_name, \
-                 "mother": self.surname_mother, "age": self.DDN_Age, \
+                 "mother": self.surname_mother, "birth_date": self.birth_date, \
                  "seat": self.seat}
 
     def full_name(self):
         return (u'%(first_name)s %(last_name)s' % \
                                 {"first_name": self.first_name.capitalize(),
                                 "last_name": self.last_name.capitalize()})
+
+    def last_visit(self):
+        last = self.last_data_nut()
+        if last:
+            return last.date
+        return None
+
+    def delay_since_last_visit(self):
+        now = date.today()
+        return now - self.last_visit()
+
+    def last_data_nut(self):
+        from DataNut import DataNut
+        return DataNut.objects.filter(patient=self).order_by('-date')[0]
+
+    def last_data_event(self):
+        from InputOutputProgram import InputOutputProgram
+        return InputOutputProgram.objects.filter(patient=self)\
+                                         .order_by('-date')[0]

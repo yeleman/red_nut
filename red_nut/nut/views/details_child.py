@@ -17,7 +17,7 @@ def details_child(request, *args, **kwargs):
                                             .get(patient__id=patient.id)
 
     if patient_last:
-        patient.status = patient_last.last_status()
+        patient.status = patient_last.get_event_display()
     try:
         output = InputOutputProgram.objects.filter(patient__id=patient.id, event='s') \
                                    .latest('date')

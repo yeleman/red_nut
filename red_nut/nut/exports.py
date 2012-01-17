@@ -8,9 +8,6 @@ import StringIO
 
 def report_as_excel(stocks, patients, datanuts):
     """ Export les données du stock en xls """
-    print stocks
-    print patients
-    print datanuts
     # On crée le doc xls
     book = xlwt.Workbook(encoding='utf-8')
     if stocks:
@@ -42,30 +39,28 @@ def report_as_excel(stocks, patients, datanuts):
         sheet.write(4, 4, u"Sexe")
         sheet.write(4, 5, u"Date d'enregistrement")
         sheet.write(4, 6, u"Dernier status")
-        sheet.write(4, 7, u"Date de visite")
+        sheet.write(4, 7, u"Derniere visite")
         sheet.write(4, 8, u"Poids")
         sheet.write(4, 9, u"Taille")
         sheet.write(4, 10, u"Perimètre brachial")
         sheet.write(4, 11, u"Oedème")
         i = 5
         for patient in patients:
-            print patient, i
             datanut_patient = datanuts.filter(patient__id=patient.id) \
                                       .order_by('date')
             sheet.write(i, 0, patient.last_name)
             sheet.write(i, 1, patient.first_name)
             sheet.write(i, 2, patient.surname_mother)
-            sheet.write(i, 3, patient.DDN_Age.strftime("%d %b %Y"))
+            sheet.write(i, 3, patient.birth_date.strftime("%d %b %Y"))
             sheet.write(i, 4, patient.sex)
             sheet.write(i, 5, patient.create_date.strftime("%d %b %Y"))
-            sheet.write(i, 6, patient.last_status(i))
-            sheet.write(i, 7, u"Date de visite")
-            sheet.write(i, 8, u"Poids")
-            sheet.write(i, 9, u"Taille")
-            sheet.write(i, 10, u"Perimètre brachial")
-            sheet.write(i, 11, u"Oedème")
+            sheet.write(i, 6, patient.last_data_event().get_event_display())
+            sheet.write(i, 7, patient.last_visit().strftime("%d %b %Y"))
+            sheet.write(i, 8, patient.last_data_nut().weight)
+            sheet.write(i, 9, patient.last_data_nut().height)
+            sheet.write(i, 10, patient.last_data_nut().muac)
+            sheet.write(i, 11, patient.last_data_nut().get_oedema_display())
             i += 1
-            print patient.last_name
             if datanut_patient:
                 pass
 
