@@ -70,3 +70,9 @@ def date_graphic(date_on):
         date_on += timedelta(7)
         l_date.append(date_on)
     return l_date
+
+
+def verification_delay(date_last_visite):
+    """ """
+    if date_last_visite.days > 10:
+        return True

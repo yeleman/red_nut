@@ -37,5 +37,6 @@ class InputOutputProgram(models.Model):
     patient = models.ForeignKey(Patient, verbose_name=("Patient"))
 
     def __unicode__(self):
-        return (u'%(patient)s %(event)s %(reason)s') % {"event": self.event, \
-                            "patient": self.patient, "reason": self.reason}
+        return (u'%(patient)s %(event)s %(reason)s %(date)s') % \
+                    {"event": self.event, "date": self.date, \
+                     "patient": self.patient.full_name(), "reason": self.reason}

@@ -3,6 +3,7 @@
 # maintainer: Fadiga
 
 import dashboard
+import child_delay
 import children
 import details_child
 import health_center
