@@ -2,8 +2,10 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-import dashboard
-import children
-import details_child
-import health_center
-import details_health_center
+
+from excel_export import excel_export
+from dashboard import dashboard
+from children import children
+from details_child import details_child
+from details_health_center import details_health_center
+from health_center import health_center

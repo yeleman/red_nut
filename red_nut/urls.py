@@ -19,19 +19,20 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Examples:
-    url(r'^/?$', views.dashboard.dashboard, name='index'),
-    url(r'^children/(?P<num>\d+)*$', views.children.children, name='children'),
-    url(r'^details_child/(?P<id>\d+)$', views.details_child.details_child, \
+    url(r'^/?$', views.dashboard, name='index'),
+    url(r'^children/(?P<num>\d+)*$', views.children, name='children'),
+    url(r'^details_child/(?P<id>\d+)$', views.details_child, \
                                                         name='details_child'),
-    url(r'^health_center?$', views.health_center.health_center, \
+    url(r'^health_center?$', views.health_center, \
                                                         name='health_center'),
-    url(r'^details_health_center/(?P<id>\d+)$', views.details_health_center \
-                                                    .details_health_center, \
+    url(r'^details_health_center/(?P<id>\d+)$', views.details_health_center, \
                                                 name='details_health_center'),
     # url(r'^red_nut/', include('red_nut.foo.urls')),
 
     url(r'^about/$', direct_to_template, \
          {'template': 'about.html'}, name='about'),
+
+    url(r'^excel_export/(?P<id>\d+)*$', views.excel_export, name='excel_export'),
 
     # Uncomment the next line to enable the admin:
     #url(r'^admin/', include(admin.site.urls)),
