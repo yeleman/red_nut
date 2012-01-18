@@ -40,6 +40,7 @@ def details_health_center(request, *args, **kwargs):
     patients = Patient.objects.filter(health_center=health_center)
     datanuts = DataNut.objects.filter(patient__health_center=health_center)
     consumption_reports = ConsumptionReport.objects.filter(health_center=health_center)
+    print consumption_reports
 
     output_programs = ProgramIO.objects.filter(patient__health_center=health_center, \
                                                         event='s')

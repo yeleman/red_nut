@@ -24,9 +24,8 @@ class Patient(models.Model):
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     surname_mother = models.CharField(max_length=30, \
                                       verbose_name=(u"Prénom de la mère"))
-    health_center = models.ForeignKey(HealthCenter,
-                            related_name='patient',\
-                            verbose_name=("health_center"))
+    health_center = models.ForeignKey(HealthCenter,\
+                            verbose_name=("Clinic"))
     create_date = models.DateField(verbose_name=("Date d'enregistrement"),\
                                    default=date.today)
     birth_date = models.DateField(verbose_name=(u"Date de naissance"))

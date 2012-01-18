@@ -32,21 +32,21 @@
                 <button class="formbutt download">Télécharger une version Excel du rapport de Stock</button>
             </a>
         </div>
-    {% if stocks %}
+    {% if consumption_reports %}
         <h2>tableau des consomations d'intrants.</h2>
         <table>
             <tr><th>Intrant </th><th>Stock initial</th><th>Stock reçu</th><th>Stock utilisé</th><th>Stock perdu</th><th>Stock restant</th><th>Periode</th></tr>
-            {% for stock in stocks %}
+            {% for stock in consumption_reports %}
                 <tr>
-                    <td>{{stock.intrant.name}} ({% if stock.intrant.unit == 'ba' %}sachet{% endif %}
-                        {% if stock.intrant.unit == 'g' %} kg{% endif %}
-                        {% if stock.intrant.unit == 'bo' %} boite{% endif %}
-                        {% if stock.intrant.unit == 'l' %} litre{% endif %})
+                    <td>{{stock.input_type.name}} ({% if stock.intrant.unit == 'ba' %}sachet{% endif %}
+                        {% if stock.input_type.unit == 'g' %} kg{% endif %}
+                        {% if stock.input_type.unit == 'bo' %} boite{% endif %}
+                        {% if stock.input_type.unit == 'l' %} litre{% endif %})
                     </td>
-                    <td>{{stock.stock_initial}} </td>
-                    <td>{{stock.stock_received}} </td>
-                    <td>{{stock.stock_used}} </td>
-                    <td>{{stock.stock_lost}} </td>
+                    <td>{{stock.initial}} </td>
+                    <td>{{stock.received}} </td>
+                    <td>{{stock.used}} </td>
+                    <td>{{stock.lost}} </td>
                     <td>{{stock.remaining}} </td>
                     <td>{{stock.period.middle|date:"F Y"}}</td>
                 </tr>
