@@ -13,19 +13,6 @@ from nut.models import Patient, HealthCenter, ProgramIO
 from nut.tools.utils import verification_delay
 
 
-class child_delayForm(forms.Form):
-    """ """
-    health_center = forms.ChoiceField(label=ugettext_lazy(u"Centre de centé"), \
-                         choices=[('', _(u"All"))] + [(health_center.code, health_center.name) \
-                                  for health_center in HealthCenter.objects.all() \
-                                                          .order_by('name')])
-
-
-class ResearchForm(forms.Form):
-    """  """
-    search_patient = forms.CharField(max_length=20, label="Recherche")
-
-
 def child_delay(request, *args, **kwargs):
     """ """
     category = 'child_delay'
@@ -37,35 +24,6 @@ def child_delay(request, *args, **kwargs):
                 if verification_delay(patient.delay_since_last_visit()) \
                     and patient.last_data_event().event=="e"]
     patients.reverse()
-
-    if request.method == "POST":
-        form_r = ResearchForm(request.POST)
-        form = child_delayForm(request.POST)
-        if "health_center" in request.POST:
-            if request.POST.get('health_center'):
-                patients = ProgramIO.objects.filter(patient__Health_center__code=request \
-                                  .POST.get('health_center'))
-        if "search_patient" in request.POST:
-            if request.POST.get('search_patient'):
-                val = request.POST.get('search_patient')
-
-                query = (Q(patient__first_name__contains=val) |
-                         Q(patient__last_name__contains=val) |
-                         Q(patient__surname_mother__contains=val))
-
-                try:
-                    query = query | Q(patient__id__contains=int(val))
-                except ValueError:
-                    pass
-
-                #~ patients = ProgramIO().objects.filter(query)
-
-                if not patients:
-                    context.update({"message": u"Votre requête ne trouve"
-                                               u"aucun patient. \n"})
-    else:
-        form = child_delayForm()
-        form_r = ResearchForm()
 
     for patient in patients:
         patient.url_details_child = reverse("details_child", \
@@ -94,5 +52,4 @@ def child_delay(request, *args, **kwargs):
     except EmptyPage:
         pass
 
-    context.update({"form_r": form_r, "form": form})
     return render(request, 'child_delay.html', context)
