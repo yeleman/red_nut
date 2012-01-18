@@ -3,16 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>nut | {% block title %}La croix rouge malienne{% endblock %}</title>
+    <title>nut | {% block title %}Croix Rouge NUTRITION{% endblock %}</title>
     <link rel="stylesheet" media="screen" type="text/css" href="{% url media 'red_nut.css' %}" title="nut 2011" />
     <link rel="stylesheet" media="print" type="text/css" href="{% url media 'print.css' %}" />
     <link rel="shortcut icon" href="#" />
     {% block javascript %}{% endblock %}
     <meta http-equiv="Content-Language" content="fr-fr" />
     <meta name="ROBOTS" content="ALL" />
-    <meta name="Copyright" content="CROIX ROUGE, ANTIM, YELEMAN" />
-    <meta name="keywords" content="CROIX ROUGE, mali, antim, sms" />
-    <meta name="description" content="Système d'information de routine sur le suivi de la sécurité alimentaire et nutritionnelle. Données SMS." />
+    <meta name="Copyright" content="CROIX ROUGE, YELEMAN" />
+    <meta name="keywords" content="CROIX ROUGE, mali, sms" />
+    <meta name="description" content="" />
 </head>
 <body>
     <div id="page">
@@ -24,7 +24,7 @@
         </div>
         {% block submenu %}{% endblock %}
         <div id="content" class="mainbox {% block page-name %}default{% endblock %} {% block content-class %}{% endblock %}">
-        {% block pagetitle %}{% endblock %}
+        {% block pagetitle %}<h1 class="pagetitle">Suivi des données de malnutrition Bamako</h1>{% endblock %}
         {% block content %}
         {% endblock %}
         </div>

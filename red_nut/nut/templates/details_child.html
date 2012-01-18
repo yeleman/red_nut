@@ -2,7 +2,6 @@
 {% load babel %}
 
 {% block title %}Enfants{% endblock %}
-{% block pagetitle %}<h1 class="pagetitle">Croix-Rouge Malienne pour le suivi de la sécurité alimentaire et nutritionnelle de la population</h1>{% endblock %}
 {% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id %}{% endblock %}
 {% block content %}
 
@@ -31,7 +30,6 @@
             <tr><th>Taille</th><td>{{datanut.height}} cm </td></tr>
             <tr><th>Oedème</th><td> {% if datanut.oedema %}{{datanut.get_oedema_display}}{% endif %}</td></tr>
             <tr><th>Périmètre brachial</th> <td>{{datanut.muac}} mm</td></tr>
-            <tr><th>Signe de danger</th><td>{{datanut.danger_sign}}</td></tr>
             <tr><th>Date</th><td>{{datanut.date}}</td></tr>
         </table>
     {% endif %}
@@ -43,7 +41,6 @@
                 <th>Taille</th>
                 <th>Oedème</th>
                 <th>Périmètre brachial</th>
-                <th>Signe de danger</th>
                 <th>Date</th>
             </tr>
             {% for datanut in datanuts %}
@@ -52,7 +49,6 @@
                     <td>{{datanut.height}} cm</td>
                     <td>{% if datanut.oedema %}{{datanut.get_oedema_display}}{% endif %}</td>
                     <td>{{datanut.muac}} mm </td>
-                    <td>{{datanut.danger_sign}}</td>
                     <td>{{datanut.date}}</td>
                 </tr>
             {% endfor %}

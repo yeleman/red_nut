@@ -69,21 +69,29 @@ def report_as_excel(stocks, patients, datanuts):
             sheet_patient.write(i, 3, patient.birth_date.strftime("%d %b %Y"))
             sheet_patient.write(i, 4, patient.sex)
             sheet_patient.write(i, 5, patient.create_date.strftime("%d %b %Y"))
-            sheet_patient.write(i, 6, patient.last_data_event().get_event_display())
+            sheet_patient.write(i, 6,\
+                                patient.last_data_event().get_event_display())
             sheet_patient.write(i, 7, patient.last_visit().strftime("%d %b %Y"))
             sheet_patient.write(i, 8, patient.last_data_nut().weight)
             sheet_patient.write(i, 9, patient.last_data_nut().height)
             sheet_patient.write(i, 10, patient.last_data_nut().muac)
-            sheet_patient.write(i, 11, patient.last_data_nut().get_oedema_display())
+            sheet_patient.write(i, 11,\
+                                patient.last_data_nut().get_oedema_display())
             i += 1
             if datanut_patients:
                 for data in datanut_patients:
-                    sheet_patient.write(i, 7, patient.last_visit().strftime("%d %b %Y"))
-                    sheet_patient.write(i, 8, patient.last_data_nut().weight)
-                    sheet_patient.write(i, 9, patient.last_data_nut().height)
-                    sheet_patient.write(i, 10, patient.last_data_nut().muac)
-                    sheet_patient.write(i, 11, patient.last_data_nut().get_oedema_display())
-                    i += 1
+                    if data != patient.last_data_nut():
+                        sheet_patient.write(i, 7,\
+                                    patient.last_visit().strftime("%d %b %Y"))
+                        sheet_patient.write(i, 8,\
+                                    patient.last_data_nut().weight)
+                        sheet_patient.write(i, 9,
+                                    patient.last_data_nut().height)
+                        sheet_patient.write(i, 10,
+                                    patient.last_data_nut().muac)
+                        sheet_patient.write(i, 11,
+                                patient.last_data_nut().get_oedema_display())
+                        i += 1
 
     stream = StringIO.StringIO()
     book.save(stream)
