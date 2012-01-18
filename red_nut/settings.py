@@ -113,7 +113,6 @@ INSTALLED_APPS = (
     'nosmsd',
     'reversion',
     'babeldjango',
-    'django_extensions'
 )
 
 

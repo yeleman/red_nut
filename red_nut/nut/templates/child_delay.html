@@ -11,12 +11,7 @@ addClickClassToTRElements();{% endblock %}
 <div id="context">
 
 <h2>Enfants en retard</h2>
-<table class="noprint">
-    <tr><form action="" method="post" id="id_patient">{% csrf_token %}<td style=" border-left-width: 585px;">{{error}}{{message}} {{form_r.search_patient}}</td><td><input class= "buttons" id="id_patient" type="submit" value="ok"/></td></form></tr>
-</table>
-<table class="noprint">
-    <tr><form action="" method="post" id="health_center">{% csrf_token %}<td>{{form.health_center.label}} {{form.health_center}}</td><td><input class= "buttons" id="health_center" type="submit" value="ok"/></td></form></tr>
-</table>
+
 {% if page.object_list%}
     <span>{% include "_pagination.html" %}</span>
     <table>
