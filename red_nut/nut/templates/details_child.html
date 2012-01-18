@@ -41,7 +41,6 @@
                 <th>Taille</th>
                 <th>Oedème</th>
                 <th>Périmètre brachial</th>
-                <th>Signe de danger</th>
                 <th>Date</th>
             </tr>
             {% for datanut in datanuts %}
@@ -50,7 +49,6 @@
                     <td>{{datanut.height}} cm</td>
                     <td>{% if datanut.oedema %}{{datanut.get_oedema_display}}{% endif %}</td>
                     <td>{{datanut.muac}} mm </td>
-                    <td>{{datanut.danger_sign}}</td>
                     <td>{{datanut.date}}</td>
                 </tr>
             {% endfor %}
