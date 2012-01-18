@@ -15,14 +15,15 @@ class DataNut(models.Model):
 
     OEDEMA_YES = 'Y'
     OEDEMA_NO = 'N'
-    OEDEMA_UNKOWN = 'U'
+    OEDEMA_UNKNOWN = 'U'
     OEDEMA_CHOICES = (
         (OEDEMA_YES, u"Oui"),
         (OEDEMA_NO, u"Non"),
-        (OEDEMA_UNKOWN, u"Inconnu"))
+        (OEDEMA_UNKNOWN, u"Inconnu"))
 
     SIGN_DIARRHEA = "d"
     DANGER_SIGN_CHOICES = ((SIGN_DIARRHEA, "Diarrhée"),)
+
     patient = models.ForeignKey(Patient, related_name='patient',\
                                                 verbose_name=("Patients"))
     date = models.DateField(verbose_name=("Date"),\
@@ -36,6 +37,9 @@ class DataNut(models.Model):
                                 choices=DANGER_SIGN_CHOICES, \
                                 verbose_name=("Danger sign"), \
                                 blank=True, null=True)
+    nb_plumpy_nut = models.IntegerField(max_length=30, \
+                        verbose_name=(u"Sachets plumùpy nut données"), \
+                            blank=True, null=True)
 
     def __unicode__(self):
         return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\

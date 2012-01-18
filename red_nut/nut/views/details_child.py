@@ -4,7 +4,7 @@
 
 from django.shortcuts import render
 
-from nut.models import Patient, DataNut, InputOutputProgram
+from nut.models import Patient, DataNut, ProgramIO
 
 
 def details_child(request, *args, **kwargs):
@@ -13,20 +13,19 @@ def details_child(request, *args, **kwargs):
     category = 'details_child'
     context = {}
     patient = Patient.objects.get(id=num)
-    patient_last = InputOutputProgram.objects \
-                                            .get(patient__id=patient.id)
+    patient_last = ProgramIO.objects.get(patient__id=patient.id)
 
     if patient_last:
         patient.status = patient_last.get_event_display()
     try:
-        output = InputOutputProgram.objects.filter(patient__id=patient.id, event='s') \
+        output = ProgramIO.objects.filter(patient__id=patient.id, event='s') \
                                    .latest('date')
         context.update({"output": output})
     except:
         pass
 
     try:
-        input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
+        input_ = ProgramIO.objects.filter(patient__id=patient.id) \
                                    .latest('date')
         data_nuts =  DataNut.objects.filter(patient__id=num)
         datanuts =data_nuts.order_by('-date')
@@ -42,11 +41,11 @@ def details_child(request, *args, **kwargs):
                                 {'name': "MUAC", 'data': list_muac}]
         context.update({"graph_date": graph_date, "graph_data": graph_data})
     except DataNut.DoesNotExist:
-        input_ = InputOutputProgram.objects.filter(patient__id=patient.id) \
+        input_ = ProgramIO.objects.filter(patient__id=patient.id) \
                                    .latest('date')
         context.update({'error': 'aucun details nutritionnel',
                         'patient': patient, "input_": input_})
-    except InputOutputProgram.DoesNotExist:
+    except ProgramIO.DoesNotExist:
         context.update({'error': 'aucun details nutritionnel',
                         'patient': patient})
 

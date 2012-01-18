@@ -15,7 +15,7 @@ addClickClassToTRElements();{% endblock %}
     <tr><form action="" method="post" id="id_patient">{% csrf_token %}<td style=" border-left-width: 585px;">{{error}}{{message}} {{form_r.search_patient}}</td><td><input class= "buttons" id="id_patient" type="submit" value="ok"/></td></form></tr>
 </table>
 <table class="noprint">
-    <tr><form action="" method="post" id="health_center">{% csrf_token %}<td>{{form.health_center.label}} {{form.health_center}}</td><td><input class= "buttons" id="seat" type="submit" value="ok"/></td></form></tr>
+    <tr><form action="" method="post" id="health_center">{% csrf_token %}<td>{{form.health_center.label}} {{form.health_center}}</td><td><input class= "buttons" id="health_center" type="submit" value="ok"/></td></form></tr>
 </table>
 {% if page.object_list%}
     <span>{% include "_pagination.html" %}</span>
@@ -24,7 +24,7 @@ addClickClassToTRElements();{% endblock %}
         {% for patient in page.object_list %}
             <tr>
                 <td><a href="{{patient.url_details_child }}">{{ patient.patient.id }}</a></td><td>{{ patient.patient.first_name.capitalize }}</td><td>{{patient.patient.last_name.capitalize}}</td>
-                <td>{{ patient.patient.surname_mother.capitalize}}</td><td>{{ patient.date}}</td><td>{{ patient.patient.seat}}</td><td>{{ patient.patient.delay_since_last_visit.days }} jours</td>
+                <td>{{ patient.patient.surname_mother.capitalize}}</td><td>{{ patient.date}}</td><td>{{ patient.patient.health_center}}</td><td>{{ patient.patient.delay_since_last_visit.days }} jours</td>
             </tr>
         {% endfor %}
     </table>

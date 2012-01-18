@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 
-from nut.models import Patient, Seat, InputOutputProgram
+from nut.models import Patient, HealthCenter, ProgramIO
 from nut.tools.utils import verification_delay
 
 
@@ -17,7 +17,7 @@ class child_delayForm(forms.Form):
     """ """
     health_center = forms.ChoiceField(label=ugettext_lazy(u"Centre de centé"), \
                          choices=[('', _(u"All"))] + [(health_center.code, health_center.name) \
-                                  for health_center in Seat.objects.all() \
+                                  for health_center in HealthCenter.objects.all() \
                                                           .order_by('name')])
 
 
@@ -43,7 +43,7 @@ def child_delay(request, *args, **kwargs):
         form = child_delayForm(request.POST)
         if "health_center" in request.POST:
             if request.POST.get('health_center'):
-                patients = InputOutputProgram.objects.filter(patient__seat__code=request \
+                patients = ProgramIO.objects.filter(patient__Health_center__code=request \
                                   .POST.get('health_center'))
         if "search_patient" in request.POST:
             if request.POST.get('search_patient'):
@@ -58,7 +58,7 @@ def child_delay(request, *args, **kwargs):
                 except ValueError:
                     pass
 
-                #~ patients = InputOutputProgram().objects.filter(query)
+                #~ patients = ProgramIO().objects.filter(query)
 
                 if not patients:
                     context.update({"message": u"Votre requête ne trouve"

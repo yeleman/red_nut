@@ -5,12 +5,12 @@
 from django.db import models
 
 
-class Seat(models.Model):
+class HealthCenter(models.Model):
     """ """
     class Meta:
         app_label = 'nut'
-        verbose_name = u"Seat"
-        verbose_name_plural = u"Seats"
+        verbose_name = u"HealthCenter"
+        verbose_name_plural = u"HealthCenters"
     name = models.CharField(max_length=30, verbose_name=("Name"))
     code = models.CharField(max_length=30, verbose_name=("Code"))
 

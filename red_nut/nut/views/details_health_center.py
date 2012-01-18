@@ -5,7 +5,7 @@
 from django import forms
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
-from nut.models import Seat, InputOutputProgram, DataNut, Patient, Stock
+from nut.models import HealthCenter, ProgramIO, DataNut, Patient, Stock
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
                                                             date_graphic
 
@@ -19,7 +19,7 @@ def details_health_center(request, *args, **kwargs):
 
     def count_reason(reason):
         ''' compte le nobre de fois d'une raison '''
-        inp_out = InputOutputProgram.objects.filter(patient__seat=seat)
+        inp_out = ProgramIO.objects.filter(patient__health_center=health_center)
         return inp_out.filter(reason=reason).count()
 
     def avg_(list_):
@@ -36,20 +36,20 @@ def details_health_center(request, *args, **kwargs):
     list_weight = []
     num = kwargs["id"]
     category = 'details_health_center'
-    seat = Seat.objects.get(id=num)
-    patients = Patient.objects.filter(seat=seat)
-    datanuts = DataNut.objects.filter(patient__seat=seat)
-    stocks = Stock.objects.filter(seat=seat)
+    health_center = HealthCenter.objects.get(id=num)
+    patients = Patient.objects.filter(health_center=health_center)
+    datanuts = DataNut.objects.filter(patient__health_center=health_center)
+    stocks = Stock.objects.filter(health_center=health_center)
 
-    output_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
+    output_programs = ProgramIO.objects.filter(patient__health_center=health_center, \
                                                         event='s')
-    input_programs = InputOutputProgram.objects.filter(patient__seat=seat, \
+    input_programs = ProgramIO.objects.filter(patient__health_center=health_center, \
                                                         event='e')
 
     # graphic
     try:
-        l_date = date_graphic(InputOutputProgram.objects \
-                                            .filter(patient__seat=seat) \
+        l_date = date_graphic(ProgramIO.objects \
+                                            .filter(patient__health_center=health_center) \
                                             .order_by("date")[0].date)
     except:
         l_date = []
@@ -60,11 +60,11 @@ def details_health_center(request, *args, **kwargs):
     diagnose_ni = []
     if l_date:
         for da in l_date:
-            input_in_prog = InputOutputProgram.objects \
-                                    .filter(patient__seat=seat, event="e", \
+            input_in_prog = ProgramIO.objects \
+                                    .filter(patient__health_center=health_center, event="e", \
                                      date__lte=da)
-            out_in_prog = InputOutputProgram.objects \
-                                    .filter(patient__seat=seat, event="s", \
+            out_in_prog = ProgramIO.objects \
+                                    .filter(patient__health_center=health_center, event="s", \
                                      date__lte=da)
             input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
                                  not in [i.patient.id for i in out_in_prog]]
@@ -112,13 +112,13 @@ def details_health_center(request, *args, **kwargs):
     dict_["SAM_count"] = list_mam_sam.count('SAM')
     dict_["SAM_"] = list_mam_sam.count('SAM+')
     dict_["actif"] = patients.count()
-    dict_["seat"] = seat.name
-    dict_["code"] = seat.code
+    dict_["health_center"] = health_center.name
+    dict_["code"] = health_center.code
     dict_["abandon"] = count_reason('a')
     dict_["guerison"] = count_reason('h')
     dict_["deces"] = count_reason('d')
     dict_["non_repondant"] = count_reason('n')
-    dict_["url"] = reverse("excel_export", args=[seat.id])
+    dict_["url"] = reverse("excel_export", args=[health_center.id])
     try:
         dict_["taux_abandon"] = taux(dict_["abandon"], dict_["actif"])
     except ZeroDivisionError:

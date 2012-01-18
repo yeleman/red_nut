@@ -54,11 +54,8 @@ def nut_stock(message):
     def format_dict(values):
         """ forme un dictionnaire avec une liste de valeur """
         # create variables from text messages.
-        args_names = ['intrant',
-                   'stock_initial',
-                   'stock_received',
-                   'stock_used',
-                   'stock_lost']
+        args_names = ['intrant', 'stock_initial', 'stock_received',
+                      'stock_used', 'stock_lost']
         args_values = values.split()
         dict_ = dict(zip(args_names, args_values))
         return dict_
@@ -228,7 +225,7 @@ def nut_register(message):
         patient.seat = seat
         patient.save()
 
-        input_ =  InputOutputProgram()
+        input_ =  ProgramIO()
         input_.patient_id = patient.id
         input_.event = "e"
         input_.date = datetime.today()
@@ -470,7 +467,7 @@ def disable_child(message):
     kw1, kw2, id_, reason = message.content.strip().lower().split()
     try:
         patient = Patient.objects.get(id=id_)
-        input_ = InputOutputProgram()
+        input_ = ProgramIO()
         input_.reason = reason
         input_.event = "s"
         input_.patient_id = id_

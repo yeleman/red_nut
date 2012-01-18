@@ -3,7 +3,7 @@
 # maintainer: Alou
 
 from django.db import models
-from Seat import Seat
+from HealthCenter import HealthCenter
 from Period import Period
 from Input import Input
 from DataNut import DataNut
@@ -15,11 +15,10 @@ class Stock(models.Model):
         app_label = 'nut'
         verbose_name = u"Stock"
         verbose_name_plural = u"Stocks"
-    seat = models.ForeignKey(Seat,\
-                                related_name='seat',\
-                                verbose_name="Seat")
-    period = models.ForeignKey(Period,
-                                        related_name='period',\
+    health_center = models.ForeignKey(HealthCenter,\
+                                related_name='Health_center',\
+                                verbose_name="Health_center")
+    period = models.ForeignKey(Period,related_name='period',\
                                         verbose_name='Period')
     intrant = models.ForeignKey(Input,\
                                     related_name='input',\
@@ -36,5 +35,5 @@ class Stock(models.Model):
 
     def __unicode__(self):
         restant = self.remaining()
-        return u'%(seat)s le restant est %(re)s' % {"seat": self.seat,\
-                                                         "re": restant}
+        return u'%(health_center)s le restant est %(re)s' \
+                 % {"health_center": self.health_center, "re": restant}

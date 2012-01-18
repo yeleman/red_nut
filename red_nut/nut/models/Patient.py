@@ -4,7 +4,7 @@
 
 from datetime import date
 from django.db import models
-from Seat import Seat
+from HealthCenter import HealthCenter
 
 
 class Patient(models.Model):
@@ -24,9 +24,9 @@ class Patient(models.Model):
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     surname_mother = models.CharField(max_length=30, \
                                       verbose_name=(u"Prénom de la mère"))
-    seat = models.ForeignKey(Seat,
+    health_center = models.ForeignKey(HealthCenter,
                             related_name='patient',\
-                            verbose_name=("Seat"))
+                            verbose_name=("health_center"))
     create_date = models.DateField(verbose_name=("Date d'enregistrement"),\
                                    default=date.today)
     birth_date = models.DateField(verbose_name=(u"Date de naissance"))
@@ -35,15 +35,24 @@ class Patient(models.Model):
 
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s \
-                                                        %(seat)s') % \
+                                                        %(health_center)s') % \
                 {"first_name": self.first_name, "last_name": self.last_name, \
                  "mother": self.surname_mother, "birth_date": self.birth_date, \
-                 "seat": self.seat}
+                 "health_center": self.health_center}
 
     def full_name(self):
         return (u'%(first_name)s %(last_name)s' % \
                                 {"first_name": self.first_name.capitalize(),
                                 "last_name": self.last_name.capitalize()})
+
+    def full_name_id(self):
+        return u"%s#%d" % (self.full_name(), self.id)
+
+    def full_name_mother(self):
+        return u"%s/%s" % (self.full_name(), self.surname_mother.capitalize())
+
+    def full_name_all(self):
+        return u"%s#%d" % (self.full_name_mother(), self.id)
 
     def last_visit(self):
         last = self.last_data_nut()
@@ -60,6 +69,6 @@ class Patient(models.Model):
         return DataNut.objects.filter(patient=self).order_by('-date')[0]
 
     def last_data_event(self):
-        from InputOutputProgram import InputOutputProgram
-        return InputOutputProgram.objects.filter(patient=self)\
+        from ProgramIO import ProgramIO
+        return ProgramIO.objects.filter(patient=self)\
                                          .order_by('-date')[0]

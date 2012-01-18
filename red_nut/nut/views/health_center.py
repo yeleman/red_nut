@@ -3,13 +3,12 @@
 # maintainer: Fadiga
 
 from django import forms
-#~ from django.contrib import meseatages
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from nut.models import Seat, InputOutputProgram
+from nut.models import HealthCenter, ProgramIO
 
 
 def health_center(request):
@@ -17,18 +16,18 @@ def health_center(request):
     context = {}
     context.update({"category": category})
 
-    seats = Seat.objects.all()
-    inp_out = InputOutputProgram.objects.all()
-    liste_seat = []
-    for seat in seats:
+    health_centers = HealthCenter.objects.all()
+    inp_out = ProgramIO.objects.all()
+    liste_health_center = []
+    for health_center in health_centers:
         dict_ = {}
-        dict_["seat"] = seat.name
-        dict_["nb_child"] = inp_out.filter(patient__seat__id=seat.id).count()
-        dict_["input"] = inp_out.filter(patient__seat__id=seat.id, \
+        dict_["health_center"] = health_center.name
+        dict_["nb_child"] = inp_out.filter(patient__health_center__id=health_center.id).count()
+        dict_["input"] = inp_out.filter(patient__health_center__id=health_center.id, \
                                                             event="e").count()
-        dict_["nb_healing"] = inp_out.filter(patient__seat__id=seat.id, \
+        dict_["nb_healing"] = inp_out.filter(patient__health_center__id=health_center.id, \
                                                         reason="a").count()
-        dict_["url"] = reverse("details_health_center", args=[seat.id])
-        liste_seat.append(dict_)
-    context.update({"liste_seat": liste_seat})
+        dict_["url"] = reverse("details_health_center", args=[health_center.id])
+        liste_health_center.append(dict_)
+    context.update({"liste_health_center": liste_health_center})
     return render(request, 'health_center.html', context)

@@ -7,7 +7,7 @@ from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 
-from nut.models import Seat, InputOutputProgram, Patient, DataNut
+from nut.models import ProgramIO, Patient, DataNut
 from nosmsd.models import Inbox, SentItems
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
                                         date_graphic, verification_delay
@@ -18,7 +18,7 @@ def dashboard(request):
     context = {"category": 'dashboard'}
 
     # Les ptients qui ne sont plus dans le programme
-    out_program = InputOutputProgram.objects.filter(event="s")
+    out_program = ProgramIO.objects.filter(event="s")
     # Les données nutritionnelles
     nutritional_data = DataNut.objects.all()
 
@@ -80,7 +80,7 @@ def dashboard(request):
     context.update({"avg_weight": "%.2f" % avg_weight})
     # graphic
     try:
-        l_date = date_graphic(InputOutputProgram.objects.order_by("date")[0].date)
+        l_date = date_graphic(ProgramIO.objects.order_by("date")[0].date)
     except:
         l_date = []
     total_ = []
@@ -90,9 +90,9 @@ def dashboard(request):
     diagnose_ni = []
     if l_date:
         for da in l_date:
-            input_in_prog = InputOutputProgram.objects.filter(event="e", \
+            input_in_prog = ProgramIO.objects.filter(event="e", \
                                                                 date__lte=da)
-            out_in_prog = InputOutputProgram.objects.filter(event="s", \
+            out_in_prog = ProgramIO.objects.filter(event="s", \
                                                                 date__lte=da)
             input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
                                  not in [i.patient.id for i in out_in_prog]]
