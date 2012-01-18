@@ -13,10 +13,9 @@ def details_child(request, *args, **kwargs):
     category = 'details_child'
     context = {}
     patient = Patient.objects.get(id=num)
-    patient_last = ProgramIO.objects.get(patient__id=patient.id)
 
-    if patient_last:
-        patient.status = patient_last.get_event_display()
+    if patient.last_data_event():
+        patient.status = patient.last_data_event().get_event_display()
     try:
         output = ProgramIO.objects.filter(patient__id=patient.id, event='s') \
                                    .latest('date')

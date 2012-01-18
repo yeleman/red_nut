@@ -6,5 +6,5 @@ from Input import Input
 from Patient import Patient
 from ProgramIO import ProgramIO
 from HealthCenter import HealthCenter
-from Stock import Stock
+from ConsumptionReport import ConsumptionReport
 from DataNut import DataNut

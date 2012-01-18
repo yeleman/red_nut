@@ -10,7 +10,7 @@ from models.Patient  import Patient
 from models.ProgramIO  import ProgramIO
 from models.HealthCenter  import HealthCenter
 from models.DataNut  import DataNut
-from models.Stock  import Stock
+from models.ConsumptionReport  import ConsumptionReport
 
 
 class HealthCenterAdmin(admin.ModelAdmin):
@@ -36,4 +36,4 @@ admin.site.register(Input)
 admin.site.register(ProgramIO, ProgramIOAdmin)
 admin.site.register(Patient, PatientAdmin)
 admin.site.register(Period)
-admin.site.register(Stock)
+admin.site.register(ConsumptionReport)

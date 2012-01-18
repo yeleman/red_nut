@@ -110,7 +110,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'nut',
-    #~ 'nosmsd',
+    'nosmsd',
     'reversion',
     'babeldjango',
     'django_extensions'

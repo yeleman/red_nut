@@ -4,7 +4,7 @@
 
 from django.http import HttpResponse
 from nut.exports import report_as_excel
-from nut.models import Stock, HealthCenter, Patient, DataNut
+from nut.models import ConsumptionReport, HealthCenter, Patient, DataNut
 
 
 def excel_export(request, *args, **kwargs):
@@ -13,7 +13,7 @@ def excel_export(request, *args, **kwargs):
     health_Center = HealthCenter.objects.get(id=num)
     patients = Patient.objects.filter(health_Center=health_Center)
     datanuts = DataNut.objects.filter(patient__health_Center=health_Center)
-    stocks = Stock.objects.filter(health_Center=health_Center)
+    ConsumptionReports = ConsumptionReport.objects.filter(health_Center=health_Center)
     context.update({'stocks': stocks})
 
     # check permission or raise 403

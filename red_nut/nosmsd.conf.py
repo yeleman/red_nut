@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
-NOSMSD_HANDLER = 'red_nut.nut_sms.nut.handler'
+NOSMSD_HANDLER = 'red_nut.nut_sms.nut2.handler'
 NOSMSD_GETTEXT = True
 NOSMSD_GETTEXT_LOCALE = 'fr_FR.UTF-8'
 

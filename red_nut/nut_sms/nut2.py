@@ -1,3 +1,6 @@
+# encoding=utf-8
+
+import re
 
 from nosmsd.utils import send_sms
 
@@ -5,10 +8,6 @@ from red_nut.nut.models import *
 from red_nut.nut.models.Period import MonthPeriod
 
 from datetime import date
-
-logger = logging.getLogger(__name__)
-locale.setlocale(locale.LC_ALL, settings.DEFAULT_LOCALE)
-
 
 def handler(message):
     """ NUT SMS router """
@@ -21,12 +20,12 @@ def handler(message):
             'research': nut_search,
             'off': nut_disable}
 
-        if message.text.lower().startswith('nut '):
+        if message.content.lower().startswith('nut '):
             for cmd_id, cmd_target in commands.items():
                 command = '%s %s' % (keyword, cmd_id)
-                if message.text.lower().startswith(command):
+                if message.content.lower().startswith(command):
                     n, args = re.split(r'^%s\s?' \
-                                       % command, message.text.lower().strip())
+                                       % command, message.content.lower().strip())
                     return cmd_target(message,
                                       args=args,
                                       sub_cmd=cmd_id,
@@ -35,11 +34,9 @@ def handler(message):
             return False
 
     if main_nut_handler(message):
-        message.status = Message.STATUS_PROCESSED
+        message.status = message.STATUS_PROCESSED
         message.save()
-        logger.info(u"[HANDLED] msg: %s" % message)
         return True
-    logger.info(u"[NOT HANDLED] msg : %s" % message)
     return False
 
 
@@ -76,9 +73,9 @@ def nut_register(message, args, sub_cmd, cmd):
 
     # creating the patient record
     patient = Patient()
-    patient.first_name = first_name
-    patient.last_name = last_name
-    patient.surname_mother = mother
+    patient.first_name = first_name.replace('_', ' ').title()
+    patient.last_name = last_name.replace('_', ' ').title()
+    patient.surname_mother = mother.replace('_', ' ').title()
     patient.birth_date = date(*[int(v) for v in dob.split('-')])
     patient.create_date = date.today()
     patient.sex = sex.upper()
@@ -92,15 +89,15 @@ def nut_register(message, args, sub_cmd, cmd):
     programio = ProgramIO() # ProgramIO
     programio.patient = patient
     programio.event = programio.EN_CHARGE
-    programio.date = datetime.today()
+    programio.date = date.today()
     programio.save()
 
     # creating a followup event
     weight = float(weight)
     height = int(height)
     oedema = {'yes': DataNut.OEDEMA_YES,
-              'no': OEDEMA_NO,
-              'unknown': OEDEMA_UNKNOWN}[oedema.lower()]
+              'no': DataNut.OEDEMA_NO,
+              'unknown': DataNut.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
     nb_plumpy_nut = int(nb_plumpy_nut) if not nb_plumpy_nut.lower() == '-' else 0
     datanut = add_followup_data(patient=patient, weight=weight,
@@ -121,7 +118,7 @@ def nut_register(message, args, sub_cmd, cmd):
     return True
 
 
-def add_followup_data(**kwargs)
+def add_followup_data(**kwargs):
     try:
         datanut = DataNut(**kwargs)
         datanut.save()
@@ -154,8 +151,8 @@ def nut_followup(message, args, sub_cmd, cmd):
     weight = float(weight)
     height = int(height)
     oedema = {'yes': DataNut.OEDEMA_YES,
-              'no': OEDEMA_NO,
-              'unknown': OEDEMA_UNKNOWN}[oedema.lower()]
+              'no': DataNut.OEDEMA_NO,
+              'unknown': DataNut.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
     nb_plumpy_nut = int(nb_plumpy_nut) if not nb_plumpy_nut.lower() == '-' else 0
     datanut = add_followup_data(patient=patient, weight=weight,
@@ -175,11 +172,67 @@ def nut_search(message, args, sub_cmd, cmd):
             nut research code_health_center first_name(op) last_name(op)
              surname_mother(op)
             None = n
+            example 1: nut research pmib iba Fad Diarra
+            example 2: nut research pmib - Fad Diarra --> "Si le first_name vide"
+            example 3: nut research pmib - Fad n --> "Si le first_name et surname_mother sont vide"
+
         Outgoing:
             Il existe nbr de resultat patient(s) du prénom first_name: last_name
             surname_mother de l'id 7, last_name surname_mother de l'id 8.
             or  Il n'existe aucun patient du prénom first_name """
 
+    try:
+        hc_code, first, last, mother = args.split()
+    except:
+        return resp_error(message, u"recherche")
+
+    try:
+        hc = HealthCenter.objects.get(code=hc_code)
+    except:
+        message.respond(u"[ERREUR] %(hc)s n'est pas un code de Centre "
+                        u"valide." % {'hc': hc_code})
+        return True
+
+    first = first.replace('_', ' ') if first != '-' else None
+    last = last.replace('_', ' ') if last != '-' else None
+    mother = mother.replace('_', ' ') if mother != '-' else None
+
+    patients = Patient.objects.filter(health_center=hc)
+
+    display = ['first', 'last', 'mother']
+
+    if first:
+        patients = patients.filter(first_name__icontains=first)
+        display.remove('first')
+
+    if last:
+        patients = patients.filter(last_name__icontains=last)
+        display.remove('last')
+
+    if mother:
+        patients = patients.filter(surname_mother__icontains=mother)
+        display.remove('mother')
+
+    if not len(display):
+        fmt = u"%(first)s#%(id)s"
+    else:
+        fmt = u"/".join(["%%(%s)s" % d for d in display ]) + u"#%(id)s"
+
+    def display_name(p, fmt):
+        return fmt % {'id': p.id,
+                      'first': p.first_name.title(),
+                      'last': p.last_name.title(),
+                      'mother': p.surname_mother.title()}
+
+
+    if not len(patients.all()):
+        message.respond(u"[ERREUR] Pas de patient trouve. Essayez une recherche plus large.")
+        return True
+
+    msg = u"[SUCCES] %d trouves: %s" % (len(patients.all()),
+          ", ".join([display_name(patient, fmt) for patient in patients.all()]))
+    message.respond(msg[:160])
+    return True
 
 def nut_disable(message, args, sub_cmd, cmd):
     """  Incomming:
@@ -192,7 +245,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     try:
         patient_id, reason = args.split()
     except:
-        return resp_error(message, u"sorti")
+        return resp_error(message, u"sortie")
     try:
         patient = Patient.objects.get(id=patient_id)
     except:
@@ -204,7 +257,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     programio.patient = patient
     programio.event = programio.SORTI
     programio.reason = reason
-    programio.date = datetime.today()
+    programio.date = date.today()
     programio.save()
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
                     u"du programme." %
@@ -214,9 +267,71 @@ def nut_disable(message, args, sub_cmd, cmd):
 
 def nut_stock(message, args, sub_cmd, cmd):
     """ Incomming:
-            nut stock type_health_center code_health_center month year #intrant stock_initial
-            stock_received stock_used stock_lost #intrant stock_initial
-            stock_received stock_used stock_lost
+            nut stock type_health_center code_health_center month year #input_type initial
+            received used received #input_type initial
+            received used received
+            example: nut stock URENAM pmib 1 2012 #nie 11 22 18 2 #csb 22 22 22 2 #uni 2 32 22 2 #hui 21 25 45 1 #suc 23 12 30 0 #mil 32 15 32 2
         Outgoing:
             [SUCCES] Le rapport de stock de health_center a ete bien enregistre.
             or error message """
+
+    try:
+        general, reports = args.split('#', 1)
+        hc_type, hc_code, month, year = general.split()
+    except:
+        return resp_error(message, u"stock")
+
+    try:
+        hc = HealthCenter.objects.get(code=hc_code)
+    except:
+        message.respond(u"[ERREUR] %(hc)s n'est pas un code de Centre "
+                        u"valide." % {'hc': hc_code})
+        return True
+
+    try:
+        period = MonthPeriod.find_create_from(year=int(year), month=int(month))
+    except:
+        message.respond(u"[ERREUR] %s-%s n'est pas une periode valide."
+                        % (month, year))
+        return True
+
+    now_period = MonthPeriod.find_create_by_date(date.today())
+    if period != now_period.previous():
+        message.respond(u"[ERREUR] Impossible d'enregistrer le rapport de conso pour %s. Envoyez pour %s"
+                        % (period.full_name(), now_period.previous().full_name()))
+        return True
+
+    try:
+        all_reports = reports.split('#')
+    except:
+        return resp_error(message, u"stock")
+
+    success = []
+    errors = []
+    for areport in all_reports:
+        try:
+            icode, initial, received, used, lost = areport.split()
+            input_type = Input.objects.get(code=icode.lower())
+        except:
+            errors.append(icode)
+
+        if ConsumptionReport.objects.filter(period=period, health_center=hc, input_type=input_type).count():
+            cr = ConsumptionReport.objects.get(period=period, health_center=hc, input_type=input_type)
+        else:
+            cr = ConsumptionReport(period=period, health_center=hc, input_type=input_type)
+        cr.initial = int(initial)
+        cr.received = int(received)
+        cr.used = int(used)
+        cr.lost = int(lost)
+        try:
+            cr.save()
+            success.append(cr)
+        except:
+            errors.append(icode)
+
+    if len(errors):
+        message.respond(u"[ERREUR] %d rapport de conso en erreur. Verifiez toutes les donnees et renvoyez -- %s" % (len(error), ', '.join(errors)))
+        return True
+
+    message.respond(u"[SUCCES] %d rapports de conso enregistres pour %s." % (len(success), period.full_name()))
+    return True

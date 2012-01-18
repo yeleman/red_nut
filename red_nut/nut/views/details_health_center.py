@@ -5,7 +5,7 @@
 from django import forms
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
-from nut.models import HealthCenter, ProgramIO, DataNut, Patient, Stock
+from nut.models import HealthCenter, ProgramIO, DataNut, Patient, ConsumptionReport
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
                                                             date_graphic
 
@@ -39,7 +39,7 @@ def details_health_center(request, *args, **kwargs):
     health_center = HealthCenter.objects.get(id=num)
     patients = Patient.objects.filter(health_center=health_center)
     datanuts = DataNut.objects.filter(patient__health_center=health_center)
-    stocks = Stock.objects.filter(health_center=health_center)
+    consumption_reports = ConsumptionReport.objects.filter(health_center=health_center)
 
     output_programs = ProgramIO.objects.filter(patient__health_center=health_center, \
                                                         event='s')
@@ -140,6 +140,6 @@ def details_health_center(request, *args, **kwargs):
     except ZeroDivisionError:
         dict_["taux_non_repondant"] = 0
 
-    context.update({"category": category, 'dict_': dict_, 'stocks': stocks})
+    context.update({"category": category, 'dict_': dict_, 'consumption_reports': consumption_reports})
 
     return render(request, 'details_health_center.html', context)
