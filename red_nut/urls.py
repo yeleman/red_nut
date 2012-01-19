@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     url(r'^about/$', direct_to_template, \
          {'template': 'about.html'}, name='about'),
 
-    url(r'^excel_export/(?P<id>\d+)*$', views.excel_export, name='excel_export'),
+    url(r'^excel_export/?$', views.excel_export, name='excel_export'),
 
     # Uncomment the next line to enable the admin:
     #url(r'^admin/', include(admin.site.urls)),

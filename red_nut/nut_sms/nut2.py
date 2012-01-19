@@ -66,7 +66,7 @@ def nut_register(message, args, sub_cmd, cmd):
         # On essai prendre le seat
         hc = HealthCenter.objects.get(code=hc_code)
     except:
-        # On envoi un sms pour signaler que le code n'est pas valid
+        # On envoi un sms pour signaler que le code n'est pas valide
         message.respond(u"[ERREUR] %(hc)s n'est pas un code de Centre "
                         u"valide." % {'hc': hc_code})
         return True
