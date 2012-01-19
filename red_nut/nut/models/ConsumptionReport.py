@@ -11,14 +11,16 @@ from DataNut import DataNut
 
 class ConsumptionReport(models.Model):
     """ """
+
     class Meta:
         app_label = 'nut'
         verbose_name = u"ConsumptionReport"
         verbose_name_plural = u"ConsumptionReports"
+
     health_center = models.ForeignKey(HealthCenter,\
                                 related_name='Health_center',\
                                 verbose_name="Health_center")
-    period = models.ForeignKey(Period,related_name='period',\
+    period = models.ForeignKey(Period, related_name='period',\
                                         verbose_name='Period')
     input_type = models.ForeignKey(Input,\
                                     related_name='input',\

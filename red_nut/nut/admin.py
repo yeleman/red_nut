@@ -28,7 +28,7 @@ class ProgramIOAdmin(admin.ModelAdmin):
 
 class DataNutAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'patient', 'date', 'weight', \
-                    'height', 'oedema', 'muac', 'danger_sign')
+                    'height', 'oedema', 'muac')
 
 admin.site.register(HealthCenter, HealthCenterAdmin)
 admin.site.register(DataNut, DataNutAdmin)

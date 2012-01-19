@@ -5,7 +5,8 @@
 from django import forms
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
-from nut.models import HealthCenter, ProgramIO, DataNut, Patient, ConsumptionReport
+from nut.models import HealthCenter, ProgramIO, DataNut, Patient, \
+                                                        ConsumptionReport
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
                                                             date_graphic
 
@@ -19,7 +20,8 @@ def details_health_center(request, *args, **kwargs):
 
     def count_reason(reason):
         ''' compte le nobre de fois d'une raison '''
-        inp_out = ProgramIO.objects.filter(patient__health_center=health_center)
+        inp_out = ProgramIO.objects \
+                           .filter(patient__health_center=health_center)
         return inp_out.filter(reason=reason).count()
 
     def avg_(list_):
@@ -39,19 +41,22 @@ def details_health_center(request, *args, **kwargs):
     health_center = HealthCenter.objects.get(id=num)
     patients = Patient.objects.filter(health_center=health_center)
     datanuts = DataNut.objects.filter(patient__health_center=health_center)
-    consumption_reports = ConsumptionReport.objects.filter(health_center=health_center)
+    consumption_reports = ConsumptionReport.objects \
+                                           .filter(health_center=health_center)
     print consumption_reports
 
-    output_programs = ProgramIO.objects.filter(patient__health_center=health_center, \
-                                                        event='s')
-    input_programs = ProgramIO.objects.filter(patient__health_center=health_center, \
-                                                        event='e')
+    output_programs = ProgramIO.objects \
+                               .filter(patient__health_center=health_center, \
+                                                    event=ProgramIO.SUPPORT)
+    input_programs = ProgramIO.objects\
+                              .filter(patient__health_center=health_center, \
+                                                        event=ProgramIO.OUT)
 
     # graphic
     try:
         l_date = date_graphic(ProgramIO.objects \
-                                            .filter(patient__health_center=health_center) \
-                                            .order_by("date")[0].date)
+                            .filter(patient__health_center=health_center) \
+                            .order_by("date")[0].date)
     except:
         l_date = []
     total_ = []
@@ -61,12 +66,13 @@ def details_health_center(request, *args, **kwargs):
     diagnose_ni = []
     if l_date:
         for da in l_date:
-            input_in_prog = ProgramIO.objects \
-                                    .filter(patient__health_center=health_center, event="e", \
-                                     date__lte=da)
+            input_in_prog = ProgramIO\
+                     .objects.filter(patient__health_center=health_center,
+                                             event=ProgramIO.SUPPORT,
+                                             date__lte=da)
             out_in_prog = ProgramIO.objects \
-                                    .filter(patient__health_center=health_center, event="s", \
-                                     date__lte=da)
+                          .filter(patient__health_center=health_center,
+                                  event="s", date__lte=da)
             input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
                                  not in [i.patient.id for i in out_in_prog]]
             data = DataNut.objects.order_by('date').filter(date__lte=da)
@@ -141,6 +147,7 @@ def details_health_center(request, *args, **kwargs):
     except ZeroDivisionError:
         dict_["taux_non_repondant"] = 0
 
-    context.update({"category": category, 'dict_': dict_, 'consumption_reports': consumption_reports})
+    context.update({"category": category, 'dict_': dict_, \
+                    'consumption_reports': consumption_reports})
 
     return render(request, 'details_health_center.html', context)

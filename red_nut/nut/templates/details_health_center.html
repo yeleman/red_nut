@@ -7,30 +7,28 @@
 
 <div id="context">
     {% if dict_ %}
-    <h2>Détails du centre de santé {{dict_.health_center}}/{{dict_.code}} </h2>
+        <h2>Détails du centre de santé {{dict_.health_center}}/{{dict_.code}} </h2>
         <table>
             <tr><th>Nombre enfants enregistrés</th><td>{{dict_.actif}}</td></tr>
             <tr><th>Nombre enfants MAM</th><td>{{dict_.MAM_count}}</td></tr>
             <tr><th>Nombre enfants MAS </th><td>{{dict_.SAM_count}}</td></tr>
             <tr><th>Nombre enfants MAS+</th><td>{{dict_.SAM_}}</td></tr>
-            <tr><th>Nombre abandon / taux abandon</th><td>{{dict_.abandon}} / {{dict_.taux_abandon}} %</td>
-            </tr>
+            <tr><th>Nombre abandon / taux abandon</th><td>{{dict_.abandon}} / {{dict_.taux_abandon}} %</td></tr>
             <tr><th>Taux guerison</th><td>{{dict_.taux_guerison}} %</td></tr>
             <tr><th>Taux déces</th><td>{{dict_.taux_deces}} %</td></tr>
             <tr><th>Taux non repondant</th><td>{{dict_.taux_non_repondant}} %</td></tr>
             {% if dict_.avg_days != None %}
                 <tr><th>Durée moyenne dans le programme</th><td>{{dict_.avg_days}} jours</td></tr>
             {% endif %}
+
             {% if dict_.avg_diff_weight != None %}
                 <tr><th>Gain de poids moyen</th><td>{{dict_.avg_diff_weight}} kg</td></tr>
             {% endif %}
         </table>
     {% endif %}
 
-  	<div class="rightbuttons">
-        <a href="{{dict_.url}}">
-            <button class="formbutt download">Télécharger une version Excel du rapport de Stock</button>
-        </a>
+    <div class="rightbuttons">
+        <a href="{{dict_.url}}"><button class="formbutt download">Télécharger une version Excel du rapport de Stock</button></a>
     </div>
 
     {% if consumption_reports %}
@@ -40,9 +38,9 @@
             {% for stock in consumption_reports %}
                 <tr>
                     <td>{{stock.input_type.name}} ({% if stock.intrant.unit == 'ba' %}sachet{% endif %}
-                        {% if stock.input_type.unit == 'g' %} kg{% endif %}
-                        {% if stock.input_type.unit == 'bo' %} boite{% endif %}
-                        {% if stock.input_type.unit == 'l' %} litre{% endif %})
+                        {% if stock.input_type.unit == 'g' %} kg {% endif %}
+                        {% if stock.input_type.unit == 'bo' %} boite {% endif %}
+                        {% if stock.input_type.unit == 'l' %} litre {% endif %})
                     </td>
                     <td>{{stock.initial}} </td>
                     <td>{{stock.received}} </td>
@@ -54,9 +52,11 @@
             {% endfor %}
         </table>
     {% endif %}
+
     {% if graph_data %}
         <h3 class="caption"><strong>Figure</strong> Courbe historique du nombre enfants dans le programme.</h3>
         <div id="graph"></div>
     {% endif %}
 </div>
+
 {% endblock %}

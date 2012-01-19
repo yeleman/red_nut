@@ -10,8 +10,10 @@ addClickClassToTRElements();{% endblock %}
 <div id="context">
     <h2>Centres de santé</h2>
     <table>
-        <tr><th>Centre de santé</th><th>Nb d'enfants enregistrés</th><th>Suivi</th><th>Abandon</th>
-        </tr>{% for health_center in liste_health_center %}<tr><td><a href="{{health_center.url }}">{{health_center.health_center}}</td><td>{{health_center.nb_child}}</td><td>{{health_center.input}}</td><td>{{health_center.nb_healing}}</td></tr>{% endfor %}
+        <tr><th>Centre de santé</th><th>Nb d'enfants enregistrés</th><th>Suivi</th><th>Abandon</th></tr>
+        {% for health_center in liste_health_center %}
+            <tr><td><a href="{{health_center.url }}">{{health_center.health_center}}</td><td>{{health_center.nb_child}}</td><td>{{health_center.input}}</td><td>{{health_center.nb_healing}}</td></tr>
+        {% endfor %}
     </table>
 </div>
 

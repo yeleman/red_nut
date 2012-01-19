@@ -18,7 +18,7 @@ def dashboard(request):
     context = {"category": 'dashboard'}
 
     # Les ptients qui ne sont plus dans le programme
-    out_program = ProgramIO.objects.filter(event="s")
+    out_program = ProgramIO.objects.filter(event=ProgramIO.OUT)
     # Les données nutritionnelles
     nutritional_data = DataNut.objects.all()
 
@@ -30,17 +30,19 @@ def dashboard(request):
     # le nombre total d'enfant
     nbr_total_patient = Patient.objects.all().count()
     # Taux guerison
-    nbr_healing = out_program.filter(reason="h").count()
+    nbr_healing = out_program.filter(reason=ProgramIO.HEALING).count()
     healing_rates = calculation_of_rates(nbr_healing, nbr_total_patient)
     # Taux abandon
-    nbr_abandonment = out_program.filter(reason="a").count()
+    nbr_abandonment = out_program \
+                            .filter(reason=ProgramIO.ADBANDONMENT).count()
     abandonment_rates = calculation_of_rates(nbr_abandonment, \
                                                         nbr_total_patient)
     # Taux déces
-    nbr_deaths = out_program.filter(reason="d").count()
+    nbr_deaths = out_program.filter(reason=ProgramIO.DEATH).count()
     deaths_rates = calculation_of_rates(nbr_deaths, nbr_total_patient)
     # Taux non repondant
-    nbr_non_response = out_program.filter(reason="n").count()
+    nbr_non_response = out_program\
+                            .filter(reason=ProgramIO.NON_RESPONDENT).count()
     non_response_rates = calculation_of_rates(nbr_non_response, \
                                                         nbr_total_patient)
     context.update({"nbr_total_patient": nbr_total_patient, \
@@ -90,10 +92,10 @@ def dashboard(request):
     diagnose_ni = []
     if l_date:
         for da in l_date:
-            input_in_prog = ProgramIO.objects.filter(event="e", \
+            input_in_prog = ProgramIO.objects.filter(event=ProgramIO.SUPPORT,
                                                                 date__lte=da)
-            out_in_prog = ProgramIO.objects.filter(event="s", \
-                                                                date__lte=da)
+            out_in_prog = ProgramIO.objects.filter(event=ProgramIO.OUT,
+                                                             date__lte=da)
             input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
                                  not in [i.patient.id for i in out_in_prog]]
             data = DataNut.objects.order_by('date').filter(date__lte=da)
@@ -136,8 +138,9 @@ def dashboard(request):
 
     # Nbre d'enfant en retard de consultation
     patients_late = [patient for patient in patients \
-                if verification_delay(patient.delay_since_last_visit()) \
-                    and patient.last_data_event().event=="e"].__len__()
+                     if verification_delay(patient.delay_since_last_visit()) \
+                        and patient.last_data_event().event == ProgramIO \
+                        .SUPPORT].__len__()
     # message
     received = Inbox.objects.count()
     sent = SentItems.objects.count()

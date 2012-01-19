@@ -34,12 +34,12 @@ class DataNut(models.Model):
                               choices=OEDEMA_CHOICES)
     muac = models.SmallIntegerField(u"MUAC (mm)", blank=True, null=True)
     danger_sign = models.CharField(max_length=30, \
-                                choices=DANGER_SIGN_CHOICES, \
-                                verbose_name=("Danger sign"), \
-                                blank=True, null=True)
+                                   choices=DANGER_SIGN_CHOICES, \
+                                   verbose_name=("Danger sign"), \
+                                   blank=True, null=True)
     nb_plumpy_nut = models.IntegerField(max_length=30, \
                         verbose_name=(u"Sachets plumùpy nut données"), \
-                            blank=True, null=True)
+                                                blank=True, null=True)
 
     def __unicode__(self):
         return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\

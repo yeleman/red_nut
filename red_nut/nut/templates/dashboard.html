@@ -4,7 +4,9 @@
 {% block title %}Accueil{% endblock %}
 {% block jqueryonload %}{% include "indicator_graph.js" with graph_data=graph_data graph_date=graph_date %}{% endblock %}
 {% block content %}
+
 <div id="context">
+
     <h2>Tableau de bord</h2>
     <table class="center">
         <tr><th>Nombre d'enfants dans le programme</th><td>{{children_in_program}}</td></tr>
@@ -27,5 +29,7 @@
     </table>
     <h3 class="caption"><strong>Figure 1.</strong> Courbe enfants dans le programme</h3>
     <div id="graph"></div>
+
 </div>
+
 {% endblock %}

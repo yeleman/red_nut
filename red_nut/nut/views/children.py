@@ -4,7 +4,7 @@
 
 from django import forms
 from django.shortcuts import render, RequestContext, HttpResponseRedirect
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
@@ -14,10 +14,11 @@ from nut.models import Patient, HealthCenter
 
 class ChildrenForm(forms.Form):
     """ """
-    health_center = forms.ChoiceField(label=ugettext_lazy(u"Centre de centé"), \
-                         choices=[('', _(u"All"))] + [(health_center.code, health_center.name) \
-                                  for health_center in HealthCenter.objects.all() \
-                                                          .order_by('name')])
+    health_center = forms.ChoiceField(label=(u"Centre de centé"),
+                                      choices=[('', _(u"All"))] +
+                                      [(health_center.code, health_center.name)
+                                       for health_center in HealthCenter \
+                                            .objects.all().order_by('name')])
 
 
 class ResearchForm(forms.Form):

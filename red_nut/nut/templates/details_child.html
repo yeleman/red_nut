@@ -17,7 +17,7 @@
             <tr><th>Age</th><td>{{patient.birth_date}}</td></tr>
             <tr><th>Date d'enregistrement</th><td>{{patient.create_date}}</td></tr>
             {% if output %}
-                <tr><th>Date de sortie</th><td>{{output.date}}</td></tr>
+                <tr><th>Date de OUTe</th><td>{{output.date}}</td></tr>
             {% endif %}
             <tr><th> Centre de santé</th><td>{{patient.health_center}}</td></tr>
         </table>
@@ -33,6 +33,7 @@
             <tr><th>Date</th><td>{{datanut.date}}</td></tr>
         </table>
     {% endif %}
+
     {% if datanuts %}
         <h2>Tableau des données nutritionnelles</h2>
         <table>
@@ -54,6 +55,7 @@
             {% endfor %}
         </table>
     {% endif %}
+
     {% if error %}
         <h2>{{error}}</h2>
     {% endif %}

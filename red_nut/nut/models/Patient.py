@@ -19,7 +19,6 @@ class Patient(models.Model):
         (SEX_MALE, u"Masculin"),
         (SEX_FEMELLE, u"Feminin"),)
 
-
     first_name = models.CharField(max_length=30, verbose_name=(u"Prénom"))
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     surname_mother = models.CharField(max_length=30, \
@@ -34,9 +33,11 @@ class Patient(models.Model):
 
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s \
-                                                        %(health_center)s') % \
-                {"first_name": self.first_name, "last_name": self.last_name, \
-                 "mother": self.surname_mother, "birth_date": self.birth_date, \
+                                                   %(health_center)s') % \
+                {"first_name": self.first_name, \
+                 "last_name": self.last_name, \
+                 "mother": self.surname_mother, \
+                 "birth_date": self.birth_date, \
                  "health_center": self.health_center}
 
     def full_name(self):

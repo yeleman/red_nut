@@ -9,9 +9,9 @@ addClickClassToTRElements();{% endblock %}
 
 <div id="context">
 
-<h2>Enfants en retard</h2>
+    <h2>Enfants en retard</h2>
 
-{% if page.object_list%}
+    {% if page.object_list%}
     <span>{% include "_pagination.html" %}</span>
     <table>
         <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>Date de la dernière de la visite</th><th>Centre de santé</th><th>nombre de jour</th></tr>
@@ -22,12 +22,11 @@ addClickClassToTRElements();{% endblock %}
             </tr>
         {% endfor %}
     </table>
-{%else%}
-    <table>
-        <tr> <td>Votre requête ne trouve aucun patient.</td></tr>
-    </table>
-{%endif%}
+    {%else%}
+        <table>
+            <tr> <td>Votre requête ne trouve aucun patient.</td></tr>
+        </table>
+    {%endif%}
 </div>
 
 {% endblock %}
-</script>
