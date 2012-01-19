@@ -4,4 +4,5 @@
     <li {% if category = 'children' %}class="hover"{% endif %}><a href="{% url children %}">Enfants</a></li>
     <li {% if category = 'child_delay' %}class="hover"{% endif %}><a href="{% url child_delay %}">Retard</a></li>
     <li {% if category = 'health_center' %}class="hover"{% endif %}><a href="{% url health_center %}">Centre de santé</a></li>
+    <li {% if category = 'export' %}class="hover"{% endif %}><a href="{% url excel_export %}">Export Excel</a></li>
 </ul>

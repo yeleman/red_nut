@@ -2,6 +2,7 @@
 # encoding=utf-8
 # maintainer: Alou
 
+from datetime import datetime
 from django.http import HttpResponse
 from nut.exports import report_as_excel
 from nut.models import ConsumptionReport, HealthCenter, Patient, DataNut
@@ -9,30 +10,15 @@ from nut.models import ConsumptionReport, HealthCenter, Patient, DataNut
 
 def excel_export(request, *args, **kwargs):
     context = {'category': 'export'}
-    num = kwargs["id"]
-    health_center = HealthCenter.objects.get(id=num)
-    patients = Patient.objects.filter(health_center=health_center)
-    datanuts = DataNut.objects.filter(patient__health_center=health_center)
-    consumptionreports = ConsumptionReport.objects.filter(health_center=health_center)
-    context.update({'consumptionreports': consumptionreports})
+    health_centers = HealthCenter.objects.all()
+    date = datetime.today()
 
-    try:
-        file_name = 'NUT_%(health_center)s.%(month)s.%(year)s.xls' \
-                    % {'health_center': consumptionreports[0].health_center, \
-                       'month': consumptionreports[0].period.middle().month, \
-                       'year': consumptionreports[0].period.middle().year}
-    except IndexError:
-        if patients:
-            file_name = 'NUT_%(health_center)s.xls' \
-                    % {'health_center': patients[0].health_center}
-        else:
-            return HttpResponse('rien')
+    file_name = 'NUT_base%s-%s-%d.xls' % (date.day, date.month, date.year)
 
-    file_content = report_as_excel(consumptionreports, patients, datanuts).getvalue()
+    file_content = report_as_excel(health_centers).getvalue()
 
     response = HttpResponse(file_content, \
                             content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
-    response['Content-Length'] = len(file_content)
 
     return response

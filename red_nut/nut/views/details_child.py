@@ -28,7 +28,7 @@ def details_child(request, *args, **kwargs):
                                    .latest('date')
         data_nuts = DataNut.objects.filter(patient__id=num)
         datanuts = data_nuts.order_by('-date')
-        datanuts = data_nuts.order_by('date')
+        datanuts_ = data_nuts.order_by('date')
         datanut = datanuts.latest('date')
         context.update({'category': category, 'patient': patient, \
                         'input_': input_, 'datanut': datanut, \

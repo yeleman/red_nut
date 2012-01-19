@@ -72,7 +72,7 @@ def details_health_center(request, *args, **kwargs):
                                              date__lte=da)
             out_in_prog = ProgramIO.objects \
                           .filter(patient__health_center=health_center,
-                                  event="s", date__lte=da)
+                                  event=ProgramIO.OUT, date__lte=da)
             input_out_in_prog = [p for p in  input_in_prog if p.patient.id \
                                  not in [i.patient.id for i in out_in_prog]]
             data = DataNut.objects.order_by('date').filter(date__lte=da)
@@ -125,7 +125,7 @@ def details_health_center(request, *args, **kwargs):
     dict_["guerison"] = count_reason('h')
     dict_["deces"] = count_reason('d')
     dict_["non_repondant"] = count_reason('n')
-    dict_["url"] = reverse("excel_export", args=[health_center.id])
+    #~ dict_["url"] = reverse("excel_export", args=[health_center.id])
     try:
         dict_["taux_abandon"] = taux(dict_["abandon"], dict_["actif"])
     except ZeroDivisionError:
