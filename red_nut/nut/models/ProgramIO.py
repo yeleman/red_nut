@@ -35,7 +35,8 @@ class ProgramIO(models.Model):
     reason = models.CharField(max_length=30, \
                               verbose_name=(u"Raison"),\
                               choices=Reason_type, default=NEANT)
-    patient = models.ForeignKey(Patient, verbose_name=("Patient"))
+    patient = models.ForeignKey(Patient, related_name='programios',\
+                                         verbose_name=("Patient"))
 
     def __unicode__(self):
         return (u'%(patient)s %(event)s %(reason)s %(date)s') % \

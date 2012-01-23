@@ -22,8 +22,10 @@ def report_as_excel(health_centers):
     sheet_patient.col(4).width = 0x0d00 * 2
     sheet_patient.col(7).width = 0x0d00 * 2
     sheet_patient.col(8).width = 0x0d00 * 2
-    sheet_patient.col(9).width = 0x0d00 * 2
-    sheet_patient.col(12).width = 0x0d00 * 2
+    sheet_patient.col(11).width = 0x0d00 * 2
+    sheet_patient.col(13).width = 0x0d00 * 2
+    sheet_patient.col(14).width = 0x0d00 * 2
+    sheet_patient.col(17).width = 0x0d00 * 2
     sheet.col(1).width = 0x0d00 * 2
 
     i = 0
@@ -49,13 +51,16 @@ def report_as_excel(health_centers):
     sheet_patient.write(i_, 5, u"DDN")
     sheet_patient.write(i_, 6, u"Sexe")
     sheet_patient.write(i_, 7, u"Date d'enregistrement")
-    sheet_patient.write(i_, 8, u"Dernier status")
-    sheet_patient.write(i_, 9, u"Derniere visite")
-    sheet_patient.write(i_, 10, u"Poids")
-    sheet_patient.write(i_, 11, u"Taille")
-    sheet_patient.write(i_, 12, u"Perimètre brachial")
-    sheet_patient.write(i_, 13, u"Oedème")
-    sheet_patient.write(i_, 14, u"date de visite")
+    sheet_patient.write(i_, 8, u"Derniere visite")
+    sheet_patient.write(i_, 9, u"Poids")
+    sheet_patient.write(i_, 10, u"Taille")
+    sheet_patient.write(i_, 11, u"Perimètre brachial")
+    sheet_patient.write(i_, 12, u"Oedème")
+    sheet_patient.write(i_, 13, u"Date de visite")
+    sheet_patient.write(i_, 14, u"Dernier status")
+    sheet_patient.write(i_, 15, u"Evenement")
+    sheet_patient.write(i_, 16, u"Raison")
+    sheet_patient.write(i_, 17, u"Date de l'evenement")
 
     for health_center in health_centers:
         consumptionreports = ConsumptionReport.objects\
@@ -90,37 +95,44 @@ def report_as_excel(health_centers):
                 sheet_patient.write(i_, 6, patient.sex)
                 sheet_patient.write(i_, 7, patient.create_date\
                                                   .strftime("%d/%m/%Y"))
-                sheet_patient.write(i_, 8, patient.last_data_event()\
-                                                  .event)
-                sheet_patient.write(i_, 9, patient.last_visit()\
+                sheet_patient.write(i_, 8, patient.last_visit()\
                                                   .strftime("%d/%m/%Y"))
-                sheet_patient.write(i_, 10, patient.last_data_nut().weight)
-                sheet_patient.write(i_, 11, patient.last_data_nut().height)
-                sheet_patient.write(i_, 12, patient.last_data_nut().muac)
-                sheet_patient.write(i_, 13, patient.last_data_nut()\
+                sheet_patient.write(i_, 9, patient.last_data_nut().weight)
+                sheet_patient.write(i_, 10, patient.last_data_nut().height)
+                sheet_patient.write(i_, 11, patient.last_data_nut().muac)
+                sheet_patient.write(i_, 12, patient.last_data_nut()\
                                                   .oedema)
+                sheet_patient.write(i_, 14, patient.last_data_event().event)
+                sheet_patient.write(i_, 16, patient.last_data_event().reason)
+                sheet_patient.write(i_, 17, patient.last_data_event().date
+                                                        .strftime("%d/%m/%Y"))
                 if datanut_patients:
                     for data in datanut_patients:
                         if data != patient.last_data_nut():
                             i_ += 1
                             sheet_patient.write(i_, 0,\
-                                        patient.last_data_nut()\
-                                        .patient.id)
-                            sheet_patient.write(i_, 9,\
-                                        patient.last_data_nut()\
-                                        .date.strftime("%d/%m/%Y"))
-                            sheet_patient.write(i_, 10,\
-                                        patient.last_data_nut().weight)
-                            sheet_patient.write(i_, 11,
-                                        patient.last_data_nut().height)
-                            sheet_patient.write(i_, 12,
-                                        patient.last_data_nut().muac)
-                            sheet_patient.write(i_, 13,
-                                    patient.last_data_nut()\
-                                    .oedema)
-                            sheet_patient.write(i_, 14,
-                                    patient.last_data_nut()\
+                                        data.patient.id)
+                            sheet_patient.write(i_, 9, data.weight)
+                            sheet_patient.write(i_, 10, data.height)
+                            sheet_patient.write(i_, 11, data.muac)
+                            sheet_patient.write(i_, 12, data.oedema)
+                            sheet_patient.write(i_, 13, patient\
+                                    .last_data_nut()\
                                     .date.strftime("%d/%m/%Y"))
+            try:
+                patient_programios = patient.programios.order_by('date')
+                for pp in patient_programios:
+                    if pp != patient.last_data_event():
+                        i_ += 1
+                        sheet_patient.write(i_, 0,\
+                                        pp.patient_id)
+                        sheet_patient.write(i_, 15, pp.event)
+                        sheet_patient.write(i_, 16, pp.reason)
+                        sheet_patient.write(i_, 17, pp.date
+                                    .strftime("%d/%m/%Y"))
+            except:
+                pass
+
     stream = StringIO.StringIO()
     book.save(stream)
 
