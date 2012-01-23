@@ -2,9 +2,7 @@
 # encoding=utf-8
 # maintainer: Alou
 
-from django import forms
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
 from nut.models import HealthCenter, ProgramIO, DataNut, Patient, \
                                                         ConsumptionReport
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
@@ -125,7 +123,6 @@ def details_health_center(request, *args, **kwargs):
     dict_["guerison"] = count_reason('h')
     dict_["deces"] = count_reason('d')
     dict_["non_repondant"] = count_reason('n')
-    #~ dict_["url"] = reverse("excel_export", args=[health_center.id])
     try:
         dict_["taux_abandon"] = taux(dict_["abandon"], dict_["actif"])
     except ZeroDivisionError:

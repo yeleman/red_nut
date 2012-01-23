@@ -4,9 +4,8 @@
 
 from datetime import datetime
 from django.http import HttpResponse
-from nut.exports import report_as_excel
-from nut.models import ConsumptionReport, HealthCenter, Patient, DataNut
-
+from nut.export_excel import report_as_excel
+from nut.models import HealthCenter
 
 def excel_export(request, *args, **kwargs):
     context = {'category': 'export'}
