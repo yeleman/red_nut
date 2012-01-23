@@ -22,7 +22,7 @@ def child_delay(request, *args, **kwargs):
     patients = [patient.last_data_event() \
                 for patient in Patient.objects.all() \
                 if verification_delay(patient.delay_since_last_visit()) \
-                    and patient.last_data_event().event == "e"]
+                    and patient.last_data_event().event == ProgramIO.SUPPORT]
     patients.reverse()
 
     for patient in patients:
