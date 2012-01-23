@@ -14,15 +14,7 @@ addClickClassToTRElements();{% endblock %}
     {% if page.object_list%}
     <span>{% include "_pagination.html" %}</span>
     <table>
-        <tr>
-            <th>ID</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Nom de la mère</th>
-            <th>Date de la dernière visite</th>
-            <th>Centre de santé</th>
-            <th>nombre de jour</th>
-        </tr>
+        <tr><th>ID</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>Date dernière visite</th><th>Centre de santé</th><th>nombre de jours</th></tr>
         {% for patient in page.object_list %}
             <tr>
                 <td><a href="{{patient.url_details_child }}">{{ patient.patient.id }}</a></td><td>{{ patient.patient.first_name.capitalize }}</td><td>{{patient.patient.last_name.capitalize}}</td>

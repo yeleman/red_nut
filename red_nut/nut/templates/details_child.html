@@ -7,7 +7,7 @@
 
 <div id="context">
     {% if patient %}
-    <h2>Information enfant</h2>
+    <h2>Information de l'enfant</h2>
         <table>
             <tr><th>ID</th><td>{{patient.id}}</td> </tr>
             <tr><th>Statut</th><td>{{ patient.status }}</td> </tr>
@@ -25,7 +25,7 @@
     {% endif %}
 
     {% if datanut %}
-        <h2>Détails nutritionnels</h2>
+        <h2>dernier détail nutritionnel</h2>
         <table>
             <tr><th>Poids</th><td>{{datanut.weight}} kg </td></tr>
             <tr><th>Taille</th><td>{{datanut.height}} cm </td></tr>
@@ -61,7 +61,7 @@
         <h2>{{error}}</h2>
     {% endif %}
     {% if graph_data %}
-        <h3 class="caption"><strong>Figure</strong>Courbes évolution de l'enfant dans le programme</h3>
+        <h3 class="caption"><strong>Figure</strong> Courbes évolution de l'enfant dans le programme</h3>
         <div id="graph"></div>
     {% endif %}
 </div>

@@ -7,56 +7,29 @@
 addClickClassToTRElements();{% endblock %}
 {% block content %}
 
-    <div id="context">
+<div id="context">
 
-        <h2>Liste des enfants</h2>
-        <table class="noprint">
-            <tr>
-                <form action="" method="post" id="id_patient">{% csrf_token %}
-                    <td style=" border-left-width: 585px;">{{error}}{{message}} {{form_r.search_patient}}</td>
-                    <td><input class= "buttons" id="id_patient" type="submit" value="ok"/></td>
-                </form>
-            </tr>
-        </table>
-        <table class="noprint">
-            <tr>
-                <form action="" method="post" id="health_center">{% csrf_token %}
-                    <td>{{form.health_center.label}} {{form.health_center}}</td>
-                    <td><input class= "buttons" id="health_center" type="submit" value="ok"/>
-                    </td>
-                </form>
-            </tr>
-        </table>
-        {% if page.object_list%}
-            <span>{% include "_pagination.html" %}</span>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Prénom</th>
-                    <th>Nom</th>
-                    <th>Nom de la mère</th>
-                    <th>Sexe</th>
-                    <th>Date de naissance</th>
-                    <th>Centre de santé</th>
-                    <th>Status</th></tr>
-                {% for patient in page.object_list %}
-                    <tr>
-                        <td><a href="{{patient.url_patient }}">{{patient.id}}</a></td>
-                        <td>{{patient.first_name.capitalize}}</td>
-                        <td>{{patient.last_name.capitalize}}</td>
-                        <td>{{patient.surname_mother.capitalize}}</td>
-                        <td>{{ patient.sex}}</td><td>{{ patient.birth_date}}</td>
-                        <td>{{patient.health_center}}</td>
-                        <td>{{patient.last_data_event.get_event_display}}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {%else%}
-            <table>
-                <tr>
-                    <td>Votre requête ne trouve aucun patient.</td>
+    <h2>Liste des enfants</h2>
+    <table class="noprint">
+        <tr><form action="" method="post" id="id_patient">{% csrf_token %}<td style=" border-left-width: 585px;">{{error}}{{message}} {{form_r.search_patient}}</td><td><input class= "buttons" id="id_patient" type="submit" value="ok"/></td></form></tr>
+    </table>
+    <table class="noprint">
+        <tr><form action="" method="post" id="health_center">{% csrf_token %}<td>{{form.health_center.label}} {{form.health_center}}</td><td><input class= "buttons" id="health_center" type="submit" value="ok"/></td></form></tr>
+    </table>
+    {% if page.object_list%}
+        <span>{% include "_pagination.html" %}</span>
+        <table>
+            <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom de la mère</th><th>Sexe</th><th>Date de naissance</th><th>Centre de santé</th><th>Statuts</th></tr>
+            {% for patient in page.object_list %}
+                <tr><td><a href="{{patient.url_patient }}">{{patient.id}}</a></td><td>{{patient.first_name.capitalize}}</td><td>{{patient.last_name.capitalize}}</td>
+                    <td>{{patient.surname_mother.capitalize}}</td><td>{{patient.sex}}</td><td>{{patient.birth_date}}</td><td>{{patient.health_center}}</td><td>{{patient.last_data_event.get_event_display}}</td>
                 </tr>
-            </table>
-        {%endif%}
-    </div>
+            {% endfor %}
+        </table>
+    {%else%}
+        <table>
+            <tr> <td>Votre requête ne trouve aucun patient.</td></tr>
+        </table>
+    {%endif%}
+</div>
 {% endblock %}

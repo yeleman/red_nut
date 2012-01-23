@@ -27,8 +27,14 @@ class ProgramIOAdmin(admin.ModelAdmin):
 
 
 class DataNutAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'patient', 'date', 'weight', \
+    list_display = ('__unicode__', 'date', 'weight', \
                     'height', 'oedema', 'muac')
+
+
+class ConsumptionReportAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'period', 'input_type', 'initial', \
+                    'received', 'used', 'lost')
+
 
 admin.site.register(HealthCenter, HealthCenterAdmin)
 admin.site.register(DataNut, DataNutAdmin)
@@ -36,4 +42,4 @@ admin.site.register(Input)
 admin.site.register(ProgramIO, ProgramIOAdmin)
 admin.site.register(Patient, PatientAdmin)
 admin.site.register(Period)
-admin.site.register(ConsumptionReport)
+admin.site.register(ConsumptionReport, ConsumptionReportAdmin)
