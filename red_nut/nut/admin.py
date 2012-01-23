@@ -18,7 +18,7 @@ class HealthCenterAdmin(admin.ModelAdmin):
 
 
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'first_name', 'last_name', \
+    list_display = ('__unicode__', 'first_name', 'last_name', 'sex',\
                         'surname_mother', 'birth_date', 'health_center')
 
 

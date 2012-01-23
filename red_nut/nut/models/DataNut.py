@@ -24,7 +24,7 @@ class DataNut(models.Model):
     SIGN_DIARRHEA = "d"
     DANGER_SIGN_CHOICES = ((SIGN_DIARRHEA, "Diarrhée"),)
 
-    patient = models.ForeignKey(Patient, related_name='patients',\
+    patient = models.ForeignKey(Patient, related_name='datanuts',\
                                                 verbose_name=("Patients"))
     date = models.DateField(verbose_name=("Date"),\
                                    default=datetime.today)
