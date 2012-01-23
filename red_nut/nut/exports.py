@@ -24,11 +24,10 @@ def report_as_excel(health_centers):
     sheet_patient.col(12).width = 0x0d00 * 2
     sheet.col(1).width = 0x0d00 * 2
 
-    i = 2
-    i_ = 2
+    i = 0
+    i_ = 0
 
     #entete consommation d'intrant
-    sheet.write_merge(0, 0, 0, 8, u"Tableau des consomations d'intrants.")
     sheet.write(i, 0, u"Code")
     sheet.write(i, 1, u"CSCOM")
     sheet.write(i, 2, u"Intrant")
@@ -40,7 +39,7 @@ def report_as_excel(health_centers):
     sheet.write(i, 8, u"Période")
 
     #entete liste des enfants
-    sheet_patient.write_merge(0, 0, 0, 13, u"Liste des patients.")
+
     sheet_patient.write(i_, 0, u"ID")
     sheet_patient.write(i_, 1, u"CSCOM")
     sheet_patient.write(i_, 2, u"Nom")
@@ -55,6 +54,7 @@ def report_as_excel(health_centers):
     sheet_patient.write(i_, 11, u"Taille")
     sheet_patient.write(i_, 12, u"Perimètre brachial")
     sheet_patient.write(i_, 13, u"Oedème")
+    sheet_patient.write(i_, 14, u"date de visite")
 
     for health_center in health_centers:
         consumptionreports = ConsumptionReport.objects\
@@ -85,26 +85,29 @@ def report_as_excel(health_centers):
                 sheet_patient.write(i_, 3, patient.first_name)
                 sheet_patient.write(i_, 4, patient.surname_mother)
                 sheet_patient.write(i_, 5, patient.birth_date\
-                                                  .strftime("%d %b %Y"))
+                                                  .strftime("%d/%m/%Y"))
                 sheet_patient.write(i_, 6, patient.sex)
                 sheet_patient.write(i_, 7, patient.create_date\
-                                                  .strftime("%d %b %Y"))
+                                                  .strftime("%d/%m/%Y"))
                 sheet_patient.write(i_, 8, patient.last_data_event()\
-                                                  .get_event_display())
+                                                  .event)
                 sheet_patient.write(i_, 9, patient.last_visit()\
-                                                  .strftime("%d %b %Y"))
+                                                  .strftime("%d/%m/%Y"))
                 sheet_patient.write(i_, 10, patient.last_data_nut().weight)
                 sheet_patient.write(i_, 11, patient.last_data_nut().height)
                 sheet_patient.write(i_, 12, patient.last_data_nut().muac)
                 sheet_patient.write(i_, 13,patient.last_data_nut()\
-                                                  .get_oedema_display())
+                                                  .oedema)
                 if datanut_patients:
                     for data in datanut_patients:
                         if data != patient.last_data_nut():
                             i_ += 1
+                            sheet_patient.write(i_, 0,\
+                                        patient.last_data_nut()\
+                                        .patient.id)
                             sheet_patient.write(i_, 9,\
                                         patient.last_data_nut()\
-                                        .date.strftime("%d %b %Y"))
+                                        .date.strftime("%d/%m/%Y"))
                             sheet_patient.write(i_, 10,\
                                         patient.last_data_nut().weight)
                             sheet_patient.write(i_, 11,
@@ -113,7 +116,10 @@ def report_as_excel(health_centers):
                                         patient.last_data_nut().muac)
                             sheet_patient.write(i_, 13,
                                     patient.last_data_nut()\
-                                    .get_oedema_display())
+                                    .oedema)
+                            sheet_patient.write(i_, 14,
+                                    patient.last_data_nut()\
+                                    .date.strftime("%d/%m/%Y"))
     stream = StringIO.StringIO()
     book.save(stream)
 
