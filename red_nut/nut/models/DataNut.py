@@ -35,7 +35,7 @@ class DataNut(models.Model):
     muac = models.SmallIntegerField(u"MUAC (mm)", blank=True, null=True)
     danger_sign = models.CharField(max_length=30, \
                                    choices=DANGER_SIGN_CHOICES, \
-                                   verbose_name=("Danger sign"), \
+                                   verbose_name=("Signe de danger"), \
                                    blank=True, null=True)
     nb_plumpy_nut = models.IntegerField(max_length=30, \
                         verbose_name=(u"Sachets plumùpy nut données"), \
@@ -43,9 +43,5 @@ class DataNut(models.Model):
 
     def __unicode__(self):
         return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\
-        "%(danger_sign)s %(date)s" % {"date": self.date,
-                                      "patient": self.patient,
-                                      "height": self.height,
-                                      "weight": self.weight,
-                                      "pb": self.muac,
-                                      "danger_sign": self.danger_sign}
+         % { "patient": self.patient, "height": self.height,
+                "weight": self.weight, "pb": self.muac,}
