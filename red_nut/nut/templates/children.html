@@ -19,10 +19,10 @@ addClickClassToTRElements();{% endblock %}
     {% if page.object_list%}
         <span>{% include "_pagination.html" %}</span>
         <table>
-            <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom de la mère</th><th>Sexe</th><th>Date de naissance</th><th>Centre de santé</th><th>Statuts</th></tr>
+            <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom de la mère</th><th>Date de naissance</th><th>Centre de santé</th><th>Statuts</th></tr>
             {% for patient in page.object_list %}
                 <tr><td><a href="{{patient.url_patient }}">{{patient.id}}</a></td><td>{{patient.first_name.capitalize}}</td><td>{{patient.last_name.capitalize}}</td>
-                    <td>{{patient.surname_mother.capitalize}}</td><td>{{patient.sex}}</td><td>{{patient.birth_date}}</td><td>{{patient.health_center}}</td><td>{{patient.last_data_event.get_event_display}}</td>
+                    <td>{{patient.surname_mother.capitalize}}</td><td>{{patient.birth_date}}</td><td>{{patient.health_center}}</td><td>{{patient.last_data_event.get_event_display}}</td>
                 </tr>
             {% endfor %}
         </table>

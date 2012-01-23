@@ -31,8 +31,7 @@ class ConsumptionReport(models.Model):
     lost = models.PositiveIntegerField(verbose_name="Stock lost")
 
     def remaining(self):
-        re = (self.initial + self.received) -\
-             (self.used + self.received)
+        re = (self.initial + self.received) - (self.used + self.lost)
         return re
 
     def __unicode__(self):
