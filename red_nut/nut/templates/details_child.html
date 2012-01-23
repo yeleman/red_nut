@@ -9,22 +9,23 @@
     {% if patient %}
     <h2>Information enfant</h2>
         <table>
-            <tr><th>Identifiant </th><td>{{patient.id}}</td> </tr>
-            <tr><th>Statut </th><td>{{ patient.status }}</td> </tr>
-            <tr><th>Nom </th><td>{{patient.last_name.capitalize}}</td> </tr>
-            <tr><th> Prénom</th><td>{{patient.first_name.capitalize}}</td></tr>
+            <tr><th>ID</th><td>{{patient.id}}</td> </tr>
+            <tr><th>Statut</th><td>{{ patient.status }}</td> </tr>
+            <tr><th>Nom</th><td>{{patient.last_name.capitalize}}</td> </tr>
+            <tr><th>Prénom</th><td>{{patient.first_name.capitalize}}</td></tr>
             <tr><th>Nom de la mère</th><td>{{patient.surname_mother.capitalize}}</td></tr>
-            <tr><th>Age</th><td>{{patient.birth_date}}</td></tr>
+            <tr><th>Sexe</th><td>{{patient.sex}}</td></tr>
+            <tr><th>Date de naissance</th><td>{{patient.birth_date}}</td></tr>
             <tr><th>Date d'enregistrement</th><td>{{patient.create_date}}</td></tr>
             {% if output %}
-                <tr><th>Date de OUTe</th><td>{{output.date}}</td></tr>
+                <tr><th>Date de sortie</th><td>{{output.date}}</td></tr>
             {% endif %}
             <tr><th> Centre de santé</th><td>{{patient.health_center}}</td></tr>
         </table>
     {% endif %}
 
     {% if datanut %}
-        <h2>Details nutritionnel</h2>
+        <h2>Détails nutritionnels</h2>
         <table>
             <tr><th>Poids</th><td>{{datanut.weight}} kg </td></tr>
             <tr><th>Taille</th><td>{{datanut.height}} cm </td></tr>
@@ -46,10 +47,10 @@
             </tr>
             {% for datanut in datanuts %}
                 <tr>
-                    <td>{{datanut.weight}} kg </td>
+                    <td>{{datanut.weight}} kg</td>
                     <td>{{datanut.height}} cm</td>
                     <td>{% if datanut.oedema %}{{datanut.get_oedema_display}}{% endif %}</td>
-                    <td>{{datanut.muac}} mm </td>
+                    <td>{{datanut.muac}} mm</td>
                     <td>{{datanut.date}}</td>
                 </tr>
             {% endfor %}
@@ -60,7 +61,7 @@
         <h2>{{error}}</h2>
     {% endif %}
     {% if graph_data %}
-        <h3 class="caption"><strong>Figure</strong> Courbes évolution de l'enfant dans le programme</h3>
+        <h3 class="caption"><strong>Figure</strong>Courbes évolution de l'enfant dans le programme</h3>
         <div id="graph"></div>
     {% endif %}
 </div>
