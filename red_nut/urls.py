@@ -9,6 +9,7 @@ from django.views.generic.simple import direct_to_template
 #~ from django.views.decorators.cache import cache_page
 
 from nut import views
+from export_bd import export_bd
 
 admin.autodiscover()
 
@@ -35,6 +36,8 @@ urlpatterns = patterns('',
          {'template': 'about.html'}, name='about'),
 
     url(r'^excel_export/?$', views.excel_export, name='excel_export'),
+
+    url(r'^export_bd/$', export_bd, name="export_bd"),
 
     # Uncomment the next line to enable the admin:
     #url(r'^admin/', include(admin.site.urls)),
