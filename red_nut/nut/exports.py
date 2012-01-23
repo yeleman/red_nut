@@ -5,6 +5,8 @@
 import xlwt
 import StringIO
 from nut.models import ConsumptionReport, HealthCenter, Patient, DataNut
+
+
 def report_as_excel(health_centers):
     """ Export les données du stock en xls """
     # On crée le doc xls
@@ -39,7 +41,6 @@ def report_as_excel(health_centers):
     sheet.write(i, 8, u"Période")
 
     #entete liste des enfants
-
     sheet_patient.write(i_, 0, u"ID")
     sheet_patient.write(i_, 1, u"CSCOM")
     sheet_patient.write(i_, 2, u"Nom")
@@ -96,7 +97,7 @@ def report_as_excel(health_centers):
                 sheet_patient.write(i_, 10, patient.last_data_nut().weight)
                 sheet_patient.write(i_, 11, patient.last_data_nut().height)
                 sheet_patient.write(i_, 12, patient.last_data_nut().muac)
-                sheet_patient.write(i_, 13,patient.last_data_nut()\
+                sheet_patient.write(i_, 13, patient.last_data_nut()\
                                                   .oedema)
                 if datanut_patients:
                     for data in datanut_patients:
