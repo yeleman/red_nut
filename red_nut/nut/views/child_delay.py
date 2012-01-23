@@ -20,10 +20,9 @@ def child_delay(request, *args, **kwargs):
     context.update({"category": category, "message": u"Recherche "})
 
     patients = [patient.last_data_event() \
-                for patient in Patient.objects.all() \
+                for patient in Patient.objects.all().order_by("create_date") \
                 if verification_delay(patient.delay_since_last_visit()) \
                     and patient.last_data_event().event == ProgramIO.SUPPORT]
-    patients.reverse()
 
     for patient in patients:
         patient.url_details_child = reverse("details_child", \
