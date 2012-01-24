@@ -26,21 +26,22 @@ def report_as_excel(health_centers):
     sheet_patient.col(13).width = 0x0d00 * 2
     sheet_patient.col(14).width = 0x0d00 * 2
     sheet_patient.col(17).width = 0x0d00 * 2
-    sheet.col(1).width = 0x0d00 * 2
+    sheet.col(0).width = 0x0d00 * 1.3
 
     i = 0
     i_ = 0
 
     #entete consommation d'intrant
-    sheet.write(i, 0, u"Code")
+    sheet.write(i, 0, u"Code CSCOM")
     sheet.write(i, 1, u"CSCOM")
-    sheet.write(i, 2, u"Intrant")
-    sheet.write(i, 3, u"Initial")
-    sheet.write(i, 4, u"Reçu")
-    sheet.write(i, 5, u"Utilsé")
-    sheet.write(i, 6, u"Perdu")
-    sheet.write(i, 7, u"Restant")
-    sheet.write(i, 8, u"Période")
+    sheet.write(i, 2, u"Code Intrant")
+    sheet.write(i, 3, u"Intrant")
+    sheet.write(i, 4, u"Initial")
+    sheet.write(i, 5, u"Reçu")
+    sheet.write(i, 6, u"Utilsé")
+    sheet.write(i, 7, u"Perdu")
+    sheet.write(i, 8, u"Restant")
+    sheet.write(i, 9, u"Période")
 
     #entete liste des enfants
     sheet_patient.write(i_, 0, u"ID")
@@ -70,13 +71,14 @@ def report_as_excel(health_centers):
                 i += 1
                 sheet.write(i, 0, stock.health_center.code)
                 sheet.write(i, 1, stock.health_center.name)
-                sheet.write(i, 2, stock.input_type.name)
-                sheet.write(i, 3, stock.initial)
-                sheet.write(i, 4, stock.received)
-                sheet.write(i, 5, stock.used)
-                sheet.write(i, 6, stock.lost)
-                sheet.write(i, 7, stock.remaining())
-                sheet.write(i, 8, stock.period.full_name())
+                sheet.write(i, 2, stock.input_type.code)
+                sheet.write(i, 3, stock.input_type.name)
+                sheet.write(i, 4, stock.initial)
+                sheet.write(i, 5, stock.received)
+                sheet.write(i, 6, stock.used)
+                sheet.write(i, 7, stock.lost)
+                sheet.write(i, 8, stock.remaining())
+                sheet.write(i, 9, stock.period.full_name())
 
         patients = Patient.objects.filter(health_center=health_center)
         datanuts = DataNut.objects.filter(patient__health_center=health_center)
