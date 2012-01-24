@@ -9,6 +9,7 @@
 
     <h2>Tableau de bord</h2>
     <table class="center">
+        <tr><th>Nombre total d'enfants</th><td>{{nbr_total_patient}}</td></tr>
         <tr><th>Nombre d'enfants dans le programme</th><td>{{children_in_program}}</td></tr>
         <tr><th>Nombre d'enfant MAM</th><td>{{MAM_count}}</td></tr>
         <tr><th>Nombre d'enfant MAS</th><td>{{SAM_count}}</td></tr>
@@ -17,17 +18,16 @@
 
         <tr><th>Nombre SMS reçus</th><td>{{received}}</td><tr>
         <tr><th>Nombre SMS envoyés</th><td>{{sent}}</td></tr>
-
-        <tr><th>Nombre total d'enfants</th><td>{{nbr_total_patient}}</td></tr>
-        <tr><th>Nombre de guérisons / Taux de guérisons</th><td>{{nbr_healing}} / {{healing_rates}}%</td></tr>
-        <tr><th>Nombre d'abandons / Taux d'abandons</th><td>{{nbr_abandonment}} / {{abandonment_rates}}%</td></tr>
-        <tr><th>Nombre de déces / Taux de déces</th><td>{{nbr_deaths}} / {{deaths_rates}}%</td></tr>
-        <tr><th>Nombre de non-répondants / Taux de non-répondants</th><td>{{nbr_non_response}} / {{non_response_rates}}%</td></tr>
-
         <tr><th>Durée moyenne dans le programme</th><td>{{avg_days}} jour(s)</td>
         <tr><th>Gain de poids moyen</th><td>{{avg_weight}} kg</td>
+
+        <tr><th>Nombre de guérisons / Taux de guérisons</th><td>{{nbr_healing}} / {{healing_rates}}%</td></tr>
+        <tr><th>Nombre d'abandons / Taux d'abandons</th><td>{{nbr_abandonment}} / {{abandonment_rates}}%</td></tr>
+        <tr><th>Nombre de non-répondants / Taux de non-répondants</th><td>{{nbr_non_response}} / {{non_response_rates}}%</td></tr>
+        <tr><th>Nombre de déces / Taux de déces</th><td>{{nbr_deaths}} / {{deaths_rates}}%</td></tr>
+
     </table>
-    <h3 class="caption"><strong>Figure 1.</strong> Courbes évolution des enfants dans le programme</h3>
+    <h3 class="caption"><strong>Figure: </strong>Courbes de l'évolution du nombre d'enfant dans le programme</h3>
     <div id="graph"></div>
 
 </div>

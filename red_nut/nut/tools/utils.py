@@ -65,10 +65,12 @@ def diff_weight(p1, p2):
 
 
 def date_graphic(date_on):
+    """ """
     l_date = []
     while(date_on <= date.today()):
         l_date.append(date_on)
         date_on += timedelta(7)
+    l_date.append(date.today())
     return l_date
 
 

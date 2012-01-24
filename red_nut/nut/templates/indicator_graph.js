@@ -10,5 +10,5 @@ toto = new Highcharts.Chart(
                           dataLabels: {enabled: true, formatter: function()
                           {if (this.y == '-0') { return "n/a" } else
                           { return '' + this.y.toString().replace('.', ',');} }} }},
-            exporting: {enabled: true}, credits: {enabled: true, text: "RIEN", href: null},
+            exporting: {enabled: true}, credits: {enabled: true, text: "© CROIX ROUGE", href: null},
         });
