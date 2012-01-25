@@ -78,3 +78,10 @@ def verification_delay(date_last_visite):
     """ """
     if date_last_visite.days > 10:
         return True
+
+
+def percentage_calculation(nb, tnb):
+    try:
+        return (nb * 100) / tnb
+    except ZeroDivisionError:
+        return 0

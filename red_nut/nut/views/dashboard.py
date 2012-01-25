@@ -10,7 +10,8 @@ from django.conf import settings
 from nut.models import ProgramIO, Patient, DataNut
 from nosmsd.models import Inbox, SentItems
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
-                                        date_graphic, verification_delay
+                            date_graphic, verification_delay, \
+                            percentage_calculation
 
 
 def dashboard(request):
@@ -20,28 +21,23 @@ def dashboard(request):
     # Les ptients qui ne sont plus dans le programme
     out_program = ProgramIO.objects.filter(event=ProgramIO.OUT)
 
-    def calculation_of_rates(nb, tnb):
-        try:
-            return (nb * 100) / tnb
-        except ZeroDivisionError:
-            return 0
     # le nombre total d'enfant
     nbr_total_patient = Patient.objects.all().count()
     # Taux guerison
     nbr_healing = out_program.filter(reason=ProgramIO.HEALING).count()
-    healing_rates = calculation_of_rates(nbr_healing, nbr_total_patient)
+    healing_rates = percentage_calculation(nbr_healing, nbr_total_patient)
     # Taux abandon
     nbr_abandonment = out_program \
                             .filter(reason=ProgramIO.ADBANDONMENT).count()
-    abandonment_rates = calculation_of_rates(nbr_abandonment, \
+    abandonment_rates = percentage_calculation(nbr_abandonment, \
                                                         nbr_total_patient)
     # Taux déces
     nbr_deaths = out_program.filter(reason=ProgramIO.DEATH).count()
-    deaths_rates = calculation_of_rates(nbr_deaths, nbr_total_patient)
+    deaths_rates = percentage_calculation(nbr_deaths, nbr_total_patient)
     # Taux non repondant
     nbr_non_response = out_program\
                             .filter(reason=ProgramIO.NON_RESPONDENT).count()
-    non_response_rates = calculation_of_rates(nbr_non_response, \
+    non_response_rates = percentage_calculation(nbr_non_response, \
                                                         nbr_total_patient)
     context.update({"nbr_total_patient": nbr_total_patient, \
                     "nbr_healing": nbr_healing, \
