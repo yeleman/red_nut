@@ -30,7 +30,7 @@ class DataNut(models.Model):
                                    default=datetime.today)
     weight = models.FloatField(u"Poids (kg)", blank=True, null=True)
     height = models.FloatField(u"Taille (cm)", blank=True, null=True)
-    oedema = models.CharField(u"oedème", max_length=1, \
+    oedema = models.CharField(u"Oedème", max_length=1, \
                               choices=OEDEMA_CHOICES)
     muac = models.SmallIntegerField(u"MUAC (mm)", blank=True, null=True)
     danger_sign = models.CharField(max_length=30, \
@@ -38,7 +38,7 @@ class DataNut(models.Model):
                                    verbose_name=("Signe de danger"), \
                                    blank=True, null=True)
     nb_plumpy_nut = models.IntegerField(max_length=30, \
-                        verbose_name=(u"Sachets plumùpy nut données"), \
+                        verbose_name=(u"Sachets plumpy nut données"), \
                                                 blank=True, null=True)
 
     def __unicode__(self):

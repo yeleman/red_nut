@@ -9,7 +9,8 @@
     {% if dict_ %}
         <h2>Détails du centre de santé {{dict_.health_center}}/{{dict_.code}} </h2>
         <table>
-            <tr><th>Nombre enfants enregistrés</th><td>{{dict_.actif}}</td></tr>
+            <tr><th>Nombre total d'enfants enregistrés</th><td>{{dict_.total}}</td></tr>
+            <tr><th>Nombre d'enfants dans le programme</th><td>{{dict_.actif}}</td></tr>
             <tr><th>Nombre enfants MAM</th><td>{{dict_.MAM_count}}</td></tr>
             <tr><th>Nombre enfants MAS </th><td>{{dict_.SAM_count}}</td></tr>
             <tr><th>Nombre enfants MAS+</th><td>{{dict_.SAM_}}</td></tr>
@@ -26,8 +27,6 @@
             {% endif %}
         </table>
     {% endif %}
-
-
 
     {% if consumption_reports %}
         <h2>tableau des consomations d'intrants.</h2>

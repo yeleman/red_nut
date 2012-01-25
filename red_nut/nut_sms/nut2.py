@@ -15,7 +15,7 @@ def handler(message):
     def main_nut_handler(message):
         keyword = 'nut'
         commands = {
-            'stock': nut_stock,
+            'stock': nut_consumption,
             'fol': nut_followup,
             'register': nut_register,
             'research': nut_search,
@@ -276,7 +276,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     return True
 
 
-def nut_stock(message, args, sub_cmd, cmd):
+def nut_consumption(message, args, sub_cmd, cmd):
     """ Incomming:
             nut stock type_health_center code_health_center month year
              #input_type initial received used received #input_type initial

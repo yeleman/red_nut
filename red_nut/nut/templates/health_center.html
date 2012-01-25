@@ -12,7 +12,7 @@ addClickClassToTRElements();{% endblock %}
     <table>
         <tr><th>Centre de santé</th><th>Nombre de patients enregistrés</th><th>Suivis</th><th>Abandons</th></tr>
         {% for health_center in liste_health_center %}
-            <tr><td><a href="{{health_center.url }}">{{health_center.health_center}}</td><td>{{health_center.nb_child}}</td><td>{{health_center.input}}</td><td>{{health_center.nb_healing}}</td></tr>
+            <tr><td><a href="{{health_center.url }}">{{health_center.health_center}}</td><td>{{health_center.nb_child}}</td><td>{{health_center.nb_supports}}</td><td>{{health_center.Reason_type}}</td></tr>
         {% endfor %}
     </table>
 </div>

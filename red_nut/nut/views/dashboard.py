@@ -110,6 +110,13 @@ def dashboard(request):
                 diagnose_sam.append(l_diagnose.count('SAM'))
                 diagnose_ni.append(l_diagnose.count('SAM+'))
 
+        # Graphic
+        graph_data = [{'name': "Total", 'data': total_patient}, \
+                      {'name': "MAM", 'data': diagnose_mam}, \
+                      {'name': "MAS", 'data': diagnose_sam}, \
+                      {'name': "MAS+", 'data': diagnose_ni}]
+
+        context.update({"graph_date": graph_date, "graph_data": graph_data})
     # Diagnose
     try:
         MAM_count = diagnose_mam[-1]
@@ -140,17 +147,11 @@ def dashboard(request):
     # message
     received = Inbox.objects.count()
     sent = SentItems.objects.count()
-    # Graphic
-    graph_data = [{'name': "Total", 'data': total_patient}, \
-                  {'name': "MAM", 'data': diagnose_mam}, \
-                  {'name': "MAS", 'data': diagnose_sam}, \
-                  {'name': "MAS+", 'data': diagnose_ni}]
 
     context.update({"children_in_program": children_in_program, \
                     "sent": sent, "received": received, \
                     "MAM_count": MAM_count, "SAM_count": SAM_count, \
-                    "patients_late": patients_late, "NI_count": NI_count,
-                    "graph_date": graph_date, "graph_data": graph_data})
+                    "patients_late": patients_late, "NI_count": NI_count})
 
 
     return render(request, 'dashboard.html', context)
