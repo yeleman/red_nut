@@ -7,7 +7,8 @@ from django.shortcuts import render
 from nut.models import HealthCenter, ProgramIO, DataNut, Patient, \
                                                         ConsumptionReport
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
-                                                            date_graphic
+                            date_graphic, verification_delay, \
+                            percentage_calculation
 
 
 def details_health_center(request, *args, **kwargs):
@@ -25,16 +26,10 @@ def details_health_center(request, *args, **kwargs):
         else:
             return None
 
-    def calculation_of_rates(nb, tnb):
-        try:
-            return (nb * 100) / tnb
-        except ZeroDivisionError:
-            return 0
-
     # Les patients de ce centre
     patients = Patient.objects.filter(health_center=health_center)
     datanuts = DataNut.objects.filter(patient__health_center=health_center)
-    programs_io= ProgramIO.objects \
+    programs_io = ProgramIO.objects \
                          .filter(patient__health_center=health_center)
     consumption_reports = ConsumptionReport.objects \
                                            .filter(health_center=health_center)
@@ -44,19 +39,19 @@ def details_health_center(request, *args, **kwargs):
 
     # Taux guerison
     nbr_healing = output_programs.filter(reason=ProgramIO.HEALING).count()
-    healing_rates = calculation_of_rates(nbr_healing, patients.count())
+    healing_rates = percentage_calculation(nbr_healing, patients.count())
     # Taux abandon
     nbr_abandonment = output_programs \
                             .filter(reason=ProgramIO.ADBANDONMENT).count()
-    abandonment_rates = calculation_of_rates(nbr_abandonment, \
+    abandonment_rates = percentage_calculation(nbr_abandonment, \
                                                         patients.count())
     # Taux déces
     nbr_deaths = output_programs.filter(reason=ProgramIO.DEATH).count()
-    deaths_rates = calculation_of_rates(nbr_deaths, patients.count())
+    deaths_rates = percentage_calculation(nbr_deaths, patients.count())
     # Taux non repondant
     nbr_non_response = output_programs\
                             .filter(reason=ProgramIO.NON_RESPONDENT).count()
-    non_response_rates = calculation_of_rates(nbr_non_response, \
+    non_response_rates = percentage_calculation(nbr_non_response, \
                                                         patients.count())
 
     dict_ = {}
@@ -106,8 +101,6 @@ def details_health_center(request, *args, **kwargs):
                       {'name': "MAS+", 'data': diagnose_ni}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
-
-
 
     list_num_days = [number_days(Patient.objects.get(id=out.patient_id) \
                                                 .create_date, out.date) \

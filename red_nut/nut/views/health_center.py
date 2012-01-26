@@ -24,10 +24,10 @@ def health_center(request):
         dict_hc = {}
         nb_supports = [patient for patient in movement \
                                 if patient.last_data_event()\
-                                .event==ProgramIO.SUPPORT].__len__()
+                                .event == ProgramIO.SUPPORT].__len__()
         nb_reason_ab = [patient for patient in movement \
                                 if patient.last_data_event()\
-                                .reason==ProgramIO.ADBANDONMENT].__len__()
+                                .reason == ProgramIO.ADBANDONMENT].__len__()
         dict_hc["health_center"] = health_center.name
         dict_hc["nb_child"] = movement.count()
         dict_hc["nb_supports"] = nb_supports

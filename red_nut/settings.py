@@ -161,6 +161,9 @@ HOTLINE_NUMBER = "00000000"
 HOTLINE_EMAIL = "root@localhost"
 
 SUPPORT_CONTACTS = [('unknown', u"HOTLINE", HOTLINE_EMAIL)]
+
+DATABASE_ROUTERS = ['nosmsd.django_routers.NoSMSdRouter']
+
 try:
     from local_settings import *
 except ImportError:

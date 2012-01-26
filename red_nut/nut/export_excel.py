@@ -105,7 +105,8 @@ def report_as_excel(health_centers):
                 sheet_patient.write(i_, 11, patient.last_data_nut().height)
                 sheet_patient.write(i_, 12, patient.last_data_nut().muac)
                 sheet_patient.write(i_, 13, patient.last_data_nut()\
-                                                  .get_oedema_display().upper())
+                                                   .get_oedema_display() \
+                                                   .upper())
                 if patient.last_data_event().event == 'e':
                     sheet_patient.write(i_, 15, 'ENTRE')
                 else:

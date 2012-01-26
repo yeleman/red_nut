@@ -23,5 +23,6 @@ def export_bd(request):
         raise Http404
     response = HttpResponse(file(fullpath).read())
     response['Content-Type'] = 'application/sqlite'
-    response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(fullpath)
+    response['Content-Disposition'] = 'attachment; filename="%s"' % \
+                                        os.path.basename(fullpath)
     return response
