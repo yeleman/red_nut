@@ -29,7 +29,7 @@ def details_health_center(request, *args, **kwargs):
     # Les patients de ce centre
     patients = Patient.objects.filter(health_center=health_center)
     datanuts = DataNut.objects.filter(patient__health_center=health_center)
-    programs_io= ProgramIO.objects \
+    programs_io = ProgramIO.objects \
                          .filter(patient__health_center=health_center)
     consumption_reports = ConsumptionReport.objects \
                                            .filter(health_center=health_center)
@@ -101,8 +101,6 @@ def details_health_center(request, *args, **kwargs):
                       {'name': "MAS+", 'data': diagnose_ni}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
-
-
 
     list_num_days = [number_days(Patient.objects.get(id=out.patient_id) \
                                                 .create_date, out.date) \

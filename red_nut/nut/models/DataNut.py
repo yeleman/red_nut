@@ -43,5 +43,5 @@ class DataNut(models.Model):
 
     def __unicode__(self):
         return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\
-         % { "patient": self.patient, "height": self.height,
-                "weight": self.weight, "pb": self.muac,}
+         % {"patient": self.patient, "height": self.height, \
+                "weight": self.weight, "pb": self.muac}

@@ -155,6 +155,10 @@ def nut_followup(message, args, sub_cmd, cmd):
                                                              patient_id)
         return True
 
+    if patient.last_data_event().event == ProgramIO.OUT:
+        message.respond(u"[ERREUR] ce patient n'est plus dans le programme")
+        return True
+
     # creating a followup event
     weight = float(weight)
     height = int(height)

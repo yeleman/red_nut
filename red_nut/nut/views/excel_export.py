@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from nut.export_excel import report_as_excel
 from nut.models import HealthCenter
 
+
 def excel_export(request, *args, **kwargs):
     context = {'category': 'export'}
     health_centers = HealthCenter.objects.all()

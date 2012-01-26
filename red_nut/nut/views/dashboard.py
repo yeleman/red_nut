@@ -149,5 +149,4 @@ def dashboard(request):
                     "MAM_count": MAM_count, "SAM_count": SAM_count, \
                     "patients_late": patients_late, "NI_count": NI_count})
 
-
     return render(request, 'dashboard.html', context)
