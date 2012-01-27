@@ -93,12 +93,10 @@ def details_health_center(request, *args, **kwargs):
             if l_diagnose:
                 diagnose_mam.append(l_diagnose.count('MAM'))
                 diagnose_sam.append(l_diagnose.count('SAM'))
-                diagnose_ni.append(l_diagnose.count('SAM+'))
 
         graph_data = [{'name': "Total", 'data': total_},
                       {'name': "MAM", 'data': diagnose_mam}, \
-                      {'name': "MAS", 'data': diagnose_sam}, \
-                      {'name': "MAS+", 'data': diagnose_ni}]
+                      {'name': "MAS", 'data': diagnose_sam}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
 
@@ -132,10 +130,7 @@ def details_health_center(request, *args, **kwargs):
         dict_["SAM_count"] = diagnose_sam[-1]
     except:
         dict_["SAM_count"] = 0
-    try:
-        dict_["SAM_"] = diagnose_ni[-1]
-    except:
-        dict_["SAM_"] = 0
+
     try:
         dict_["actif"] = total_[-1]
     except:

@@ -109,8 +109,8 @@ def dashboard(request):
         # Graphic
         graph_data = [{'name': "Total", 'data': total_patient}, \
                       {'name': "MAM", 'data': diagnose_mam}, \
-                      {'name': "MAS", 'data': diagnose_sam}, \
-                      {'name': "MAS+", 'data': diagnose_ni}]
+                      {'name': "MAS", 'data': diagnose_sam}]
+                      #~ {'name': "MAS+", 'data': diagnose_ni}
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
     # Diagnose
@@ -123,11 +123,6 @@ def dashboard(request):
         SAM_count = diagnose_sam[-1]
     except:
         SAM_count = 0
-
-    try:
-        NI_count = diagnose_ni[-1]
-    except:
-        NI_count = 0
 
     # Nbre d'enfant dans le programme
     try:
@@ -147,6 +142,7 @@ def dashboard(request):
     context.update({"children_in_program": children_in_program, \
                     "sent": sent, "received": received, \
                     "MAM_count": MAM_count, "SAM_count": SAM_count, \
-                    "patients_late": patients_late, "NI_count": NI_count})
+                    "patients_late": patients_late})
+                    #~ "NI_count": NI_count
 
     return render(request, 'dashboard.html', context)
