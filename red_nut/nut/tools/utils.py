@@ -81,14 +81,35 @@ def week_range(start, stop=None, days=1):
 
 
 
-def verification_delay(date_last_visite):
-    """ """
-    if date_last_visite.days > 10:
-        return True
-
-
 def percentage_calculation(nb, tnb):
     try:
         return (nb * 100) / tnb
     except ZeroDivisionError:
         return 0
+
+
+def extract(data, *keys, **kwargs):
+    """
+        Extract a data from nested mapping and sequences using a list of keys
+        and indices to apply successively. If a key error or an index error
+        is raised, returns the default value.
+
+        res = extract(data, 'test', 0, 'bla')
+
+        is the equivalent of
+
+        try:
+            res = data['test'][0]['bla']
+        except (KeyError, IndexError):
+            res = None
+
+    """
+
+    try:
+      value = data[keys[0]]
+      for key in keys[1:]:
+          value = value[key]
+    except (KeyError, IndexError, TypeError):
+      return kwargs.get('default', None)
+
+    return value

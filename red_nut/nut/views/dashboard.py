@@ -10,8 +10,7 @@ from django.conf import settings
 from nut.models import ProgramIO, Patient, NutritionalData
 from nosmsd.models import Inbox, SentItems
 from nut.tools.utils import (diagnose_patient, diff_weight, 
-                            week_range, verification_delay, 
-                            percentage_calculation)
+                            week_range, percentage_calculation, extract)
 
 
 def dashboard(request):
@@ -19,7 +18,8 @@ def dashboard(request):
     context = {"category": 'dashboard'}
 
     # le nombre total d'enfant
-    nbr_total_patient = Patient.objects.all().count()
+    patients = Patient.objects.all()
+    nbr_total_patient = patients.count()
 
     # Taux guerison
     nbr_healing = ProgramIO.healing.count()
@@ -66,66 +66,51 @@ def dashboard(request):
     week_dates = week_range(ProgramIO.objects.all()[0].date)
     for dat in week_dates:
 
-        # for patient in Patient.objects.all():
-        #     if patient.programios.filter(date__lte=dat).latest().event != ProgramIO.OUT:
+        active_patients = []
+        for p in patients:
+            try:
+                if not p.programios.filter(date__lte=dat).latest().is_output:
+                    active_patients.append(p)
+            except ProgramIO.DoesNotExist:
+                pass
 
-        input_in_prog = ProgramIO.objects.filter(event=ProgramIO.SUPPORT,
-                                                            date__lte=dat)
-
-        out_in_prog = ProgramIO.objects.filter(event=ProgramIO.OUT,
-                                                         date__lte=dat)
-
-        input_out_in_prog = [p for p in  input_in_prog if p.patient \
-                             not in [i.patient for i in out_in_prog]]
-
-        data = NutritionalData.objects.order_by('date').filter(date__lte=dat)
-
-        total_patient.append(input_out_in_prog.__len__())
-
+        total_patient.append(len(active_patients))
         graph_date.append(dat.strftime('%d/%m'))
-        
-        l_diagnose = [diagnose_patient(d.muac, d.oedema) for d in data \
-                                    if d.patient.id in [(i.patient.id) \
-                                            for i in input_out_in_prog]]
-        if l_diagnose:
-            diagnose_mam.append(l_diagnose.count('MAM'))
-            diagnose_sam.append(l_diagnose.count('SAM'))
-            diagnose_ni.append(l_diagnose.count('SAM+'))
 
-        # Graphic
-        graph_data = [{'name': "Total", 'data': total_patient}, \
-                      {'name': "MAM", 'data': diagnose_mam}, \
-                      {'name': "MAS", 'data': diagnose_sam}, \
+        l_diagnose = []
+        for patient in active_patients:
+            try:
+                l_diagnose.append(patient.nutritional_data.latest().diagnosis)
+            except NutritionalData.DoesNotExist:
+                pass
+
+        diagnose_mam.append(l_diagnose.count('MAM'))
+        diagnose_sam.append(l_diagnose.count('SAM'))
+        diagnose_ni.append(l_diagnose.count('SAM+'))
+
+        
+        graph_data = [{'name': "Total", 'data': total_patient}, 
+                      {'name': "MAM", 'data': diagnose_mam}, 
+                      {'name': "MAS", 'data': diagnose_sam}, 
                       {'name': "MAS+", 'data': diagnose_ni}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
+    
     # Diagnose
-    try:
-        MAM_count = diagnose_mam[-1]
-    except:
-        MAM_count = 0
-
-    try:
-        SAM_count = diagnose_sam[-1]
-    except:
-        SAM_count = 0
-
-    try:
-        NI_count = diagnose_ni[-1]
-    except:
-        NI_count = 0
+    MAM_count = extract(diagnose_mam, -1, default=0)
+    SAM_count = extract(diagnose_sam, -1, default=0)
+    NI_count = extract(diagnose_ni, -1, default=0)
 
     # Nbre d'enfant dans le programme
-    try:
-        children_in_program = total_patient[-1]
-    except:
-        children_in_program = 0
-
+    children_in_program = extract(total_patient, -1, default=0)
+    
     # Nbre d'enfant en retard de consultation
-    patients_late = [patient for patient in patients \
-                     if verification_delay(patient.delay_since_last_visit()) \
-                        and patient.last_data_event().event == ProgramIO \
-                        .SUPPORT].__len__()
+    patients_late = []
+    for patient in patients:
+        if not patient.last_data_event().is_output and patient.is_late:
+            patients_late.append(patient)
+    patients_late = len(patients_late)
+
     # message
     received = Inbox.objects.count()
     sent = SentItems.objects.count()

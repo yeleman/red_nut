@@ -53,3 +53,15 @@ class NutritionalData(models.Model):
         return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\
          % {"patient": self.patient, "height": self.height, \
                 "weight": self.weight, "pb": self.muac}
+
+    @property
+    def diagnosis(self):
+        '''Diagnosis of the patient'''
+        if self.muac is None or self.muac == 0:
+            return None
+        elif self.muac < 80:
+            return "SAM+"
+        elif self.oedema == 'Y' or self.muac < 110:
+            return "SAM"
+        elif self.muac < 125:
+            return "MAM"

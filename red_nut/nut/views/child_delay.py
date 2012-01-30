@@ -10,7 +10,6 @@ from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 
 from nut.models import Patient, HealthCenter, ProgramIO
-from nut.tools.utils import verification_delay
 
 
 def child_delay(request, *args, **kwargs):
@@ -21,8 +20,7 @@ def child_delay(request, *args, **kwargs):
 
     patients = [patient.last_data_event() \
                 for patient in Patient.objects.all().order_by("create_date") \
-                if verification_delay(patient.delay_since_last_visit()) \
-                    and patient.last_data_event().event == ProgramIO.SUPPORT]
+                if patient.is_late and not patient.last_data_event().is_output]
 
     for patient in patients:
         patient.url_details_child = reverse("details_child", \

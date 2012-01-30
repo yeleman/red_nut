@@ -20,7 +20,7 @@ class OutProgramIOManager(models.Manager):
         all patients that are out of the program.
       """
       qs = self.get_query_set()
-      list_num_days = [out.program_duration for out in qs]
+      list_num_days = [out.program_duration.days for out in qs]
       return sum(list_num_days) / len(list_num_days)
 
 
@@ -91,6 +91,12 @@ class ProgramIO(models.Model):
                               choices=Reason_type, default=NEANT)
     patient = models.ForeignKey(Patient, related_name='programios',
                                          verbose_name=("Patient"))
+
+
+    @property
+    def is_output(self):
+        return self.event == self.OUT
+
 
     @property
     def program_duration(self):

@@ -75,14 +75,15 @@ class Patient(models.Model):
 
     @property
     def weight_delta_since_input(self):
+        from ProgramIO import ProgramIO
         date = self.programios.filter(event=ProgramIO.SUPPORT).latest().date
-        nut_data = tuple(patient.nutritional_data.filter(date__gte=date))
+        nut_data = tuple(self.nutritional_data.filter(date__gte=date))
         return nut_data[-1].weight - nut_data[0].weight
 
 
     def delay_since_last_visit(self):
         now = date.today()
-        return now - self.last_visit()
+        return now - (self.last_visit() or now)
 
 
     def last_data_nut(self):
@@ -94,3 +95,8 @@ class Patient(models.Model):
         from ProgramIO import ProgramIO
         return ProgramIO.objects.filter(patient=self)\
                                          .order_by('-date')[0]
+
+    @property
+    def is_late(self):
+        """ """
+        return self.delay_since_last_visit().days > 10

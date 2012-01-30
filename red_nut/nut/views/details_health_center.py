@@ -7,8 +7,7 @@ from django.shortcuts import render
 from nut.models import (HealthCenter, ProgramIO, NutritionalData, Patient, 
                                                         ConsumptionReport)
 from nut.tools.utils import (diagnose_patient, number_days, diff_weight, 
-                            week_range, verification_delay, 
-                            percentage_calculation)
+                            week_range, percentage_calculation)
 
 
 def details_health_center(request, *args, **kwargs):
