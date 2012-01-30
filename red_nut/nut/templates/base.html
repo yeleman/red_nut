@@ -4,8 +4,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>nut | {% block title %}Croix Rouge NUTRITION{% endblock %}</title>
-    <link rel="stylesheet" media="screen" type="text/css" href="{% url media 'red_nut.css' %}" title="nut 2011" />
-    <link rel="stylesheet" media="print" type="text/css" href="{% url media 'print.css' %}" />
+    <link rel="stylesheet" media="screen" type="text/css" href="{{ STATIC_URL }}red_nut.css" title="nut 2011" />
+    <link rel="stylesheet" media="print" type="text/css" href="{{ STATIC_URL }}print.css" />
     <link rel="shortcut icon" href="#" />
     {% block javascript %}{% endblock %}
     <meta http-equiv="Content-Language" content="fr-fr" />
@@ -36,15 +36,15 @@
         <div id="top-link"><a class="anchor" href="">↑Haut</a></div>
     </div>
 </body>
-<script type="text/javascript" src="{% url media 'jquery-1.6.2.min.js' %}"></script>
-<script type="text/javascript" src="{% url media 'red_nut.js' %}"></script>
-<script type="text/javascript" src="{% url media 'highcharts.js' %}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}red_nut.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}highcharts.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         addMessagesClickEvent();
         addLogoClickEvent('{% url index %}');
         {% block jqueryonload %}{% endblock %}
-        {% if category != 'dashboard' %}addJavascript("{% url media 'highcharts.js' %}", 'head');{% endif %}
+        {% if category != 'dashboard' %}addJavascript("{{ STATIC_URL }}highcharts.js", 'head');{% endif %}
     });
 </script>
 </html>

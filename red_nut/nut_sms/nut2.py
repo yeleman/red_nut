@@ -99,9 +99,9 @@ def nut_register(message, args, sub_cmd, cmd):
     # creating a followup event
     weight = float(weight)
     height = int(height)
-    oedema = {'yes': DataNut.OEDEMA_YES,
-              'no': DataNut.OEDEMA_NO,
-              'unknown': DataNut.OEDEMA_UNKNOWN}[oedema.lower()]
+    oedema = {'yes': NutritionalData.OEDEMA_YES,
+              'no': NutritionalData.OEDEMA_NO,
+              'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
     nb_plumpy_nut = int(nb_plumpy_nut) \
                               if not nb_plumpy_nut.lower() == '-' else 0
@@ -125,7 +125,7 @@ def nut_register(message, args, sub_cmd, cmd):
 
 def add_followup_data(**kwargs):
     try:
-        datanut = DataNut(**kwargs)
+        datanut = NutritionalData(**kwargs)
         datanut.save()
         return datanut
     except:
@@ -156,15 +156,15 @@ def nut_followup(message, args, sub_cmd, cmd):
         return True
 
     if patient.last_data_event().event == ProgramIO.OUT:
-        message.respond(u"[ERREUR] ce patient n'est plus dans le programme")
+        message.respond(u"[ERREUR] Ce patient ne fait plus parti du programme")
         return True
 
     # creating a followup event
     weight = float(weight)
     height = int(height)
-    oedema = {'yes': DataNut.OEDEMA_YES,
-              'no': DataNut.OEDEMA_NO,
-              'unknown': DataNut.OEDEMA_UNKNOWN}[oedema.lower()]
+    oedema = {'yes': NutritionalData.OEDEMA_YES,
+              'no': NutritionalData.OEDEMA_NO,
+              'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
     nb_plumpy_nut = int(nb_plumpy_nut) \
                               if not nb_plumpy_nut.lower() == '-' else 0

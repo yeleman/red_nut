@@ -7,7 +7,7 @@ import os
 abs_path = os.path.abspath(__file__)
 ROOT_DIR = os.path.dirname(abs_path)
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -163,6 +163,8 @@ HOTLINE_EMAIL = "root@localhost"
 SUPPORT_CONTACTS = [('unknown', u"HOTLINE", HOTLINE_EMAIL)]
 
 DATABASE_ROUTERS = ['nosmsd.django_routers.NoSMSdRouter']
+
+EXCEL_DATE_FORMAT = "%d-%m-%Y"
 
 try:
     from local_settings import *

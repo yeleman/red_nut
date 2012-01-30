@@ -6,7 +6,7 @@ from django.db import models
 from HealthCenter import HealthCenter
 from Period import Period
 from Input import Input
-from DataNut import DataNut
+from nutritional_data import NutritionalData
 
 
 class ConsumptionReport(models.Model):
@@ -17,13 +17,13 @@ class ConsumptionReport(models.Model):
         verbose_name = u"ConsumptionReport"
         verbose_name_plural = u"ConsumptionReports"
 
-    health_center = models.ForeignKey(HealthCenter,\
-                                related_name='Health_center',\
+    health_center = models.ForeignKey(HealthCenter,
+                                related_name='consumption_reports',
                                 verbose_name="Health_center")
-    period = models.ForeignKey(Period, related_name='period',\
+    period = models.ForeignKey(Period, related_name='consumption_reports',
                                         verbose_name='Period')
-    input_type = models.ForeignKey(Input,\
-                                    related_name='input',\
+    input_type = models.ForeignKey(Input,
+                                    related_name='consumption_reports',
                                     verbose_name='Input')
     initial = models.PositiveIntegerField(verbose_name="Stock initial")
     received = models.PositiveIntegerField(verbose_name="Stock received")

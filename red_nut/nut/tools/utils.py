@@ -64,14 +64,21 @@ def diff_weight(p1, p2):
     return p2 - p1
 
 
-def date_graphic(date_on):
+def date_range(start, stop=None, days=1):
     """ """
-    l_date = []
-    while(date_on <= date.today()):
-        l_date.append(date_on)
-        date_on += timedelta(7)
-    l_date.append(date.today())
-    return l_date
+    stop = stop or date.today()
+
+    while(start <= stop):
+        yield start
+        start += timedelta(days)
+
+    yield stop
+
+
+def week_range(start, stop=None, days=1):
+    """ """
+    return date_range(start, stop, 7)
+
 
 
 def verification_delay(date_last_visite):

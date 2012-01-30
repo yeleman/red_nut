@@ -7,4 +7,4 @@ from Patient import Patient
 from ProgramIO import ProgramIO
 from HealthCenter import HealthCenter
 from ConsumptionReport import ConsumptionReport
-from DataNut import DataNut
+from nutritional_data import NutritionalData

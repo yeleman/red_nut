@@ -4,11 +4,11 @@
 # maintainer: fadiga
 
 from django.shortcuts import render
-from nut.models import HealthCenter, ProgramIO, DataNut, Patient, \
-                                                        ConsumptionReport
-from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
-                            date_graphic, verification_delay, \
-                            percentage_calculation
+from nut.models import (HealthCenter, ProgramIO, NutritionalData, Patient, 
+                                                        ConsumptionReport)
+from nut.tools.utils import (diagnose_patient, number_days, diff_weight, 
+                            week_range, verification_delay, 
+                            percentage_calculation)
 
 
 def details_health_center(request, *args, **kwargs):
@@ -28,7 +28,7 @@ def details_health_center(request, *args, **kwargs):
 
     # Les patients de ce centre
     patients = Patient.objects.filter(health_center=health_center)
-    datanuts = DataNut.objects.filter(patient__health_center=health_center)
+    datanuts = NutritionalData.objects.filter(patient__health_center=health_center)
     programs_io = ProgramIO.objects \
                          .filter(patient__health_center=health_center)
     consumption_reports = ConsumptionReport.objects \
@@ -69,7 +69,7 @@ def details_health_center(request, *args, **kwargs):
 
     # graphic
     try:
-        l_date = date_graphic(programs_io.order_by("date")[0].date)
+        l_date = week_range(programs_io.order_by("date")[0].date)
     except:
         l_date = []
     total_ = []
@@ -106,24 +106,14 @@ def details_health_center(request, *args, **kwargs):
                                                 .create_date, out.date) \
                                                 for out in output_programs]
 
-    list_weight = []
-    for patient in patients:
-        datanut_patient = datanuts.filter(patient__id=patient.id) \
-                                                    .order_by('date')
-
-        if datanut_patient:
-            weight = diff_weight(datanut_patient[0].weight,
-                            datanut_patient[len(datanut_patient) - 1].weight)
-            list_weight.append(weight)
 
     try:
         dict_["avg_days"] = "%.0f" % avg_(list_num_days)
     except:
         dict_["avg_days"] = 0
-    try:
-        dict_["avg_diff_weight"] = "%.2f" % avg_(list_weight)
-    except:
-        dict_["avg_diff_weight"] = 0
+    
+    dict_["avg_diff_weight"] = "%.2f" % Patient.avg_weight_delta(patients)
+
     try:
         dict_["MAM_count"] = diagnose_mam[-1]
     except:

@@ -7,104 +7,90 @@ from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 
-from nut.models import ProgramIO, Patient, DataNut
+from nut.models import ProgramIO, Patient, NutritionalData
 from nosmsd.models import Inbox, SentItems
-from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
-                            date_graphic, verification_delay, \
-                            percentage_calculation
+from nut.tools.utils import (diagnose_patient, diff_weight, 
+                            week_range, verification_delay, 
+                            percentage_calculation)
 
 
 def dashboard(request):
 
     context = {"category": 'dashboard'}
 
-    # Les ptients qui ne sont plus dans le programme
-    out_program = ProgramIO.objects.filter(event=ProgramIO.OUT)
-
     # le nombre total d'enfant
     nbr_total_patient = Patient.objects.all().count()
-    # Taux guerison
-    nbr_healing = out_program.filter(reason=ProgramIO.HEALING).count()
-    healing_rates = percentage_calculation(nbr_healing, nbr_total_patient)
-    # Taux abandon
-    nbr_abandonment = out_program \
-                            .filter(reason=ProgramIO.ADBANDONMENT).count()
-    abandonment_rates = percentage_calculation(nbr_abandonment, \
-                                                        nbr_total_patient)
-    # Taux déces
-    nbr_deaths = out_program.filter(reason=ProgramIO.DEATH).count()
-    deaths_rates = percentage_calculation(nbr_deaths, nbr_total_patient)
-    # Taux non repondant
-    nbr_non_response = out_program\
-                            .filter(reason=ProgramIO.NON_RESPONDENT).count()
-    non_response_rates = percentage_calculation(nbr_non_response, \
-                                                        nbr_total_patient)
-    context.update({"nbr_total_patient": nbr_total_patient, \
-                    "nbr_healing": nbr_healing, \
-                    "healing_rates": healing_rates, \
-                    "nbr_abandonment": nbr_abandonment, \
-                    "abandonment_rates": abandonment_rates, \
-                    "nbr_deaths": nbr_deaths, \
-                    "deaths_rates": deaths_rates, \
-                    "nbr_non_response": nbr_non_response,\
-                    "non_response_rates": non_response_rates})
-    # Durée moyenne dans le programme
-    list_num_days = [(number_days(Patient.objects \
-                                         .get(id=out.patient_id) \
-                                         .create_date, out.date)) \
-                                          for out in out_program]
-    try:
-        avg_days = sum(list_num_days) / list_num_days.__len__()
-    except:
-        avg_days = 0
-    context.update({"avg_days": avg_days})
 
-    # Les données nutritionnelles
-    nutritional_data = DataNut.objects.all()
+    # Taux guerison
+    nbr_healing = ProgramIO.healing.count()
+    healing_rates = percentage_calculation(nbr_healing, nbr_total_patient)
+
+    # Taux abandon
+    nbr_abandonment = ProgramIO.abandon.count()
+    abandonment_rates = percentage_calculation(nbr_abandonment, 
+                                               nbr_total_patient)
+
+    # Taux déces
+    nbr_deaths = ProgramIO.death.count()
+    deaths_rates = percentage_calculation(nbr_deaths, nbr_total_patient)
+
+    # Taux non repondant
+    nbr_non_response = ProgramIO.nonresp.count()
+
+    non_response_rates = percentage_calculation(nbr_non_response, 
+                                                nbr_total_patient)
+
+    context.update({"nbr_total_patient": nbr_total_patient, 
+                    "nbr_healing": nbr_healing, 
+                    "healing_rates": healing_rates, 
+                    "nbr_abandonment": nbr_abandonment, 
+                    "abandonment_rates": abandonment_rates, 
+                    "nbr_deaths": nbr_deaths, 
+                    "deaths_rates": deaths_rates, 
+                    "nbr_non_response": nbr_non_response,
+                    "non_response_rates": non_response_rates})
+
+    # Durées de tous les programmes puis moyenne
+    context.update({"avg_days": ProgramIO.out.avg_days()})
+
     # Gain de poids moyen
-    patients = Patient.objects.all()
-    list_weight = []
-    for patient in patients:
-        # les patients qui ont une donnée nutritionnelle
-        datanut_patient = nutritional_data.filter(patient=patient) \
-                                  .order_by('date')
-        if datanut_patient:
-            weight = diff_weight(datanut_patient[0].weight, \
-                            datanut_patient[len(datanut_patient) - 1].weight)
-            list_weight.append(weight)
-    try:
-        avg_weight = sum(list_weight) / list_weight.__len__()
-    except:
-        avg_weight = 0
-    context.update({"avg_weight": "%.2f" % avg_weight})
+    context.update({"avg_weight": "%.2f" % Patient.avg_weight_delta()})
+
     # graphic
-    try:
-        list_date = date_graphic(ProgramIO.objects.order_by("date")[0].date)
-    except:
-        list_date = []
     total_patient = []
     graph_date = []
     diagnose_mam = []
     diagnose_sam = []
     diagnose_ni = []
-    if list_date:
-        for dat in list_date:
-            input_in_prog = ProgramIO.objects.filter(event=ProgramIO.SUPPORT,
-                                                                date__lte=dat)
-            out_in_prog = ProgramIO.objects.filter(event=ProgramIO.OUT,
-                                                             date__lte=dat)
-            input_out_in_prog = [p for p in  input_in_prog if p.patient \
-                                 not in [i.patient for i in out_in_prog]]
-            data = DataNut.objects.order_by('date').filter(date__lte=dat)
-            total_patient.append(input_out_in_prog.__len__())
-            graph_date.append(dat.strftime('%d/%m'))
-            l_diagnose = [diagnose_patient(d.muac, d.oedema) for d in data \
-                                        if d.patient.id in [(i.patient.id) \
-                                                for i in input_out_in_prog]]
-            if l_diagnose:
-                diagnose_mam.append(l_diagnose.count('MAM'))
-                diagnose_sam.append(l_diagnose.count('SAM'))
-                diagnose_ni.append(l_diagnose.count('SAM+'))
+
+    week_dates = week_range(ProgramIO.objects.all()[0].date)
+    for dat in week_dates:
+
+        # for patient in Patient.objects.all():
+        #     if patient.programios.filter(date__lte=dat).latest().event != ProgramIO.OUT:
+
+        input_in_prog = ProgramIO.objects.filter(event=ProgramIO.SUPPORT,
+                                                            date__lte=dat)
+
+        out_in_prog = ProgramIO.objects.filter(event=ProgramIO.OUT,
+                                                         date__lte=dat)
+
+        input_out_in_prog = [p for p in  input_in_prog if p.patient \
+                             not in [i.patient for i in out_in_prog]]
+
+        data = NutritionalData.objects.order_by('date').filter(date__lte=dat)
+
+        total_patient.append(input_out_in_prog.__len__())
+
+        graph_date.append(dat.strftime('%d/%m'))
+        
+        l_diagnose = [diagnose_patient(d.muac, d.oedema) for d in data \
+                                    if d.patient.id in [(i.patient.id) \
+                                            for i in input_out_in_prog]]
+        if l_diagnose:
+            diagnose_mam.append(l_diagnose.count('MAM'))
+            diagnose_sam.append(l_diagnose.count('SAM'))
+            diagnose_ni.append(l_diagnose.count('SAM+'))
 
         # Graphic
         graph_data = [{'name': "Total", 'data': total_patient}, \

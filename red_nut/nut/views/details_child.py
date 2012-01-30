@@ -4,7 +4,7 @@
 
 from django.shortcuts import render
 
-from nut.models import Patient, DataNut, ProgramIO
+from nut.models import Patient, NutritionalData, ProgramIO
 
 
 def details_child(request, *args, **kwargs):
@@ -25,7 +25,7 @@ def details_child(request, *args, **kwargs):
 
     try:
         input_ = movements.latest('date')
-        data_nuts = DataNut.objects.filter(patient__id=num)
+        data_nuts = NutritionalData.objects.filter(patient__id=num)
         datanuts = data_nuts.order_by('-date')
         datanuts_ = data_nuts.order_by('date')
         datanut = datanuts.latest('date')
@@ -37,7 +37,7 @@ def details_child(request, *args, **kwargs):
         graph_data = [{'name': "Poids", 'data': list_weight}, \
                                 {'name': "MUAC", 'data': list_muac}]
         context.update({"graph_date": graph_date, "graph_data": graph_data})
-    except DataNut.DoesNotExist:
+    except NutritionalData.DoesNotExist:
         input_ = movements.latest('date')
         context.update({'error': 'Aucun details nutritionnel',
                                                 "input_": input_})

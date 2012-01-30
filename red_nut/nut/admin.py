@@ -9,7 +9,7 @@ from models.Input  import Input
 from models.Patient  import Patient
 from models.ProgramIO  import ProgramIO
 from models.HealthCenter  import HealthCenter
-from models.DataNut  import DataNut
+from models.nutritional_data  import NutritionalData
 from models.ConsumptionReport  import ConsumptionReport
 
 
@@ -26,7 +26,7 @@ class ProgramIOAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'date', 'event', 'reason')
 
 
-class DataNutAdmin(admin.ModelAdmin):
+class NutritionalDataAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'date', 'weight', \
                     'height', 'oedema', 'muac')
 
@@ -37,7 +37,7 @@ class ConsumptionReportAdmin(admin.ModelAdmin):
 
 
 admin.site.register(HealthCenter, HealthCenterAdmin)
-admin.site.register(DataNut, DataNutAdmin)
+admin.site.register(NutritionalData, NutritionalDataAdmin)
 admin.site.register(Input)
 admin.site.register(ProgramIO, ProgramIOAdmin)
 admin.site.register(Patient, PatientAdmin)
