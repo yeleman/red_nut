@@ -6,14 +6,17 @@ from django import forms
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
 from nut.models import HealthCenter, Patient, ProgramIO
 
 
+@login_required
 def health_center(request):
     """ """
-    context = {"category": 'health_center'}
+    context = {"category": 'health_center',\
+               "user": request.user.get_full_name()}
 
     health_centers = HealthCenter.objects.all()
     movements = Patient.objects.all()

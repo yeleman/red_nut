@@ -6,15 +6,18 @@
 from django.shortcuts import render
 from nut.models import HealthCenter, ProgramIO, DataNut, Patient, \
                                                         ConsumptionReport
+from django.contrib.auth.decorators import login_required
 from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
                             date_graphic, verification_delay, \
                             percentage_calculation
 
 
+@login_required
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
 
-    context = {"category": "details_health_center"}
+    context = {"category": "details_health_center",\
+               "user": request.user.get_full_name()}
 
     num = kwargs["id"]
     health_center = HealthCenter.objects.get(id=num)

@@ -6,6 +6,7 @@ from django import forms
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from nut.models import ProgramIO, Patient, DataNut
 from nosmsd.models import Inbox, SentItems
@@ -13,10 +14,10 @@ from nut.tools.utils import diagnose_patient, number_days, diff_weight, \
                             date_graphic, verification_delay, \
                             percentage_calculation
 
-
+@login_required
 def dashboard(request):
 
-    context = {"category": 'dashboard'}
+    context = {"category": 'dashboard', 'user': request.user.get_full_name()}
 
     # Les ptients qui ne sont plus dans le programme
     out_program = ProgramIO.objects.filter(event=ProgramIO.OUT)

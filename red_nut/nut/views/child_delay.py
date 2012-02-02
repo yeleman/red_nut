@@ -7,16 +7,17 @@ from django.shortcuts import render, RequestContext, HttpResponseRedirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 from nut.models import Patient, HealthCenter, ProgramIO
 from nut.tools.utils import verification_delay
 
-
+@login_required
 def child_delay(request, *args, **kwargs):
     """ """
     category = 'child_delay'
-    context = {}
+    context = {'user': request.user.get_full_name()}
     context.update({"category": category, "message": u"Recherche "})
 
     patients = [patient.last_data_event() \

@@ -4,10 +4,12 @@
 
 from datetime import datetime
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from nut.export_excel import report_as_excel
 from nut.models import HealthCenter
 
 
+@login_required
 def excel_export(request, *args, **kwargs):
     context = {'category': 'export'}
     health_centers = HealthCenter.objects.all()
