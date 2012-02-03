@@ -251,16 +251,18 @@ def nut_search(message, args, sub_cmd, cmd):
 
 def nut_disable(message, args, sub_cmd, cmd):
     """  Incomming:
-            nut off id_patient reason
+            nut off id_patient reason date
             example reason: (a= abandon, t = transfer ...)
          Outgoing:
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
-
+    print "gggg"
     try:
-        patient_id, reason = args.split()
+        print "bbb",args.split()
+        patient_id, reason, date_ = args.split()
+        print patient_id, reason, date_
     except:
-        return resp_error(message, u"OUTe")
+        return resp_error(message, u"la sortie")
     try:
         patient = Patient.objects.get(id=patient_id)
     except:
@@ -272,7 +274,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     programio.patient = patient
     programio.event = programio.OUT
     programio.reason = reason
-    programio.date = date.today()
+    programio.date = date(*[int(v) for v in date_.split('-')])
     programio.save()
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
                     u"du programme." %
