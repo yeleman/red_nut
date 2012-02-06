@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Déconnexion{% endblock %}
+{% block pagetitle %}<h1 class="pagetitle">À bientôt !</h1>{% endblock %}
+
+{% block content %}
+
+<div id="context">
+<h2>Déconnecté.</h2>
+<p>Vous vous êtes déconnecté du système d'information de routine Nutrition de la Croix-Rouge.</p>
+<p>Merci de votre visite, Vous pouvez vous reconnecter en <a href="{% url index %}">cliquant ici</a>. À bientôt.</p>
+</div>
+{% endblock %}
