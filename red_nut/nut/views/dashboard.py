@@ -10,13 +10,13 @@ from django.contrib.auth.decorators import login_required
 
 from nut.models import ProgramIO, Patient, NutritionalData
 from nosmsd.models import Inbox, SentItems
-from nut.tools.utils import (diagnose_patient, diff_weight, 
+from nut.tools.utils import (diagnose_patient, diff_weight,
                             week_range, percentage_calculation, extract)
 
 @login_required
 def dashboard(request):
 
-    context = {"category": 'dashboard', 'user': request.user.get_full_name()}
+    context = {"category": 'dashboard', 'user': request.user}
 
     # le nombre total d'enfant
     patients = Patient.objects.all()
@@ -28,7 +28,7 @@ def dashboard(request):
 
     # Taux abandon
     nbr_abandonment = ProgramIO.abandon.count()
-    abandonment_rates = percentage_calculation(nbr_abandonment, 
+    abandonment_rates = percentage_calculation(nbr_abandonment,
                                                nbr_total_patient)
 
     # Taux déces
@@ -38,16 +38,16 @@ def dashboard(request):
     # Taux non repondant
     nbr_non_response = ProgramIO.nonresp.count()
 
-    non_response_rates = percentage_calculation(nbr_non_response, 
+    non_response_rates = percentage_calculation(nbr_non_response,
                                                 nbr_total_patient)
 
-    context.update({"nbr_total_patient": nbr_total_patient, 
-                    "nbr_healing": nbr_healing, 
-                    "healing_rates": healing_rates, 
-                    "nbr_abandonment": nbr_abandonment, 
-                    "abandonment_rates": abandonment_rates, 
-                    "nbr_deaths": nbr_deaths, 
-                    "deaths_rates": deaths_rates, 
+    context.update({"nbr_total_patient": nbr_total_patient,
+                    "nbr_healing": nbr_healing,
+                    "healing_rates": healing_rates,
+                    "nbr_abandonment": nbr_abandonment,
+                    "abandonment_rates": abandonment_rates,
+                    "nbr_deaths": nbr_deaths,
+                    "deaths_rates": deaths_rates,
                     "nbr_non_response": nbr_non_response,
                     "non_response_rates": non_response_rates})
 
@@ -89,14 +89,14 @@ def dashboard(request):
         diagnose_sam.append(l_diagnose.count('SAM'))
         diagnose_ni.append(l_diagnose.count('SAM+'))
 
-        
-        graph_data = [{'name': "Total", 'data': total_patient}, 
-                      {'name': "MAM", 'data': diagnose_mam}, 
-                      {'name': "MAS", 'data': diagnose_sam}, 
+
+        graph_data = [{'name': "Total", 'data': total_patient},
+                      {'name': "MAM", 'data': diagnose_mam},
+                      {'name': "MAS", 'data': diagnose_sam},
                       {'name': "MAS+", 'data': diagnose_ni}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
-    
+
     # Diagnose
     MAM_count = extract(diagnose_mam, -1, default=0)
     SAM_count = extract(diagnose_sam, -1, default=0)
@@ -104,7 +104,7 @@ def dashboard(request):
 
     # Nbre d'enfant dans le programme
     children_in_program = extract(total_patient, -1, default=0)
-    
+
     # Nbre d'enfant en retard de consultation
     patients_late = []
     for patient in patients:

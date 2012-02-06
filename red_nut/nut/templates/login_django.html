@@ -5,26 +5,24 @@
 {% block pagetitle %}<h1 class="pagetitle">Merci de vous identifier</h1>{% endblock %}
 
 {% block content %}
-
+<div id="context">
 {{state}}
+    <h2>Bienvenue !</h2>
+    <p>Bienvenue dans le <strong>Système d'Information de Routine Nutrition</strong> de la Croix-Rouge.</p>
+    <p>Ce site web est un outil de la Croix-Rouge, permettant la consultation des informations relatives au programme.</p>
+    <p>L'accès à cet outil est limité aux partenaires du programme.</p>
+    <p>Vous trouverez plus d'informations dans la section <a href="{% url about %}">à propos</a>.</p>
 
-<h2>Bienvenue !</h2>
-<p>Bienvenue dans le <strong>Système d'Information de Routine Nutrition</strong> de la Croix-Rouge.</p>
-<p>Ce site web est un outil de la Croix-Rouge, permettant la consultation des informations relatives au programme.</p>
-<p>L'accès à cet outil est limité aux partenaires du programme.</p>
-<p>Vous trouverez plus d'informations dans la section <a href="{% url about %}">à propos</a>.</p>
-
-<form method="post" action="{% url login %}">
-{% csrf_token %}
-<table>
-<tr><th>{% trans "Username" %}</th><td>{{ form.username }}</td>
-</tr>
-<tr><th>{% trans "Password" %}</th><td>{{ form.password }}</td></tr>
-</table>
-<input type="hidden" name="next" value="{{ next }}" />
-<button class="formbutt default">{% trans 'Log in' %}</button>
-</form>
-
-<p>Si vous souhaitez obtenir un accès ou que vous avez perdu vos identifiants, contactez le support technique</a>.</p>
-
+    <form method="post" action="{% url login %}">
+        {% csrf_token %}
+        <table>
+        <tr><th>{% trans "Username" %}</th><td>{{ form.username }}</td>
+        </tr>
+        <tr><th>{% trans "Password" %}</th><td>{{ form.password }}</td></tr>
+        </table>
+        <input type="hidden" name="next" value="{{ next }}" />
+        <button class="formbutt default">{% trans 'Log in' %}</button>
+        </form>
+    <p>Si vous souhaitez obtenir un accès ou que vous avez perdu vos identifiants, contactez le support technique</a>.</p>
+</div>
 {% endblock %}

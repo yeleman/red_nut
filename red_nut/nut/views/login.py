@@ -8,8 +8,7 @@ from django.core.urlresolvers import reverse
 from django.core.context_processors import csrf
 from django.contrib.auth import authenticate, login as django_login, \
                                                 logout as django_logout
-from django.shortcuts import render_to_response, redirect, \
-                                                    HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100, label="Nom d'utilisateur")
@@ -44,4 +43,4 @@ def login(request):
 
         c.update({'form': form})
 
-    return render_to_response('login_django.html', c)
+    return render(request, 'login_django.html', c)

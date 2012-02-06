@@ -165,6 +165,10 @@ DATABASE_ROUTERS = ['nosmsd.django_routers.NoSMSdRouter']
 
 EXCEL_DATE_FORMAT = "%d-%m-%Y"
 
+LOGIN_URL = '/'
+LOGOUT_URL = '/logout'
+LOGIN_REDIRECT_URL = '/dashboard'
+
 try:
     from local_settings import *
 except ImportError:

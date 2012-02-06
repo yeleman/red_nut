@@ -18,11 +18,15 @@
     <div id="page">
         <div id="header" class="mainbox">
             {% ifnotequal categorie 'login' %}
-                {% if user %}
+                {% if user.is_authenticated %}
                     <ul id="user-menu">
-                    <li>{{user}}</li>
+                    <li>{{user.get_full_name}}</li>
                     <li><a href="{% url logout %}" title="{% trans 'Log in' %}">{% trans "Log out" %}</a></li>
                     </ul>
+                {% else %}
+                <ul id="user-menu">
+                    <li><a href="{% url login %}" title="{% trans 'Log in' %}">{% trans "Log in" %}</a></li>
+                </ul>
                 {% endif %}
             <div id="breadcrumbs">{%block breadcrumbs %}{% endblock %}</div>
 

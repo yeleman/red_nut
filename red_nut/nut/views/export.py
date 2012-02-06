@@ -16,12 +16,13 @@ import xlwt
 
 from django.http import HttpResponse, Http404
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from nut.models import ConsumptionReport, HealthCenter, Patient, NutritionalData
 from nut.tools.export import report_as_excel
 
 
-
+@login_required
 def excel_export(request, *args, **kwargs):
     context = {'category': 'export'}
     health_centers = HealthCenter.objects.all()
@@ -36,6 +37,7 @@ def excel_export(request, *args, **kwargs):
     return response
 
 
+@login_required
 def export_db(request):
 
     if not os.path.exists(settings.DB_PATH):
