@@ -1,21 +1,16 @@
 #!/usr/bin/env python
 # encoding=utf-8
+# maintainer: Fadiga
 
-# ROOT_DIR contains path of this folder.
 import os
-abs_path = os.path.abspath(__file__)
-ROOT_DIR = os.path.dirname(abs_path)
+import settings
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    ('root', 'root@localhost'),
-)
-
+DB_PATH = os.path.join(settings.ROOT_DIR, 'rednut.sqlite')
 DATABASES = {'default': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': 'rednut.sqlite',
+    'NAME': DB_PATH,
     'USER': 'red',
     'PASSWORD': 'red',
     'HOST': '',
@@ -24,19 +19,16 @@ DATABASES = {'default': {
     'NAME': 'rednutsms',
     'USER': 'rednutsms',
     'PASSWORD': 'rednutsms',
-    'HOST': 'localhost',}}
+    'HOST': 'localhost', }}
+
+INSTALLED_APPS = settings.INSTALLED_APPS + ('django_extensions',)
 
 TIME_ZONE = 'Africa/Bamako'
 
 LANGUAGE_CODE = 'fr-fr'
 
-MEDIA_ROOT = os.path.join(ROOT_DIR, 'media')
-MEDIA_URL = ''
-
-#ADMIN_MEDIA_PREFIX = '/admin_static/'
-
 # change that one!
-SECRET_KEY = '___5*/_\:-)_____//-_-\\'
+SECRET_KEY = '___(:-/_\:-)__|@|@|__(:-/_\:-)___'
 
 TEMPLATE_DIRS = ()
 
@@ -44,6 +36,8 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 EMAIL_SENDER = ""
 
-HOTLINE_NUMBER = "63341424"
+HOTLINE_NUMBER = "60004055"
 HOTLINE_EMAIL = ""
+USE_HTTPS = True
+
 USE_HTTPS = True
