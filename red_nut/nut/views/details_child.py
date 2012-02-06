@@ -3,15 +3,18 @@
 # maintainer: Alou
 
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from nut.models import Patient, NutritionalData, ProgramIO
 
 
+@login_required
 def details_child(request, *args, **kwargs):
     """ Details sur un enfant """
     num = kwargs["id"]
 
-    context = {'category': "details_child"}
+    context = {'category': "details_child",\
+               'user': request.user.get_full_name()}
     patient = Patient.objects.get(id=num)
     movements = ProgramIO.objects.filter(patient__id=patient.id)
 

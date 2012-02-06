@@ -9,3 +9,5 @@ from details_health_center import details_health_center
 from health_center import health_center
 from child_delay import child_delay
 from export import excel_export, export_db, report_as_excel
+from login import login
+from logout import logout

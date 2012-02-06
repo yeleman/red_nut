@@ -7,6 +7,7 @@ from django.shortcuts import render, RequestContext, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 from nut.models import Patient, HealthCenter
@@ -26,9 +27,10 @@ class ResearchForm(forms.Form):
     search_patient = forms.CharField(max_length=20, label="Recherche")
 
 
+@login_required
 def children(request, *args, **kwargs):
     category = 'children'
-    context = {}
+    context = {'user': request.user.get_full_name()}
     context.update({"category": category, "message": u"Recherche "})
 
     patients = Patient.objects.all()

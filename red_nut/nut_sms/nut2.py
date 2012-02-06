@@ -2,8 +2,6 @@
 
 import re
 
-from nosmsd.utils import send_sms
-
 from red_nut.nut.models import *
 from red_nut.nut.models.Period import MonthPeriod
 

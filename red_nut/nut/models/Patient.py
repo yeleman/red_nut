@@ -17,7 +17,7 @@ class Patient(models.Model):
     SEX_FEMELLE = 'F'
     SEX_CHOICES = (
         (SEX_MALE, u"Masculin"),
-        (SEX_FEMELLE, u"Feminin"),)
+        (SEX_FEMELLE, u"Féminin"),)
 
     first_name = models.CharField(max_length=30, verbose_name=(u"Prénom"))
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))

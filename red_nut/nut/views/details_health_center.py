@@ -4,12 +4,15 @@
 # maintainer: fadiga
 
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
 from nut.models import (HealthCenter, ProgramIO, NutritionalData, Patient, 
                                                         ConsumptionReport)
 from nut.tools.utils import (diagnose_patient, number_days, diff_weight, 
                             week_range, percentage_calculation)
 
 
+@login_required
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
 

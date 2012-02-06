@@ -6,16 +6,17 @@ from django import forms
 from django.shortcuts import render, RequestContext, redirect
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from nut.models import ProgramIO, Patient, NutritionalData
 from nosmsd.models import Inbox, SentItems
 from nut.tools.utils import (diagnose_patient, diff_weight, 
                             week_range, percentage_calculation, extract)
 
-
+@login_required
 def dashboard(request):
 
-    context = {"category": 'dashboard'}
+    context = {"category": 'dashboard', 'user': request.user.get_full_name()}
 
     # le nombre total d'enfant
     patients = Patient.objects.all()

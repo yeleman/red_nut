@@ -17,10 +17,18 @@
 <body>
     <div id="page">
         <div id="header" class="mainbox">
-            <div id="logo"></div>
-            <h1><a href="/"> </a></h1>
+            {% ifnotequal categorie 'login' %}
+                {% if user %}
+                    <ul id="user-menu">
+                    <li>{{user}}</li>
+                    <li><a href="{% url logout %}" title="{% trans 'Log in' %}">{% trans "Log out" %}</a></li>
+                    </ul>
+                {% endif %}
             <div id="breadcrumbs">{%block breadcrumbs %}{% endblock %}</div>
+
             <div id="menu">{% include "menu.html" with category=category%}</div>
+            {% endifnotequal %}
+
         </div>
         {% block submenu %}{% endblock %}
         <div id="content" class="mainbox {% block page-name %}default{% endblock %} {% block content-class %}{% endblock %}">
