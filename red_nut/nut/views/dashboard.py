@@ -63,8 +63,11 @@ def dashboard(request):
     diagnose_mam = []
     diagnose_sam = []
     diagnose_ni = []
+    try:
+        week_dates = week_range(ProgramIO.objects.all()[0].date)
+    except IndexError:
+        week_dates = []
 
-    week_dates = week_range(ProgramIO.objects.all()[0].date)
     for dat in week_dates:
 
         active_patients = []
@@ -87,13 +90,11 @@ def dashboard(request):
 
         diagnose_mam.append(l_diagnose.count('MAM'))
         diagnose_sam.append(l_diagnose.count('SAM'))
-        diagnose_ni.append(l_diagnose.count('SAM+'))
 
 
         graph_data = [{'name': "Total", 'data': total_patient},
                       {'name': "MAM", 'data': diagnose_mam},
-                      {'name': "MAS", 'data': diagnose_sam},
-                      {'name': "MAS+", 'data': diagnose_ni}]
+                      {'name': "MAS", 'data': diagnose_sam}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
 

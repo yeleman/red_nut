@@ -15,14 +15,16 @@ class OutProgramIOManager(models.Manager):
         return qs.filter(event=ProgramIO.OUT)
     
     def avg_days(self):
-      """
-        Return the average program duration days for
-        all patients that are out of the program.
-      """
-      qs = self.get_query_set()
-      list_num_days = [out.program_duration.days for out in qs]
-      return sum(list_num_days) / len(list_num_days)
-
+        """
+             Return the average program duration days for
+             all patients that are out of the program.
+        """
+        qs = self.get_query_set()
+        list_num_days = [out.program_duration.days for out in qs]
+        try:
+            return sum(list_num_days) / len(list_num_days)
+        except ZeroDivisionError:
+            return 0
 
 
 class HealingProgramIOManager(OutProgramIOManager):
@@ -31,12 +33,10 @@ class HealingProgramIOManager(OutProgramIOManager):
         return qs.filter(reason=ProgramIO.HEALING)
 
 
-
 class AbandonmentProgramIOManager(OutProgramIOManager):
     def get_query_set(self):
         qs = super(AbandonmentProgramIOManager, self).get_query_set()
         return qs.filter(reason=ProgramIO.ADBANDONMENT)
-
 
 
 class NonRespProgramIOManager(OutProgramIOManager):
@@ -45,12 +45,10 @@ class NonRespProgramIOManager(OutProgramIOManager):
         return qs.filter(reason=ProgramIO.NON_RESPONDENT)
 
 
-
 class DeathProgramIOManager(OutProgramIOManager):
     def get_query_set(self):
         qs = super(DeathProgramIOManager, self).get_query_set()
         return qs.filter(reason=ProgramIO.DEATH)
-
 
 
 class ProgramIO(models.Model):

@@ -70,8 +70,10 @@ class Patient(models.Model):
     def avg_weight_delta(cls, qs=None):
         qs = qs or cls.objects.all()
         list_weight = [p.weight_delta_since_input for p in qs]
-        return sum(list_weight) / len(list_weight)
-
+        try:
+            return sum(list_weight) / len(list_weight)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def weight_delta_since_input(self):
