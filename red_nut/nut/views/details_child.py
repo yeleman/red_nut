@@ -14,7 +14,7 @@ def details_child(request, *args, **kwargs):
     num = kwargs["id"]
 
     context = {'category': "details_child",\
-               'user': request.user.get_full_name()}
+               'user': request.user}
     patient = Patient.objects.get(id=num)
     movements = ProgramIO.objects.filter(patient__id=patient.id)
 

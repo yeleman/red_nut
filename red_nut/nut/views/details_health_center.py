@@ -6,9 +6,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from nut.models import (HealthCenter, ProgramIO, NutritionalData, Patient, 
+from nut.models import (HealthCenter, ProgramIO, NutritionalData, Patient,
                                                         ConsumptionReport)
-from nut.tools.utils import (diagnose_patient, number_days, diff_weight, 
+from nut.tools.utils import (diagnose_patient, number_days, diff_weight,
                             week_range, percentage_calculation)
 
 
@@ -16,7 +16,7 @@ from nut.tools.utils import (diagnose_patient, number_days, diff_weight,
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
 
-    context = {"category": "details_health_center"}
+    context = {"category": "details_health_center", "user":request.user}
 
     num = kwargs["id"]
     health_center = HealthCenter.objects.get(id=num)
@@ -113,7 +113,7 @@ def details_health_center(request, *args, **kwargs):
         dict_["avg_days"] = "%.0f" % avg_(list_num_days)
     except:
         dict_["avg_days"] = 0
-    
+
     dict_["avg_diff_weight"] = "%.2f" % Patient.avg_weight_delta(patients)
 
     try:

@@ -16,7 +16,7 @@ from nut.models import Patient, HealthCenter, ProgramIO
 def child_delay(request, *args, **kwargs):
     """ """
     category = 'child_delay'
-    context = {'user': request.user.get_full_name()}
+    context = {'user': request.user}
     context.update({"category": category, "message": u"Recherche "})
 
     patients = [patient.last_data_event() \

@@ -30,7 +30,7 @@ class ResearchForm(forms.Form):
 @login_required
 def children(request, *args, **kwargs):
     category = 'children'
-    context = {'user': request.user.get_full_name()}
+    context = {'user': request.user}
     context.update({"category": category, "message": u"Recherche "})
 
     patients = Patient.objects.all()
