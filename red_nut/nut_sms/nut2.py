@@ -5,7 +5,7 @@ import re
 from red_nut.nut.models import *
 from red_nut.nut.models.Period import MonthPeriod
 
-from datetime import date
+from datetime import date, datetime
 
 
 def handler(message):
@@ -79,7 +79,7 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.last_name = last_name.replace('_', ' ').title()
     patient.surname_mother = mother.replace('_', ' ').title()
     patient.birth_date = date(*[int(v) for v in dob.split('-')])
-    patient.create_date = date.today()
+    patient.create_date = datetime.today()
     patient.sex = sex.upper()
     patient.health_center = hc
     try:
@@ -91,7 +91,7 @@ def nut_register(message, args, sub_cmd, cmd):
     programio = ProgramIO()
     programio.patient = patient
     programio.event = programio.SUPPORT
-    programio.date = date.today()
+    programio.date = datetime.today()
     programio.save()
 
     # creating a followup event
@@ -158,7 +158,7 @@ def nut_followup(message, args, sub_cmd, cmd):
         programio = ProgramIO()
         programio.patient = patient
         programio.event = programio.SUPPORT
-        programio.date = date.today()
+        programio.date = datetime.today()
         programio.save()
 
     # creating a followup event
@@ -272,11 +272,9 @@ def nut_disable(message, args, sub_cmd, cmd):
          Outgoing:
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
-    print "gggg"
+
     try:
-        print "bbb",args.split()
         patient_id, reason, date_ = args.split()
-        print patient_id, reason, date_
     except:
         return resp_error(message, u"la sortie")
     try:
@@ -290,12 +288,15 @@ def nut_disable(message, args, sub_cmd, cmd):
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s"
                         % patient_id)
         return True
+    dt = datetime.now()
+    date_ = date(*[int(v) for v in date_.split('-')])
 
     programio = ProgramIO()
     programio.patient = patient
     programio.event = programio.OUT
     programio.reason = reason
-    programio.date = date(*[int(v) for v in date_.split('-')])
+    programio.date = datetime(int(date_.year), int(date_.month), int(date_.day), int(dt.hour),
+                         int(dt.minute), int(dt.second), int(dt.microsecond))
     programio.save()
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
                     u"du programme." %

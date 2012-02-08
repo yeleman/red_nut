@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from datetime import date
+from datetime import datetime, date
 from django.db import models
 from HealthCenter import HealthCenter
 
@@ -25,8 +25,8 @@ class Patient(models.Model):
                                       verbose_name=(u"Prénom de la mère"))
     health_center = models.ForeignKey(HealthCenter, related_name='patients',
                             verbose_name=("Clinic"))
-    create_date = models.DateField(verbose_name=("Date d'enregistrement"),\
-                                   default=date.today)
+    create_date = models.DateTimeField(verbose_name=("Date d'enregistrement"),\
+                                   default=datetime.today())
     birth_date = models.DateField(verbose_name=(u"Date de naissance"))
     sex = models.CharField(u"Sexe", max_length=1, \
                               choices=SEX_CHOICES)

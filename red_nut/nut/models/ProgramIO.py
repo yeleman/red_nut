@@ -80,7 +80,7 @@ class ProgramIO(models.Model):
     abandon = AbandonmentProgramIOManager()
     death = DeathProgramIOManager()
 
-    date = models.DateField(verbose_name=(u"Date"),
+    date = models.DateTimeField(verbose_name=(u"Date"),
                             default=datetime.today())
     event = models.CharField(max_length=30, verbose_name=(u"Evenement"),
                                     choices=Event_type, default=SUPPORT)
