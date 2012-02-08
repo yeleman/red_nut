@@ -16,7 +16,7 @@ from nut.tools.utils import (diagnose_patient, number_days, diff_weight,
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
 
-    context = {"category": "details_health_center", "user":request.user}
+    context = {"category": "health_center", "user":request.user}
 
     num = kwargs["id"]
     health_center = HealthCenter.objects.get(id=num)
