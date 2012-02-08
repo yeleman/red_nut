@@ -29,9 +29,9 @@ class ResearchForm(forms.Form):
 
 @login_required
 def children(request, *args, **kwargs):
-    category = 'children'
-    context = {'user': request.user}
-    context.update({"category": category, "message": u"Recherche "})
+    
+    context = {'category': 'children','user': request.user}
+    context.update({"message": u"Recherche "})
 
     patients = Patient.objects.all()
     if request.method == "POST":
