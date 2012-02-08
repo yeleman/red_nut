@@ -287,8 +287,8 @@ def nut_disable(message, args, sub_cmd, cmd):
                             {'full_name': patient.full_name()})
             return True
     except:
-        message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" \
-                                                            % patient_id)
+        message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s"
+                        % patient_id)
         return True
 
     programio = ProgramIO()

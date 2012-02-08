@@ -32,8 +32,8 @@ class Patient(models.Model):
                               choices=SEX_CHOICES)
 
     def __unicode__(self):
-        return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s \
-                                                   %(health_center)s') % \
+        return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s'
+                 '%(health_center)s') % \
                 {"first_name": self.first_name, \
                  "last_name": self.last_name, \
                  "mother": self.surname_mother, \

@@ -56,7 +56,7 @@ class ProgramIO(models.Model):
 
     class Meta:
         app_label = 'nut'
-        ordering = ('-date',)
+        ordering = ('date',)
         get_latest_by = 'date'
 
     SUPPORT = "e"
