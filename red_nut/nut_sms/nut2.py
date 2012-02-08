@@ -149,16 +149,17 @@ def nut_followup(message, args, sub_cmd, cmd):
 
     try:
         patient = Patient.objects.get(id=int(patient_id))
-        if patient.last_data_event().event == ProgramIO.OUT:
-            programio = ProgramIO()
-            programio.patient = patient
-            programio.event = programio.SUPPORT
-            programio.date = date.today()
-            programio.save()
     except:
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" %
                                                              patient_id)
         return True
+
+    if patient.last_data_event().event == ProgramIO.OUT:
+        programio = ProgramIO()
+        programio.patient = patient
+        programio.event = programio.SUPPORT
+        programio.date = date.today()
+        programio.save()
 
     # creating a followup event
     weight = float(weight)
@@ -169,6 +170,19 @@ def nut_followup(message, args, sub_cmd, cmd):
     muac = int(muac)
     nb_plumpy_nut = int(nb_plumpy_nut) \
                               if not nb_plumpy_nut.lower() == '-' else 0
+
+    if patient.last_data_nut().date == date.today():
+        last_data_nut = patient.last_data_nut()
+        last_data_nut.weight = weight
+        last_data_nut.height = height
+        last_data_nut.oedema = oedema
+        last_data_nut.muac = muac
+        last_data_nut.nb_plumpy_nut = nb_plumpy_nut
+        last_data_nut.save()
+        message.respond(u"[SUCCES] Donnees nutrition mise a jour pour "
+                    u"%(full_name)s" % {'full_name': patient.full_name_id()})
+        return True
+
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema,
                                 muac=muac, nb_plumpy_nut=nb_plumpy_nut)
