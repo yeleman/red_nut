@@ -131,6 +131,7 @@ def add_followup_data(**kwargs):
 
 
 def nut_followup(message, args, sub_cmd, cmd):
+
     """ Incomming:
             nut fol id_patient weight height oedema muac
              nb_plumpy_nut(optional)
@@ -148,13 +149,15 @@ def nut_followup(message, args, sub_cmd, cmd):
 
     try:
         patient = Patient.objects.get(id=int(patient_id))
+        if patient.last_data_event().event == ProgramIO.OUT:
+            programio = ProgramIO()
+            programio.patient = patient
+            programio.event = programio.SUPPORT
+            programio.date = date.today()
+            programio.save()
     except:
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" %
                                                              patient_id)
-        return True
-
-    if patient.last_data_event().event == ProgramIO.OUT:
-        message.respond(u"[ERREUR] Ce patient ne fait plus parti du programme")
         return True
 
     # creating a followup event
@@ -251,6 +254,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     """  Incomming:
             nut off id_patient reason date
             example reason: (a= abandon, t = transfer ...)
+            example data: nut off 1 t 2012-02-08
          Outgoing:
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
@@ -263,6 +267,11 @@ def nut_disable(message, args, sub_cmd, cmd):
         return resp_error(message, u"la sortie")
     try:
         patient = Patient.objects.get(id=patient_id)
+        if patient.last_data_event().event == ProgramIO.OUT:
+            message.respond(u"[ERREUR] %(full_name)s est deja sortie"
+                            u" du programme." %
+                            {'full_name': patient.full_name()})
+            return True
     except:
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" \
                                                             % patient_id)
