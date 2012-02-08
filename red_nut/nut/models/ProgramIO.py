@@ -13,7 +13,7 @@ class OutProgramIOManager(models.Manager):
     def get_query_set(self):
         qs = super(OutProgramIOManager, self).get_query_set()
         return qs.filter(event=ProgramIO.OUT)
-    
+
     def avg_days(self):
         """
              Return the average program duration days for
@@ -56,7 +56,7 @@ class ProgramIO(models.Model):
 
     class Meta:
         app_label = 'nut'
-        ordering = ('date',)
+        ordering = ('-date',)
         get_latest_by = 'date'
 
     SUPPORT = "e"
@@ -69,12 +69,12 @@ class ProgramIO(models.Model):
     TANSFER = "t"
     DEATH = "d"
     NON_RESPONDENT = "n"
-    Reason_type = ((NEANT, "----"), (ADBANDONMENT, "abandon"), 
-                   (HEALING, u"guérison"), (TANSFER, "transfer"), 
+    Reason_type = ((NEANT, "----"), (ADBANDONMENT, "abandon"),
+                   (HEALING, u"guérison"), (TANSFER, "transfer"),
                    (DEATH, u"deces"), (NON_RESPONDENT, u"non-repondant"))
 
     objects = models.Manager() # The default manager.
-    out = OutProgramIOManager() 
+    out = OutProgramIOManager()
     nonresp = NonRespProgramIOManager()
     healing = HealingProgramIOManager()
     abandon = AbandonmentProgramIOManager()
@@ -103,7 +103,7 @@ class ProgramIO(models.Model):
 
 
     def __unicode__(self):
-        return ((u'%(patient)s %(event)s %(reason)s %(date)s') % 
-                    {"event": self.event, "date": self.date, 
-                     "patient": self.patient.full_name(), 
+        return ((u'%(patient)s %(event)s %(reason)s %(date)s') %
+                    {"event": self.event, "date": self.date,
+                     "patient": self.patient.full_name(),
                      "reason": self.reason})
