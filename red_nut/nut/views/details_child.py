@@ -4,7 +4,7 @@
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
+from zscore import zscore_from
 from nut.models import Patient, NutritionalData, ProgramIO
 
 
@@ -32,13 +32,17 @@ def details_child(request, *args, **kwargs):
         datanuts = data_nuts.order_by('-date')
         datanuts_ = data_nuts.order_by('date')
         datanut = datanuts.latest('date')
+        datanut.zscore = zscore_from(datanut.height, datanut.weight)
+
         context.update({'input_': input_, 'datanut': datanut, \
                         'datanuts': datanuts})
         list_muac = [datanut.muac for datanut in datanuts_]
         list_weight = [datanut.weight for datanut in datanuts_]
+        list_zscore = [zscore_from(datanut.height, datanut.weight) for datanut in datanuts_]
         graph_date = [datanut.date.strftime('%d/%m') for datanut in datanuts_]
         graph_data = [{'name': "Poids", 'data': list_weight}, \
-                                {'name': "MUAC", 'data': list_muac}]
+                      {'name': "MUAC", 'data': list_muac},
+                      {'name': "ZSCORE", 'data': list_zscore}]
         context.update({"graph_date": graph_date, "graph_data": graph_data})
     except NutritionalData.DoesNotExist:
         input_ = movements.latest('date')
