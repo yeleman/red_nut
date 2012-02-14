@@ -41,9 +41,9 @@ def details_child(request, *args, **kwargs):
         list_zscore = [zscore_from(datanut.height, datanut.weight) for datanut in datanuts_]
         graph_date = [datanut.date.strftime('%d/%m') for datanut in datanuts_]
         graph_data = [{'name': "Poids", 'data': list_weight}, \
-                      {'name': "MUAC", 'data': list_muac},
-                      {'name': "ZSCORE", 'data': list_zscore}]
-        context.update({"graph_date": graph_date, "graph_data": graph_data})
+                      {'name': "PB",'data': list_muac}]
+        zscore_data = [{'name': "ZSCORE", 'data': list_zscore}]
+        context.update({"graph_date": graph_date, "graph_data": graph_data, "zscore_data": zscore_data})
     except NutritionalData.DoesNotExist:
         input_ = movements.latest('date')
         context.update({'error': 'Aucun details nutritionnel',

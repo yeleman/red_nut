@@ -2,7 +2,8 @@
 {% load babel %}
 
 {% block title %}Enfants{% endblock %}
-{% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id %}{% endblock %}
+{% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id graph_data=graph_data %}
+{% include "graph_zscore.js" with zscore=widget id=widget.id  graph_zscore=zscore_data %}{% endblock %}
 {% block content %}
 
 <div id="context">
@@ -62,8 +63,12 @@
         <h2>{{error}}</h2>
     {% endif %}
     {% if graph_data %}
-        <h3 class="caption"><strong>Figure: </strong>Courbes d'évolution des données nutritionnelles</h3>
+        <h3 class="caption"><strong>Figure: </strong>Courbes d'évolution du Poids/PB</h3>
         <div id="graph"></div>
+    {% endif %}
+    {% if zscore_data %}
+        <h3 class="caption"><strong>Figure: </strong>Évolution du z-score</h3>
+        <div id="zscore"></div>
     {% endif %}
 </div>
 
