@@ -3,7 +3,7 @@
 # maintainer: Fadiga
 
 from django import forms
-from django.shortcuts import render, RequestContext, HttpResponseRedirect
+from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
@@ -29,8 +29,7 @@ class ResearchForm(forms.Form):
 
 @login_required
 def children(request, *args, **kwargs):
-    
-    context = {'category': 'children','user': request.user}
+    context = {'category': 'children', 'user': request.user}
     context.update({"message": u"Recherche "})
 
     patients = Patient.objects.all()

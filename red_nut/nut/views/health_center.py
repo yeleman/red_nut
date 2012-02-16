@@ -2,12 +2,11 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from django import forms
-from django.shortcuts import render, RequestContext, redirect
+
+from django.shortcuts import render
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
 
 from nut.models import HealthCenter, Patient, ProgramIO
 

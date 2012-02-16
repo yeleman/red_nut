@@ -3,17 +3,17 @@
 # maintainer: Alou
 
 from django import forms
-#~ from django.shortcuts import render, RequestContext, redirect
 from django.core.urlresolvers import reverse
 from django.core.context_processors import csrf
-from django.contrib.auth import authenticate, login as django_login, \
-                                                logout as django_logout
+from django.contrib.auth import authenticate, login as django_login
 from django.shortcuts import render, HttpResponseRedirect
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100, label="Nom d'utilisateur")
     password = forms.CharField(max_length=100, label="Mot de passe",\
                                widget=forms.PasswordInput)
+
 
 def login(request):
     """ page de connection """

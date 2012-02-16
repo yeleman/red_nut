@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load babel %}
 
-{% block title %}Détail de centre de santé{% endblock %}
+{% block title %}{{dict_.health_center}}{% endblock %}
 {% block jqueryonload %}{% include "indicator_graph.js" with graph=widget1 id=widget.id %}{% endblock %}
 {% block content %}
 

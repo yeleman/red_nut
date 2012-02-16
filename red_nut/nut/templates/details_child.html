@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load babel %}
 
-{% block title %}Enfants{% endblock %}
+{% block title %}{{patient.full_name.capitalize }}{% endblock %}
 {% block jqueryonload %}{% include "indicator_graph.js" with graph=widget id=widget.id graph_data=graph_data %}
 {% include "graph_zscore.js" with zscore=widget id=widget.id  graph_zscore=zscore_data %}{% endblock %}
 {% block content %}

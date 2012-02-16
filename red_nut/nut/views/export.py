@@ -8,17 +8,14 @@
 """
 
 import os
-import StringIO
 
 from datetime import datetime
-
-import xlwt
 
 from django.http import HttpResponse, Http404
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
-from nut.models import ConsumptionReport, HealthCenter, Patient, NutritionalData
+from nut.models import  HealthCenter
 from nut.tools.export import report_as_excel
 
 
@@ -48,7 +45,3 @@ def export_db(request):
     response['Content-Disposition'] = 'attachment; filename="%s"' % \
                                         os.path.basename(settings.DB_PATH)
     return response
-
-
-
-

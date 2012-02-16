@@ -2,16 +2,15 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from django import forms
-from django.shortcuts import render, RequestContext, redirect
+
+from django.shortcuts import render
 from django.utils.translation import ugettext as _, ugettext_lazy
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from nut.models import ProgramIO, Patient, NutritionalData
 from nosmsd.models import Inbox, SentItems
-from nut.tools.utils import (diagnose_patient, diff_weight,
-                            week_range, percentage_calculation, extract)
+from nut.tools.utils import week_range, percentage_calculation, extract
+
 
 @login_required
 def dashboard(request):
@@ -90,7 +89,6 @@ def dashboard(request):
 
         diagnose_mam.append(l_diagnose.count('MAM'))
         diagnose_sam.append(l_diagnose.count('SAM'))
-
 
         graph_data = [{'name': "Total", 'data': total_patient},
                       {'name': "MAM", 'data': diagnose_mam},

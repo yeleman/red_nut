@@ -2,15 +2,14 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from django import forms
-from django.shortcuts import render, RequestContext, HttpResponseRedirect
+from django.shortcuts import render
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 
-from nut.models import Patient, HealthCenter, ProgramIO
+from nut.models import Patient
+
 
 @login_required
 def child_delay(request, *args, **kwargs):

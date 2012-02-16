@@ -8,15 +8,14 @@ from django.contrib.auth.decorators import login_required
 
 from nut.models import (HealthCenter, ProgramIO, NutritionalData, Patient,
                                                         ConsumptionReport)
-from nut.tools.utils import (diagnose_patient, number_days, diff_weight,
-                            week_range, percentage_calculation, extract)
+from nut.tools.utils import week_range, percentage_calculation, extract
 
 
 @login_required
 def details_health_center(request, *args, **kwargs):
     """ Details of a health center """
 
-    context = {"category": "health_center", "user":request.user}
+    context = {"category": "health_center", "user": request.user}
 
     num = kwargs["id"]
     health_center = HealthCenter.objects.get(id=num)
@@ -30,24 +29,29 @@ def details_health_center(request, *args, **kwargs):
 
     # Les patients de ce centre
     patients = Patient.objects.filter(health_center=health_center)
-    datanuts = NutritionalData.objects.filter(patient__health_center=health_center)
+    datanuts = NutritionalData.objects\
+                              .filter(patient__health_center=health_center)
     programs_io = ProgramIO.objects \
                          .filter(patient__health_center=health_center)
     consumption_reports = ConsumptionReport.objects \
                                            .filter(health_center=health_center)
 
     # Taux guerison
-    nbr_healing = ProgramIO.healing.filter(patient__health_center=health_center).count()
+    nbr_healing = ProgramIO.healing \
+                        .filter(patient__health_center=health_center).count()
     healing_rates = percentage_calculation(nbr_healing, patients.count())
     # Taux abandon
-    nbr_abandonment = ProgramIO.abandon.filter(patient__health_center=health_center).count()
+    nbr_abandonment = ProgramIO.abandon \
+                        .filter(patient__health_center=health_center).count()
     abandonment_rates = percentage_calculation(nbr_abandonment, \
                                                         patients.count())
     # Taux déces
-    nbr_deaths = ProgramIO.death.filter(patient__health_center=health_center).count()
+    nbr_deaths = ProgramIO.death \
+                          .filter(patient__health_center=health_center).count()
     deaths_rates = percentage_calculation(nbr_deaths, patients.count())
     # Taux non repondant
-    nbr_non_response = ProgramIO.nonresp.filter(patient__health_center=health_center).count()
+    nbr_non_response = ProgramIO.nonresp \
+                        .filter(patient__health_center=health_center).count()
     non_response_rates = percentage_calculation(nbr_non_response, \
                                                         patients.count())
 

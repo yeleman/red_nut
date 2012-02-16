@@ -14,8 +14,6 @@ import xlwt
 
 from django.conf import settings
 
-from nut.models import ConsumptionReport, HealthCenter, Patient, NutritionalData
-
 
 def report_as_excel(health_centers):
     """
@@ -41,10 +39,10 @@ def report_as_excel(health_centers):
 
     # J'agrandi les colonnes.
     for i in (1, 2, 8, 9, 12, 14, 15, 16, 17, 19):
-         sheet_patient.col(i).width = 0x0d00 * 2
+        sheet_patient.col(i).width = 0x0d00 * 2
 
     for i in (3, 4, 5):
-         sheet_patient.col(i).width =0x0d00 * 3
+        sheet_patient.col(i).width = 0x0d00 * 3
 
     sheet.col(0).width = 0x0d00 * 1.3
 
@@ -93,8 +91,8 @@ def report_as_excel(health_centers):
 
     for health_center in health_centers:
 
-        reports = health_center.consumption_reports.select_related('input_type',
-                                                                   'period')
+        reports = health_center.consumption_reports\
+                               .select_related('input_type', 'period')
         for report in reports:
             i += 1
             sheet.write(i, 0, health_center.code)
@@ -107,7 +105,6 @@ def report_as_excel(health_centers):
             sheet.write(i, 7, report.lost)
             sheet.write(i, 8, report.remaining())
             sheet.write(i, 9, report.period.middle().strftime("%m-%Y"))
-
 
         for patient in health_center.patients.all():
             i_ += 1
@@ -146,6 +143,7 @@ def report_as_excel(health_centers):
                                                        .upper())
 
             datanut_patients = patient.nutritional_data.all()
+
             for data in datanut_patients.exclude(pk=last_data_nut.pk):
                 i_ += 1
 
@@ -161,12 +159,10 @@ def report_as_excel(health_centers):
                 i_ += 1
 
                 sheet_patient.write(i_, 0, pp.patient_id)
-                print write_event(pp)
                 sheet_patient.write(i_, 18, write_event(pp))
 
                 sheet_patient.write(i_, 19, pp.get_reason_display().upper())
                 sheet_patient.write(i_, 17, pp.date.strftime(date_format))
-
 
     stream = StringIO.StringIO()
     book.save(stream)
