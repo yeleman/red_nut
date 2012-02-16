@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
-from Period import Period
-from Input import Input
-from Patient import Patient
-from ProgramIO import ProgramIO
-from HealthCenter import HealthCenter
-from ConsumptionReport import ConsumptionReport
+from period import Period
+from input_ import Input
+from patient import Patient
+from programIO import ProgramIO
+from healthcenter import HealthCenter
+from consumptionReport import ConsumptionReport
 from nutritional_data import NutritionalData

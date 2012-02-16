@@ -209,7 +209,8 @@ class Period(models.Model):
         ''' creates a period to fit the provided date in '''
         if not isinstance(date_obj, datetime):
             date_obj = datetime.fromtimestamp(float(date_obj.strftime('%s')))
-            date_obj = datetime(date_obj.year, date_obj.month, date_obj.day, date_obj.hour, date_obj.minute, 1)
+            date_obj = datetime(date_obj.year, date_obj.month, date_obj.day, \
+                                             date_obj.hour, date_obj.minute, 1)
 
         try:
             period = [period for period in cls.objects.all() \

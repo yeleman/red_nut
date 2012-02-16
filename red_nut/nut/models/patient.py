@@ -4,7 +4,8 @@
 
 from datetime import datetime, date
 from django.db import models
-from HealthCenter import HealthCenter
+
+from healthcenter import HealthCenter
 
 
 class Patient(models.Model):
@@ -40,24 +41,19 @@ class Patient(models.Model):
                  "birth_date": self.birth_date, \
                  "health_center": self.health_center}
 
-
     def full_name(self):
         return (u'%(first_name)s %(last_name)s' % \
                                 {"first_name": self.first_name.capitalize(),
                                 "last_name": self.last_name.capitalize()})
 
-
     def full_name_id(self):
         return u"%s#%d" % (self.full_name(), self.id)
-
 
     def full_name_mother(self):
         return u"%s/%s" % (self.full_name(), self.surname_mother.capitalize())
 
-
     def full_name_all(self):
         return u"%s#%d" % (self.full_name_mother(), self.id)
-
 
     def last_visit(self):
         last = self.last_data_nut()
@@ -65,11 +61,14 @@ class Patient(models.Model):
             return last.date
         return None
 
-
     @classmethod
     def avg_weight_delta(cls, qs=None):
-        qs = qs or cls.objects.all()
+        qs = qs
+        if qs == None:
+            qs = cls.objects.all()
+
         list_weight = [p.weight_delta_since_input for p in qs]
+
         try:
             return sum(list_weight) / len(list_weight)
         except ZeroDivisionError:
@@ -77,24 +76,22 @@ class Patient(models.Model):
 
     @property
     def weight_delta_since_input(self):
-        from ProgramIO import ProgramIO
+        from programIO import ProgramIO
         date = self.programios.filter(event=ProgramIO.SUPPORT).latest().date
         nut_data = tuple(self.nutritional_data.filter(date__gte=date))
         return nut_data[-1].weight - nut_data[0].weight
-
 
     def delay_since_last_visit(self):
         now = date.today()
         return now - (self.last_visit() or now)
 
-
     def last_data_nut(self):
         from nutritional_data import NutritionalData
-        return NutritionalData.objects.filter(patient=self).order_by('-date')[0]
-
+        return NutritionalData.objects.filter(patient=self) \
+                                      .order_by('-date')[0]
 
     def last_data_event(self):
-        from ProgramIO import ProgramIO
+        from programIO import ProgramIO
         return ProgramIO.objects.filter(patient=self)\
                                          .order_by('-date')[0]
 

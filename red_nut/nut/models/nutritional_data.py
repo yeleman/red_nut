@@ -3,7 +3,7 @@
 
 from datetime import datetime
 from django.db import models
-from Patient import Patient
+from patient import Patient
 
 
 class NutritionalData(models.Model):
@@ -39,14 +39,14 @@ class NutritionalData(models.Model):
 
     muac = models.SmallIntegerField(u"MUAC (mm)")
 
-    danger_sign = models.CharField(max_length=30, 
-                                   choices=DANGER_SIGN_CHOICES, 
-                                   verbose_name="Signe de danger", 
+    danger_sign = models.CharField(max_length=30,
+                                   choices=DANGER_SIGN_CHOICES,
+                                   verbose_name="Signe de danger",
                                    blank=True, null=True)
 
     nb_plumpy_nut = models.IntegerField(
-                                max_length=30, 
-                                verbose_name=u"Sachets plumpy nut données", 
+                                max_length=30,
+                                verbose_name=u"Sachets plumpy nut données",
                                 blank=True, null=True)
 
     def __unicode__(self):

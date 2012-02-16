@@ -4,13 +4,8 @@
 
 from django.contrib import admin
 
-from models.Period import Period
-from models.Input  import Input
-from models.Patient  import Patient
-from models.ProgramIO  import ProgramIO
-from models.HealthCenter  import HealthCenter
-from models.nutritional_data  import NutritionalData
-from models.ConsumptionReport  import ConsumptionReport
+from models import (Period, Input, Patient, ProgramIO, HealthCenter, \
+					NutritionalData, ConsumptionReport)
 
 
 class HealthCenterAdmin(admin.ModelAdmin):

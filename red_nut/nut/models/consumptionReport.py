@@ -3,9 +3,9 @@
 # maintainer: Alou
 
 from django.db import models
-from HealthCenter import HealthCenter
-from Period import Period
-from Input import Input
+from healthcenter import HealthCenter
+from period import Period
+from input_ import Input
 from nutritional_data import NutritionalData
 
 

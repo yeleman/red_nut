@@ -5,7 +5,7 @@
 from datetime import datetime
 from django.db import models
 
-from Patient import Patient
+from patient import Patient
 
 
 class OutProgramIOManager(models.Manager):
@@ -73,7 +73,7 @@ class ProgramIO(models.Model):
                    (HEALING, u"guérison"), (TANSFER, "transfer"),
                    (DEATH, u"deces"), (NON_RESPONDENT, u"non-repondant"))
 
-    objects = models.Manager() # The default manager.
+    objects = models.Manager()  # he default manager.
     out = OutProgramIOManager()
     nonresp = NonRespProgramIOManager()
     healing = HealingProgramIOManager()
@@ -90,17 +90,14 @@ class ProgramIO(models.Model):
     patient = models.ForeignKey(Patient, related_name='programios',
                                          verbose_name=("Patient"))
 
-
     @property
     def is_output(self):
         return self.event == self.OUT
-
 
     @property
     def program_duration(self):
         if self.event == self.OUT:
             return self.date - self.patient.create_date
-
 
     def __unicode__(self):
         return ((u'%(patient)s %(event)s %(reason)s %(date)s') %
