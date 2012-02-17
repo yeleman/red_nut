@@ -10,7 +10,7 @@ from nutritional_data import NutritionalData
 
 
 class ConsumptionReport(models.Model):
-    """ """
+    """Rapport de stock """
 
     class Meta:
         app_label = 'nut'

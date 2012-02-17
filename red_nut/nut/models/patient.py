@@ -42,20 +42,24 @@ class Patient(models.Model):
                  "health_center": self.health_center}
 
     def full_name(self):
+        """return full name"""
         return (u'%(first_name)s %(last_name)s' % \
                                 {"first_name": self.first_name.capitalize(),
                                 "last_name": self.last_name.capitalize()})
 
     def full_name_id(self):
+        """ return full name and id """
         return u"%s#%d" % (self.full_name(), self.id)
 
     def full_name_mother(self):
+        """ return full name of mother """
         return u"%s/%s" % (self.full_name(), self.surname_mother.capitalize())
 
     def full_name_all(self):
         return u"%s#%d" % (self.full_name_mother(), self.id)
 
     def last_visit(self):
+        """ return date of last visit """
         last = self.last_data_nut()
         if last:
             return last.date
@@ -63,6 +67,7 @@ class Patient(models.Model):
 
     @classmethod
     def avg_weight_delta(cls, qs=None):
+        """ return avg weight """
         qs = qs
         if qs == None:
             qs = cls.objects.all()
