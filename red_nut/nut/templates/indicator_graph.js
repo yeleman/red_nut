@@ -7,7 +7,7 @@ toto = new Highcharts.Chart(
             tooltip: {formatter: function() {return ''+ this.series.name;} },
             plotOptions: {spline: {animation: false, enableMouseTracking: false, 
                                     dataLabels: {enabled: true, formatter: function()
-                                                  {if (this.y == '-0') { return "n/a" } else
+                                                  {if (this.y == '-0') { return "0" } else
                                                     { return '' + this.y.toString().replace('.', ',');} 
                                                   }
                                                 } 
