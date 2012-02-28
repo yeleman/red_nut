@@ -23,14 +23,15 @@ class Patient(models.Model):
     first_name = models.CharField(max_length=30, verbose_name=(u"Prénom"))
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     surname_mother = models.CharField(max_length=30, \
-                                      verbose_name=(u"Prénom de la mère"))
+                                          verbose_name=(u"Prénom de la mère"))
     health_center = models.ForeignKey(HealthCenter, related_name='patients',
-                            verbose_name=("Clinic"))
-    create_date = models.DateTimeField(verbose_name=("Date d'enregistrement"),\
-                                   default=datetime.today())
+                                                      verbose_name=("Clinic"))
+    create_date = models.DateTimeField(verbose_name=("Date d'enregistrement"),
+                                                     default=datetime.today())
     birth_date = models.DateField(verbose_name=(u"Date de naissance"))
-    sex = models.CharField(u"Sexe", max_length=1, \
-                              choices=SEX_CHOICES)
+    sex = models.CharField(u"Sexe", max_length=1, choices=SEX_CHOICES)
+    contact = models.CharField(max_length=100, verbose_name=(u"contact"),
+                                                        blank=True, null=True)
 
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s'
@@ -84,7 +85,10 @@ class Patient(models.Model):
         from programIO import ProgramIO
         date = self.programios.filter(event=ProgramIO.SUPPORT).latest().date
         nut_data = tuple(self.nutritional_data.filter(date__gte=date))
-        return nut_data[-1].weight - nut_data[0].weight
+        try:
+            return nut_data[-1].weight - nut_data[0].weight
+        except:
+            return 0
 
     def delay_since_last_visit(self):
         now = date.today()
