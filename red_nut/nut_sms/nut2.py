@@ -3,7 +3,7 @@
 import re
 
 from red_nut.nut.models import *
-from red_nut.nut.models.Period import MonthPeriod
+from red_nut.nut.models.period import MonthPeriod
 
 from datetime import date, datetime
 
@@ -12,12 +12,11 @@ def handler(message):
     """ NUT SMS router """
     def main_nut_handler(message):
         keyword = 'nut'
-        commands = {
-            'stock': nut_consumption,
-            'fol': nut_followup,
-            'register': nut_register,
-            'research': nut_search,
-            'off': nut_disable}
+        commands = {'stock': nut_consumption,
+                    'fol': nut_followup,
+                    'register': nut_register,
+                    'research': nut_search,
+                    'off': nut_disable}
 
         if message.content.lower().startswith('nut '):
             for cmd_id, cmd_target in commands.items():
@@ -59,7 +58,7 @@ def nut_register(message, args, sub_cmd, cmd):
         register_data, follow_up_data = args.split('#')
 
         hc_code, first_name, last_name, mother, \
-                                        sex, dob = register_data.split()
+                            sex, dob, contact = register_data.split()
         weight, height, oedema, muac, \
                                 nb_plumpy_nut = follow_up_data.split()
     except:
@@ -81,6 +80,7 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.birth_date = date(*[int(v) for v in dob.split('-')])
     patient.create_date = datetime.today()
     patient.sex = sex.upper()
+    patient.contact = contact
     patient.health_center = hc
     try:
         patient.save()

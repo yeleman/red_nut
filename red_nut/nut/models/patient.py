@@ -107,4 +107,4 @@ class Patient(models.Model):
     @property
     def is_late(self):
         """ """
-        return self.delay_since_last_visit().days > 10
+        return self.delay_since_last_visit().days > 14

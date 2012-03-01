@@ -23,7 +23,8 @@ addClickClassToTRElements();{% endblock %}
             {% for patient in page.object_list %}
                 <tr>
                     <td><a href="{{patient.url_patient }}">{{patient.id}}</a></td><td>{{patient.first_name.capitalize}}</td><td>{{patient.last_name.capitalize}}</td>
-                    <td>{{patient.surname_mother.capitalize}}</td><td>{{patient.birth_date}}</td><td>{{patient.health_center}}</td><td>{{patient.last_data_event.get_event_display}}</td>
+                    <td>{{patient.surname_mother.capitalize}}</td><td>{{patient.birth_date}}</td><td>{{patient.health_center}}</td>
+                    <td>{%ifnotequal patient.last_data_event.get_event_display "Sorti" %} {{patient.last_data_event.get_event_display}} {%else%} {{patient.last_data_event.get_reason_display}}{%endifnotequal%}</td>
                 </tr>
             {% endfor %}
         </table>
