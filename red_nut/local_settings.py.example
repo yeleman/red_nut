@@ -8,18 +8,17 @@ import settings
 DEBUG = True
 
 DB_PATH = os.path.join(settings.ROOT_DIR, 'rednut.sqlite')
+
 DATABASES = {'default': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': DB_PATH,
-    'USER': 'red',
-    'PASSWORD': 'red',
-    'HOST': '',
-    'PORT': ''},
+    'NAME': '/home/reg/src/red_nut/red_nut/django.sqlite'},
+    'rednut': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': '/home/reg/src/red_nut/red_nut/rednut.sqlite'},
     'smsd': {'ENGINE': 'django.db.backends.mysql',
     'NAME': 'rednutsms',
     'USER': 'rednutsms',
-    'PASSWORD': 'rednutsms',
-    'HOST': 'localhost', }}
+    'PASSWORD': 'rednutsms'}}
 
 INSTALLED_APPS = settings.INSTALLED_APPS + ('django_extensions',)
 

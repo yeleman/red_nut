@@ -161,7 +161,8 @@ HOTLINE_EMAIL = "root@localhost"
 
 SUPPORT_CONTACTS = [('unknown', u"HOTLINE", HOTLINE_EMAIL)]
 
-DATABASE_ROUTERS = ['nosmsd.django_routers.NoSMSdRouter']
+DATABASE_ROUTERS = ['red_nut.django_routers.RedNutRouter',
+                    'nosmsd.django_routers.NoSMSdRouter']
 
 EXCEL_DATE_FORMAT = "%d-%m-%Y"
 
