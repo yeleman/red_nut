@@ -8,6 +8,7 @@
 """
 
 import os
+import subprocess
 
 from datetime import datetime
 
@@ -36,6 +37,22 @@ def excel_export(request, *args, **kwargs):
 
 @login_required
 def export_db(request):
+
+    if not os.path.exists(settings.DB_PATH):
+        raise Http404
+
+    response = HttpResponse(subprocess.check_output(["sqlite3",
+                                                     settings.DB_PATH,
+                                                     ".dump"]))
+    response['Content-Type'] = 'text/sql'
+    response['Content-Disposition'] = ('attachment; filename="rednut_%s.sql"' %
+                                        datetime.today().strftime('%d-%m-%Y'))
+                                        
+    return response
+
+
+@login_required
+def export_sqlite_db(request):
 
     if not os.path.exists(settings.DB_PATH):
         raise Http404

@@ -14,7 +14,7 @@ DATABASES = {'default': {
     'NAME': '/home/reg/src/red_nut/red_nut/django.sqlite'},
     'rednut': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': '/home/reg/src/red_nut/red_nut/rednut.sqlite'},
+    'NAME': DB_PATH},
     'smsd': {'ENGINE': 'django.db.backends.mysql',
     'NAME': 'rednutsms',
     'USER': 'rednutsms',

@@ -16,11 +16,11 @@ class RedNutRouter(object):
         return None
 
     def db_for_read(self, model, **hints):
-        if model._meta.app_label == 'nut':
-            return 'rednut'
+        if model._meta.app_label == APP:
+            return DATABASE
         return None
 
     def db_for_write(self, model, **hints):
-        if model._meta.app_label == 'nut':
-            return 'rednut'
+        if model._meta.app_label == APP:
+            return DATABASE
         return None
