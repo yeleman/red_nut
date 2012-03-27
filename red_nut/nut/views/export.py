@@ -41,9 +41,11 @@ def export_db(request):
     if not os.path.exists(settings.DB_PATH):
         raise Http404
 
-    response = HttpResponse(subprocess.check_output(["sqlite3",
-                                                     settings.DB_PATH,
-                                                     ".dump"]))
+    args = ['sqlite3', settings.DB_PATH, '.dump']
+    if getattr(subprocess, 'check_output', None):
+        response = HttpResponse(subprocess.check_output(args))
+    else:
+        response = HttpResponse(subprocess.Popen(args, stdout=subprocess.PIPE).communicate()[0])
     response['Content-Type'] = 'text/sql'
     response['Content-Disposition'] = ('attachment; filename="rednut_%s.sql"' %
                                         datetime.today().strftime('%d-%m-%Y'))
