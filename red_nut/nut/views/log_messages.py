@@ -15,7 +15,7 @@ class PeriodForm(forms.Form):
                                        for period in Period \
                                             .objects.all().order_by('id')])
 
-def sms_for_period(period=None):
+def sms_received_for_period(period=None):
         from nosmsd.models import Inbox
         inbox = Inbox.objects.all()
         if period:
@@ -30,14 +30,14 @@ def log_message(request):
     
     context = {'category': 'log_message'}
 
-    inbox_sms = sms_for_period(period=None)
+    inbox_sms = sms_received_for_period(period=None)
     form = PeriodForm()
     if request.method == "POST":
         form = PeriodForm(request.POST)
 
         if form.is_valid():
             period = Period.objects.get(id=request.POST.get('period'))
-            inbox_sms = sms_for_period(period)
+            inbox_sms = sms_received_for_period(period)
         
     context.update({'inbox_sms': inbox_sms, 'form': form})
     return render(request, 'log_message.html', context)
