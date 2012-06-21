@@ -23,6 +23,8 @@ urlpatterns = patterns('',
                                         name='details_child'),
     url(r'^health_center?$', views.health_center,
                              name='health_center'),
+    url(r'^log_messages?$', views.log_message,
+                             name='log_messages'),
     url(r'^details_health_center/(?P<id>\d+)$', views.details_health_center,
                                                 name='details_health_center'),
 

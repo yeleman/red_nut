@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Messages{% endblock %}
+{% block pagetitle %}
+	<h1 class="pagetitle">Système d'information de routine sur la malnutrition aigu</h1>
+{% endblock %}
+
+{% block content %}
+
+	<div id="context">
+
+		<h2>Messages</h2>
+
+	    <table class="noprint">
+	        <tr><form action="" method="post" id="period">{% csrf_token %}<td>{{form.period.label}} {{form.period}}</td><td><input class= "buttons" id="period" type="submit" value="ok"/></td></form></tr>
+	    </table>
+		{% if inbox_sms %}
+			<table>
+				<caption>Il y'a {{inbox_sms.count}} messages</caption>
+				<tr>
+					<th>Date</th>
+					<th>Numéro/Contact</th>
+					<th>texte</th>
+				</tr>
+				{% for message in inbox_sms %}
+					<tr>
+						<td>{{ message.date }}</td>
+						<td title="{{message.identity}}">{{message.identity}}</td>
+						<td>{{ message.content }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% else %}
+			<p>Il n'ya pas de messages pour cette période.<p>
+		{% endif %}
+	</div>
+
+{% endblock %}

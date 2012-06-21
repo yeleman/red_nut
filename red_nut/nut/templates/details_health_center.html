@@ -33,7 +33,9 @@
             <tr><th>Intrant </th><th>Stock initial</th><th>Stock reçu</th><th>Stock utilisé</th><th>Stock perdu</th><th>Stock restant</th><th>Periode</th></tr>
             {% for stock in consumption_reports %}
                 <tr>
-                    <td>{{stock.input_type.name}} ({% if stock.intrant.unit == 'ba' %}sachet{% endif %}
+                    <td>
+                        {{stock.input_type.name}} 
+                        ({% if stock.input_type.unit == 'ba' %}sachet{% endif %}
                         {% if stock.input_type.unit == 'g' %} kg {% endif %}
                         {% if stock.input_type.unit == 'bo' %} boite {% endif %}
                         {% if stock.input_type.unit == 'l' %} litre {% endif %})
