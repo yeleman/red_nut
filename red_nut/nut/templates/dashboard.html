@@ -26,8 +26,9 @@
         <tr><th>Nombre de déces / Taux de déces</th><td>{{nbr_deaths}} / {{deaths_rates}}%</td></tr>
 
     </table>
+
     <h3 class="caption"><strong>Figure: </strong>Courbes de l'évolution du nombre d'enfant dans le programme</h3>
-    <div id="graph"></div>
+    {%if graph_data %}<div id="graph"></div>{% else %}<p>Pas de données disponible.</p>{% endif %}
 
 </div>
 
