@@ -16,7 +16,6 @@ def details_child(request, *args, **kwargs):
     context = {'category': "children", \
                'user': request.user}
     patient = Patient.objects.get(id=num)
-    #min_datanut = patiennt_min_weight(patient)
     movements = ProgramIO.objects.filter(patient__id=patient.id)
 
     if patient.last_data_event():
