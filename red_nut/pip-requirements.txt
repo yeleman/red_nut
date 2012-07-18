@@ -7,3 +7,4 @@ django-mptt==0.5.1
 xlwt==0.7.2
 nosmsd
 django-reversion==1.4
+MySQLdb
