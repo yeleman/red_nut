@@ -50,9 +50,9 @@ class NutritionalData(models.Model):
                                 blank=True, null=True)
 
     def __unicode__(self):
-        return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\
+        return u"%(patient)s %(date)s/%(weight)skg/%(height)scm %(pb)smm "\
          % {"patient": self.patient, "height": self.height, \
-                "weight": self.weight, "pb": self.muac}
+                "weight": self.weight, "pb": self.muac, "date": self.date}
 
     @property
     def diagnosis(self):

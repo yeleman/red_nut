@@ -8,20 +8,6 @@ from zscore import zscore_from
 from nut.models import Patient, NutritionalData, ProgramIO
 
 
-def patiennt_min_weight(patient):
-    min_datanut = patient.nutritional_data.order_by('weight')[0]
-    return min_datanut
-
-
-def cal_weight_gain(datanut, min_datanut):
-    try:
-        val = datanut.weight - min_datanut.weight / (min_datanut.weight *
-              (datanut.date - min_datanut.date).days)
-    except:
-        val = 0
-    return val
-
-
 @login_required
 def details_child(request, *args, **kwargs):
     """ Details sur un enfant """
@@ -30,7 +16,7 @@ def details_child(request, *args, **kwargs):
     context = {'category': "children", \
                'user': request.user}
     patient = Patient.objects.get(id=num)
-    min_datanut = patiennt_min_weight(patient)
+    #min_datanut = patiennt_min_weight(patient)
     movements = ProgramIO.objects.filter(patient__id=patient.id)
 
     if patient.last_data_event():
@@ -42,30 +28,27 @@ def details_child(request, *args, **kwargs):
         pass
 
     try:
-        input_ = movements.latest('date')
         data_nuts = NutritionalData.objects.filter(patient__id=num)
         datanuts = data_nuts.order_by('-date')
         datanuts_ = data_nuts.order_by('date')
         datanut = datanuts.latest('date')
-        patient.weight_gain = "%.2f" % cal_weight_gain(datanut, min_datanut)
         datanut.zscore = zscore_from(datanut.height, datanut.weight)
 
-        context.update({'input_': input_, 'datanut': datanut, \
-                        'datanuts': datanuts})
         list_muac = [datanut.muac for datanut in datanuts_]
         list_weight = [datanut.weight for datanut in datanuts_]
         list_zscore = [zscore_from(datanut.height, datanut.weight) for datanut in datanuts_]
+
         graph_date = [datanut.date.strftime('%d/%m') for datanut in datanuts_]
         graph_data = [{'name': "Poids", 'data': list_weight}, \
                       {'name': "PB",'data': list_muac}]
         zscore_data = [{'name': "ZSCORE", 'data': list_zscore}]
+
         context.update({"graph_date": graph_date, \
                         "graph_data": graph_data, \
-                        "zscore_data": zscore_data})
+                        "zscore_data": zscore_data, \
+                        'datanuts': datanuts})
     except NutritionalData.DoesNotExist:
-        input_ = movements.latest('date')
-        context.update({'error': 'Aucun details nutritionnel',
-                                                "input_": input_})
+        context.update({'error': 'Aucun details nutritionnel'})
     except ProgramIO.DoesNotExist:
         context.update({'error': 'Aucun details nutritionnel'})
 
