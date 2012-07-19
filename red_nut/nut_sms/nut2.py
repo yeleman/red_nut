@@ -57,7 +57,7 @@ def nut_register(message, args, sub_cmd, cmd):
     try:
         register_data, follow_up_data = args.split('#')
 
-        hc_code, first_name, last_name, mother, \
+        hc_code, create_date, first_name, last_name, mother, \
                             sex, dob, contact = register_data.split()
         weight, height, oedema, muac, \
                                 nb_plumpy_nut = follow_up_data.split()
@@ -78,7 +78,7 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.last_name = last_name.replace('_', ' ').title()
     patient.surname_mother = mother.replace('_', ' ').title()
     patient.birth_date = date(*[int(v) for v in dob.split('-')])
-    patient.create_date = datetime.today()
+    patient.create_date = datetime(*[int(v) for v in create_date.split('-')])
     patient.sex = sex.upper()
     patient.contact = contact
     patient.health_center = hc

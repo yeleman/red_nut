@@ -1,0 +1,45 @@
+checks of rednut:
+---------------------------------------
+
+Form. Enregistrement:
+
+    - Date d'enregistrement(dix jour <= doit etre <= à la date du jour)
+    - ID (pas de check)
+    - Type uren(pas de check)
+    - Prénom (pas de check)
+    - Nom (pas de check)
+    - Nom de la mère (pas de check)
+    - Date naissance (doit être <= à la date du jour,
+                      l'enfant doit être agé de plus de 6 mois,
+                      et au plus de 59 mois)
+    - Sexe (pas de check)
+
+From. Suivi nutritionnel
+
+    - Date d'enregistrement(dix jour <= doit etre <= à la date du jour)
+    - ID (pas de check)
+    - Type uren(pas de check)
+    - Poids (maxi = 19.5, min = 2)
+    - Taille (maxi = 120, min = 45)
+    - Oedème (pas de check)
+    - Périmètre brachial (maxi = 135, min = 80)
+    - Sachets plumpy nut donnés (pas de check)
+
+From. Sotie
+
+    - ID (pas de check)
+    - Raison
+    - Date de sortie (dix jour <= doit etre <= à la date du jour)
+
+Form. Recherche d'ID
+
+    Au moins un champs est obligatoire
+
+    - Prénom (pas de check)
+    - Nom (pas de check)
+    - Nom de la mère (pas de check)
+
+From. Consommation Intrants
+
+
+
