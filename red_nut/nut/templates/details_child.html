@@ -17,6 +17,7 @@
             <tr><th>Prénom</th><td>{{patient.first_name.capitalize}}</td></tr>
             <tr><th>Nom de la mère</th><td>{{patient.surname_mother.capitalize}}</td></tr>
             <tr><th>Sexe</th><td>{{patient.get_sex_display}}</td></tr>
+            <tr><th>Gain de poids</th><td>{{patient.weight_gain}} g/ kg/ jour</td></tr>
             <tr><th>Date de naissance</th><td>{{patient.birth_date}}</td></tr>
             <tr><th>Date d'enregistrement</th><td>{{patient.create_date}}</td></tr>
             {% if output %}

@@ -7,6 +7,7 @@ from django.db import models
 
 from healthcenter import HealthCenter
 
+from nut.tools.utils import weight_gain_calc
 
 class Patient(models.Model):
     """ """
@@ -108,3 +109,21 @@ class Patient(models.Model):
     def is_late(self):
         """ """
         return self.delay_since_last_visit().days > 14
+
+    def weight_gain(self):
+        """ return weight gain per patient"""
+
+        visits = self.last_inprogram_data()
+        last_datanut = list(visits)[-1]
+        min_datanut =  visits.order_by('weight')[0]
+
+        return weight_gain_calc(last_datanut, min_datanut)
+
+    def last_inprogram_data(self):
+        """ return all datanut for patient since last entrance."""
+
+        from programIO import ProgramIO
+        # all datanut for patient since last entrance.
+        last_entrance = ProgramIO.objects.filter(event=ProgramIO.SUPPORT) \
+                                         .filter(patient=self).latest()
+        return self.nutritional_data.filter(date__gte=last_entrance.date)
