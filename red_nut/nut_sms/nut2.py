@@ -39,16 +39,51 @@ def handler(message):
     return False
 
 
+def formatdate(date_, time_=False):
+    """ Reçoi un string. return date ou datetime
+
+        exemple: '20120620' """
+
+    if re.match(r'^\d{8}$', date_):
+        if not time_:
+            date_now = date.today()
+            parsed_date = date(int(date_[0:4]), int(date_[4:6]), \
+                           int(date_[6:8]))
+        else:
+            date_now = datetime.now()
+            parsed_date = datetime(int(date_[0:4]), int(date_[4:6]), \
+                               int(date_[6:8]), date_now.hour, date_now.minute,
+                               date_now.second, date_now.microsecond)
+        if date_now < parsed_date:
+            raise ValueError(u"[ERREUR] La date est dans le futur.")
+        return parsed_date
+    else:
+        raise ValueError(u"[ERREUR] Le format de la date est incorrect.")
+
+
 def resp_error(message, action):
     message.respond(u"[ERREUR] Impossible de comprendre le SMS pour %s"
                                                                % action)
     return True
 
 
+def generate_id(*kwargs):
+    return
+
+UREN = {
+    '0': "URENAS",
+    '1': "URENI",
+    '2': "URENAM"
+}
+
+
 def nut_register(message, args, sub_cmd, cmd):
     """ Incomming:
-            nut register code_health_center first_name last_name
-            surname_mother sex birth_date #weight height oed pb nbr
+            nut register hc_code, create_date, id_patient, type_uren,
+                         first_name, last_name, mother, sex, dob, contact
+                         #weight height oed pb nbr
+            exple: 'nut register csref 20120715 2 0 nene konate diarra M
+                    20110820 76499055 #6 120 YES 100 2'
         Outgoing:
             [SUCCES] Le rapport de name_health_center a ete enregistre.
             Son id est 8.
@@ -57,8 +92,8 @@ def nut_register(message, args, sub_cmd, cmd):
     try:
         register_data, follow_up_data = args.split('#')
 
-        hc_code, create_date, first_name, last_name, mother, \
-                            sex, dob, contact = register_data.split()
+        hc_code, create_date, type_uren, id_patient, first_name, \
+        last_name, mother, sex, dob, contact = register_data.split()
         weight, height, oedema, muac, \
                                 nb_plumpy_nut = follow_up_data.split()
     except:
@@ -71,14 +106,21 @@ def nut_register(message, args, sub_cmd, cmd):
         message.respond(u"[ERREUR] %(hc)s n'est pas un code de Centre "
                         u"valide." % {'hc': hc_code})
         return True
-
+    # Creation de l'identifiant pour le patient
+    sep = "/"
+    nut_id = "code region" + sep + \
+             "code district" + sep + \
+             UREN.get(type_uren, "URENAS") + sep + \
+             hc_code + sep + \
+             id_patient
+    print nut_id
     # creating the patient record
     patient = Patient()
+    patient.nut_id = nut_id
     patient.first_name = first_name.replace('_', ' ').title()
     patient.last_name = last_name.replace('_', ' ').title()
     patient.surname_mother = mother.replace('_', ' ').title()
-    patient.birth_date = date(*[int(v) for v in dob.split('-')])
-    patient.create_date = datetime(*[int(v) for v in create_date.split('-')])
+    patient.birth_date = formatdate(dob)
     patient.sex = sex.upper()
     patient.contact = contact
     patient.health_center = hc
@@ -91,8 +133,11 @@ def nut_register(message, args, sub_cmd, cmd):
     programio = ProgramIO()
     programio.patient = patient
     programio.event = programio.SUPPORT
-    programio.date = datetime.today()
-    programio.save()
+    programio.date = formatdate(create_date, True)
+    try:
+        programio.save()
+    except:
+        return resp_error(message, u"enregistrement")
 
     # creating a followup event
     weight = float(weight)
@@ -104,20 +149,20 @@ def nut_register(message, args, sub_cmd, cmd):
     nb_plumpy_nut = int(nb_plumpy_nut) \
                               if not nb_plumpy_nut.lower() == '-' else 0
     datanut = add_followup_data(patient=patient, weight=weight,
-                                height=height,
-                                oedema=oedema, muac=muac,
-                                nb_plumpy_nut=nb_plumpy_nut)
+                                height=height, oedema=oedema, muac=muac,
+                                nb_plumpy_nut=nb_plumpy_nut,
+                                date=formatdate(create_date, True))
     if not datanut:
-        message.respond(u"/!\ %(full_name)s enregistre avec ID#%(id)d."
+        message.respond(u"/!\ %(full_name)s enregistre avec ID#%(id)s."
                         u" Donnees nutrition non enregistres."
                         % {'full_name': patient.full_name(),
-                           'id': patient.id})
+                           'id': nut_id})
         return True
 
-    message.respond(u"[SUCCES] %(full_name)s enregistre avec ID#%(id)d."
+    message.respond(u"[SUCCES] %(full_name)s enregistre avec ID#%(id)s."
                     u" Donnees nutrition enregistres." \
                     % {'full_name': patient.full_name_mother(),
-                       'id': patient.id})
+                       'id': nut_id})
     return True
 
 
@@ -142,12 +187,13 @@ def nut_followup(message, args, sub_cmd, cmd):
             or error message """
 
     try:
-        patient_id, weight, height, oedema, \
-                                      muac, nb_plumpy_nut = args.split()
+        hc_code, reporting_d, type_uren, patient_id, weight, \
+        height, oedema, muac, nb_plumpy_nut = args.split()
     except:
         return resp_error(message, u"suivi")
 
     try:
+        nut_id = ''
         patient = Patient.objects.get(id=int(patient_id))
     except:
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" %
@@ -158,7 +204,7 @@ def nut_followup(message, args, sub_cmd, cmd):
         programio = ProgramIO()
         programio.patient = patient
         programio.event = programio.SUPPORT
-        programio.date = datetime.today()
+        programio.date = formatdate(create_date, True)
         programio.save()
 
     # creating a followup event
@@ -274,7 +320,7 @@ def nut_disable(message, args, sub_cmd, cmd):
             or error message """
 
     try:
-        patient_id, reason, date_ = args.split()
+        patient_id, reason, date_disable = args.split()
     except:
         return resp_error(message, u"la sortie")
     try:
@@ -288,15 +334,12 @@ def nut_disable(message, args, sub_cmd, cmd):
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s"
                         % patient_id)
         return True
-    dt = datetime.now()
-    date_ = date(*[int(v) for v in date_.split('-')])
 
     programio = ProgramIO()
     programio.patient = patient
     programio.event = programio.OUT
     programio.reason = reason
-    programio.date = datetime(int(date_.year), int(date_.month), int(date_.day), int(dt.hour),
-                         int(dt.minute), int(dt.second), int(dt.microsecond))
+    programio.date = formatdate(date_disable, True)
     programio.save()
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
                     u"du programme." %

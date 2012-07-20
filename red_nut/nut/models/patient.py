@@ -21,6 +21,8 @@ class Patient(models.Model):
         (SEX_MALE, u"Masculin"),
         (SEX_FEMELLE, u"Féminin"),)
 
+    nut_id = models.CharField(max_length=30, verbose_name=(u"Identifiant"),
+                                                           unique=True)
     first_name = models.CharField(max_length=30, verbose_name=(u"Prénom"))
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
     surname_mother = models.CharField(max_length=30, \
