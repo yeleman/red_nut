@@ -14,7 +14,7 @@ class HealthCenter(models.Model):
     name = models.CharField(max_length=30, verbose_name=u"Name")
     code = models.CharField(max_length=30, verbose_name=u"Code", unique=True)
     nut_code = models.CharField(max_length=10, verbose_name=u"Nutrition Code")
-    parent = models.ForeignKey(HealthCenter, verbose_name=u"Parent")
+    parent = models.ForeignKey("HealthCenter", verbose_name=u"Parent")
 
 
     def __unicode__(self):

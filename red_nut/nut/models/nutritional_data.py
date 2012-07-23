@@ -3,7 +3,6 @@
 
 from datetime import datetime
 from django.db import models
-from patient import Patient
 
 
 class NutritionalData(models.Model):
@@ -35,7 +34,7 @@ class NutritionalData(models.Model):
     SIGN_DIARRHEA = "d"
     DANGER_SIGN_CHOICES = ((SIGN_DIARRHEA, "Diarrhée"),)
 
-    patient = models.ForeignKey(Patient, related_name='nutritional_data',
+    patient = models.ForeignKey("Patient", related_name='nutritional_data',
                                          verbose_name="Patients")
 
     date = models.DateField(verbose_name="Date", default=datetime.today)
