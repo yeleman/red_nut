@@ -6,6 +6,7 @@ from datetime import datetime, date
 from django.db import models
 
 from healthcenter import HealthCenter
+from nutritional_data import NutritionalData
 
 from nut.tools.utils import weight_gain_calc
 
@@ -86,8 +87,8 @@ class Patient(models.Model):
     @property
     def weight_delta_since_input(self):
         from programIO import ProgramIO
-        date = self.programios.filter(event=ProgramIO.SUPPORT).latest().date
-        nut_data = tuple(self.nutritional_data.filter(date__gte=date))
+        io_date = self.programios.filter(event=ProgramIO.SUPPORT).latest().date
+        nut_data = tuple(self.nutritional_data.filter(date__gte=io_date))
         try:
             return nut_data[-1].weight - nut_data[0].weight
         except:
@@ -98,7 +99,6 @@ class Patient(models.Model):
         return now - (self.last_visit() or now)
 
     def last_data_nut(self):
-        from nutritional_data import NutritionalData
         return NutritionalData.objects.filter(patient=self) \
                                       .order_by('-date')[0]
 
@@ -129,3 +129,41 @@ class Patient(models.Model):
         last_entrance = ProgramIO.objects.filter(event=ProgramIO.SUPPORT) \
                                          .filter(patient=self).latest()
         return self.nutritional_data.filter(date__gte=last_entrance.date)
+
+    @classmethod
+    def get_nut_id(cls, hc_code, uren, center_id, hc=None):
+        """ build a nutrition ID based on UREN, HC and HC-id """
+        if not hc:
+            try:
+                hc = HealthCenter.objects.get(code=hc_code)
+            except HealthCenter.DoesNotExist:
+                hc = None
+
+        uren_level = NutritionalData.URENS.get(uren.lower(), None)
+
+        # check that all parts are in place
+        if not hc or not hc.nut_code:
+            raise ValueError(u"Invalid Health Center")
+
+        if not uren_level:
+            raise ValueError(u"Invalid UREN")
+
+        if not hc.parent or not hc.parent.nut_code:
+            raise ValueError(u"Invalid District")
+
+        return (u"%(region_code)s/%(district_code)s/"
+               u"%(uren)s%(center)s/%(center_id)s" 
+               % {'region_code': '02',
+                  'district_code': hc.parent.nut_code,
+                  'uren': uren_level,
+                  'center': hc.nut_code.title(),
+                  'center_id': center_id.zfill(4)})
+
+    @classmethod
+    def get_patient_nut_id(cls, hc_code, uren, center_id, hc=None):
+        try:
+            nut_id = cls.get_nut_id(hc_code, uren, center_id, hc)
+        except ValueError as e:
+            raise cls.DoesNotExist(e)
+
+        return cls.objects.get(nut_id=nut_id)

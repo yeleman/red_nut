@@ -16,6 +16,14 @@ class NutritionalData(models.Model):
         ordering = ('date',)
         get_latest_by = 'date'
 
+    SAM = 'sam'
+    SAMP = 'samp'
+    MAS = 'mas'
+
+    URENS = {SAM: u"URENAS",
+             SAMP: u"URENI",
+             MAS: u"URENAM"}
+
     OEDEMA_YES = 'Y'
     OEDEMA_NO = 'N'
     OEDEMA_UNKNOWN = 'U'

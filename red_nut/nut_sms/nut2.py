@@ -70,11 +70,11 @@ def resp_error(message, action):
 def generate_id(*kwargs):
     return
 
-UREN = {
-    '0': "URENAS",
-    '1': "URENI",
-    '2': "URENAM"
-}
+# UREN = {
+#     '0': "URENAS",
+#     '1': "URENI",
+#     '2': "URENAM"
+# }
 
 
 def nut_register(message, args, sub_cmd, cmd):
@@ -82,7 +82,7 @@ def nut_register(message, args, sub_cmd, cmd):
             nut register hc_code, create_date, id_patient, type_uren,
                          first_name, last_name, mother, sex, dob, contact
                          #weight height oed pb nbr
-            exple: 'nut register csref 20120715 2 0 nene konate diarra M
+            exple: 'nut register csref 20120715 2 mas nene konate diarra M
                     20110820 76499055 #6 120 YES 100 2'
         Outgoing:
             [SUCCES] Le rapport de name_health_center a ete enregistre.
@@ -106,14 +106,21 @@ def nut_register(message, args, sub_cmd, cmd):
         message.respond(u"[ERREUR] %(hc)s n'est pas un code de Centre "
                         u"valide." % {'hc': hc_code})
         return True
-    # Creation de l'identifiant pour le patient
-    sep = "/"
-    nut_id = "code region" + sep + \
-             "code district" + sep + \
-             UREN.get(type_uren, "URENAS") + sep + \
-             hc_code + sep + \
-             id_patient
-    print nut_id
+
+    # # Creation de l'identifiant pour le patient
+    # sep = "/"
+    # nut_id = "code region" + sep + \
+    #          "code district" + sep + \
+    #          UREN.get(type_uren, "URENAS") + sep + \
+    #          hc_code + sep + \
+    #          id_patient
+    # print nut_id
+
+    try:
+        nut_id = Patient.get_nut_id(hc_code, type_uren.lower(), id_patient)
+    except ValueError as e:
+        return resp_error(message, e)
+
     # creating the patient record
     patient = Patient()
     patient.nut_id = nut_id
