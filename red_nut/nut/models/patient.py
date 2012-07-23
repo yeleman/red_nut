@@ -152,7 +152,7 @@ class Patient(models.Model):
             raise ValueError(u"Invalid District")
 
         return (u"%(region_code)s/%(district_code)s/"
-               u"%(uren)s%(center)s/%(center_id)s" 
+               u"%(uren)s%(center)s/%(center_id)s"
                % {'region_code': '02',
                   'district_code': hc.parent.nut_code,
                   'uren': uren_level,
