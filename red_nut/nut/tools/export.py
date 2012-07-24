@@ -15,6 +15,7 @@ import xlwt
 from django.conf import settings
 
 
+
 def report_as_excel(health_centers):
     """
         Export the whole data base to XLS
@@ -41,7 +42,7 @@ def report_as_excel(health_centers):
     for i in (1, 2, 8, 9, 12, 14, 15, 16, 17, 19):
         sheet_patient.col(i).width = 0x0d00 * 2
 
-    for i in (3, 4, 5):
+    for i in (0, 3, 4, 5):
         sheet_patient.col(i).width = 0x0d00 * 3
 
     sheet.col(0).width = 0x0d00 * 1.3
@@ -79,6 +80,7 @@ def report_as_excel(health_centers):
                  u"Taille",
                  u"Perimètre brachial",
                  u"Oedème",
+                 u"UREN",
                  u"Date de la derniere visite",
                  u"Dernier status",
                  u"Date du dernier status",
@@ -108,8 +110,7 @@ def report_as_excel(health_centers):
 
         for patient in health_center.patients.all():
             i_ += 1
-
-            sheet_patient.write(i_, 0, patient.id)
+            sheet_patient.write(i_, 0, patient.nut_id)
             sheet_patient.write(i_, 1, health_center.code)
             sheet_patient.write(i_, 2, health_center.name)
             sheet_patient.write(i_, 3, patient.last_name)
@@ -120,7 +121,7 @@ def report_as_excel(health_centers):
             sheet_patient.write(i_, 7, patient.sex)
             sheet_patient.write(i_, 8, patient.create_date
                                               .strftime(date_format))
-            sheet_patient.write(i_, 14, patient.last_visit()
+            sheet_patient.write(i_, 15, patient.last_visit()
                                               .strftime(date_format))
 
             last_data_nut = patient.last_data_nut()
@@ -132,14 +133,15 @@ def report_as_excel(health_centers):
 
             last_data_event = patient.last_data_event()
 
-            sheet_patient.write(i_, 15, write_event(last_data_event))
+            sheet_patient.write(i_, 14, patient.nutritional_data.latest().diagnosis)
+            sheet_patient.write(i_, 16, write_event(last_data_event))
 
-            sheet_patient.write(i_, 16, last_data_event.date
-                                                       .strftime(date_format))
             sheet_patient.write(i_, 17, last_data_event.date
                                                        .strftime(date_format))
-            sheet_patient.write(i_, 18, write_event(last_data_event))
-            sheet_patient.write(i_, 19, last_data_event.get_reason_display()
+            sheet_patient.write(i_, 18, last_data_event.date
+                                                       .strftime(date_format))
+            sheet_patient.write(i_, 19, write_event(last_data_event))
+            sheet_patient.write(i_, 20, last_data_event.get_reason_display()
                                                        .upper())
 
             datanut_patients = patient.nutritional_data.all()
@@ -147,22 +149,22 @@ def report_as_excel(health_centers):
             for data in datanut_patients.exclude(pk=last_data_nut.pk):
                 i_ += 1
 
-                sheet_patient.write(i_, 0, data.patient.id)
+                sheet_patient.write(i_, 0, data.patient.nut_id)
                 sheet_patient.write(i_, 10, data.weight)
                 sheet_patient.write(i_, 11, data.height)
                 sheet_patient.write(i_, 12, data.muac)
                 sheet_patient.write(i_, 13, data.get_oedema_display().upper())
+                sheet_patient.write(i_, 14, data.diagnosis)
                 sheet_patient.write(i_, 9, data.date.strftime(date_format))
 
             patient_programios = patient.programios.all()
             for pp in patient_programios.exclude(pk=last_data_event.pk):
                 i_ += 1
+                sheet_patient.write(i_, 0, pp.patient.nut_id)
+                sheet_patient.write(i_, 19, write_event(pp))
 
-                sheet_patient.write(i_, 0, pp.patient_id)
-                sheet_patient.write(i_, 18, write_event(pp))
-
-                sheet_patient.write(i_, 19, pp.get_reason_display().upper())
-                sheet_patient.write(i_, 17, pp.date.strftime(date_format))
+                sheet_patient.write(i_, 20, pp.get_reason_display().upper())
+                sheet_patient.write(i_, 18, pp.date.strftime(date_format))
 
     stream = StringIO.StringIO()
     book.save(stream)
