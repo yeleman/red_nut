@@ -46,12 +46,8 @@ def children(request, *args, **kwargs):
 
                 query = (Q(first_name__contains=val) |
                          Q(last_name__contains=val) |
-                         Q(surname_mother__contains=val))
-
-                try:
-                    query = query | Q(id__contains=int(val))
-                except ValueError:
-                    pass
+                         Q(surname_mother__contains=val) |
+                         Q(nut_id__contains=val))
 
                 patients = Patient.objects.filter(query)
 
