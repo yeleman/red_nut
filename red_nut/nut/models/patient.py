@@ -135,7 +135,7 @@ class Patient(models.Model):
         """ build a nutrition ID based on UREN, HC and HC-id """
         if not hc:
             try:
-                hc = HealthCenter.objects.get(code=hc_code)
+                hc = HealthCenter.objects.get(code=hc_code.lower())
             except HealthCenter.DoesNotExist:
                 hc = None
 
@@ -153,7 +153,7 @@ class Patient(models.Model):
 
         return (u"%(region_code)s/%(district_code)s/"
                u"%(uren)s%(center)s/%(center_id)s"
-               % {'region_code': '02',
+               % {'region_code': '08',
                   'district_code': hc.parent.nut_code,
                   'uren': uren_level,
                   'center': hc.nut_code.title(),
