@@ -10,7 +10,7 @@
     {% if patient %}
     <h2>Information de l'enfant</h2>
         <table>
-            <tr><th>Identifiant</th><td>{{patient.id}}</td> </tr>
+            <tr><th>Identifiant</th><td>{{patient.nut_id}}</td> </tr>
             <tr><th>Contact</th><td>{{patient.contact}}</td></tr>
             <tr><th>Statut</th><td>{{ patient.status }}</td> </tr>
             <tr><th>Nom</th><td>{{patient.last_name.capitalize}}</td> </tr>
