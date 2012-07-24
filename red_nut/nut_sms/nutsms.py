@@ -240,9 +240,9 @@ def nut_search(message, args, sub_cmd, cmd):
             nut research code_health_center first_name(op) last_name(op)
              surname_mother(op)
             None = n
-            example 1: nut research pmib iba Fad Diarra
-            example 2: nut research pmib - Fad Diarra "Si le first_name vide"
-            example 3: nut research pmib - Fad n
+            example 1: nut research dasco iba Fad Diarra
+            example 2: nut research dasco - Fad Diarra "Si le first_name vide"
+            example 3: nut research dasco - Fad n
                         "Si le first_name et surname_mother sont vide"
 
         Outgoing:
@@ -288,7 +288,7 @@ def nut_search(message, args, sub_cmd, cmd):
         fmt = u"/".join(["%%(%s)s" % d for d in display]) + u"#%(id)s"
 
     def display_name(p, fmt):
-        return fmt % {'id': p.id,
+        return fmt % {'id': p.nut_id,
                       'first': p.first_name.title(),
                       'last': p.last_name.title(),
                       'mother': p.surname_mother.title()}
@@ -349,7 +349,7 @@ def nut_consumption(message, args, sub_cmd, cmd):
             nut stock type_health_center code_health_center month year
              #input_type initial received used received #input_type initial
             received used received
-            example: nut stock URENAM pmib 1 2012 #nie 11 22 18 2
+            example: nut stock URENAM dasco 1 2012 #nie 11 22 18 2
                      #csb 22 22 22 2 #uni 2 32 22 2 #hui 21 25 45 1
                      #suc 23 12 30 0 #mil 32 15 32 2
         Outgoing:
