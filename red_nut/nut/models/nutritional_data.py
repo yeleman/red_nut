@@ -3,7 +3,6 @@
 
 from datetime import datetime
 from django.db import models
-from patient import Patient
 
 
 class NutritionalData(models.Model):
@@ -16,6 +15,14 @@ class NutritionalData(models.Model):
         ordering = ('date',)
         get_latest_by = 'date'
 
+    SAM = 'sam'
+    SAMP = 'samp'
+    MAS = 'mas'
+
+    URENS = {SAM: u"URENAS",
+             SAMP: u"URENI",
+             MAS: u"URENAM"}
+
     OEDEMA_YES = 'Y'
     OEDEMA_NO = 'N'
     OEDEMA_UNKNOWN = 'U'
@@ -27,7 +34,7 @@ class NutritionalData(models.Model):
     SIGN_DIARRHEA = "d"
     DANGER_SIGN_CHOICES = ((SIGN_DIARRHEA, "Diarrhée"),)
 
-    patient = models.ForeignKey(Patient, related_name='nutritional_data',
+    patient = models.ForeignKey("Patient", related_name='nutritional_data',
                                          verbose_name="Patients")
 
     date = models.DateField(verbose_name="Date", default=datetime.today)
@@ -50,9 +57,9 @@ class NutritionalData(models.Model):
                                 blank=True, null=True)
 
     def __unicode__(self):
-        return u"%(patient)s %(weight)skg/%(height)scm %(pb)smm "\
+        return u"%(patient)s %(date)s/%(weight)skg/%(height)scm %(pb)smm "\
          % {"patient": self.patient, "height": self.height, \
-                "weight": self.weight, "pb": self.muac}
+                "weight": self.weight, "pb": self.muac, "date": self.date}
 
     @property
     def diagnosis(self):

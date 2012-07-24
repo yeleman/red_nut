@@ -48,7 +48,7 @@ def report_as_excel(health_centers):
 
     i_ = i = 0
 
-    #entete consommation d'intrant
+    # entete consommation d'intrant
 
     headers1 = (u"Code CSCOM",
                  u"CSCOM",
@@ -64,7 +64,7 @@ def report_as_excel(health_centers):
     for index, title in enumerate(headers1):
         sheet.write(0, index, title)
 
-    #entete liste des enfants
+    # entete liste des enfants
     headers2 = (u"ID",
                  u"Code CSCOM",
                  u"CSCOM",

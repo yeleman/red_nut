@@ -2,7 +2,6 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-import datetime
 from django.db import models
 
 

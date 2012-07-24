@@ -113,3 +113,21 @@ def extract(data, *keys, **kwargs):
       return kwargs.get('default', None)
 
     return value
+
+
+def weight_gain_calc(last_datanut, min_datanut):
+    """
+        Calcul le gain de poids avec la formule suivante:
+        gain de poids = ((poids de sorti * 1000) -
+                         (poids le plus bas * 1000)) /
+                         (poids le plus bas * (date de sorti -
+                          date du poids le plus bas))
+    """
+    try:
+        gain = ((last_datanut.weight * 1000)
+                - (min_datanut.weight * 1000)) / \
+               (min_datanut.weight
+                * (last_datanut.date - min_datanut.date).days)
+    except ZeroDivisionError:
+        gain = 0
+    return gain
