@@ -42,7 +42,7 @@ def report_as_excel(health_centers):
     for i in (1, 2, 8, 9, 12, 14, 15, 16, 17, 19):
         sheet_patient.col(i).width = 0x0d00 * 2
 
-    for i in (3, 4, 5):
+    for i in (0, 3, 4, 5):
         sheet_patient.col(i).width = 0x0d00 * 3
 
     sheet.col(0).width = 0x0d00 * 1.3
@@ -160,8 +160,7 @@ def report_as_excel(health_centers):
             patient_programios = patient.programios.all()
             for pp in patient_programios.exclude(pk=last_data_event.pk):
                 i_ += 1
-
-                sheet_patient.write(i_, 0, pp.patient_id)
+                sheet_patient.write(i_, 0, pp.patient.nut_id)
                 sheet_patient.write(i_, 19, write_event(pp))
 
                 sheet_patient.write(i_, 20, pp.get_reason_display().upper())
