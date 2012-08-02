@@ -5,7 +5,7 @@ import re
 from red_nut.nut.models import *
 from red_nut.nut.models.period import MonthPeriod
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 
 def handler(message):
@@ -42,8 +42,7 @@ def handler(message):
 def formatdate(date_, time_=False):
     """ Reçoi un string. return date ou datetime
 
-        exemple: '20120620' """
-
+        exemple: '20120620' or 40 """
     if re.match(r'^\d{8}$', date_):
         if not time_:
             date_now = date.today()
@@ -58,12 +57,23 @@ def formatdate(date_, time_=False):
             raise ValueError(u"[ERREUR] La date est dans le futur.")
         return parsed_date
     else:
-        raise ValueError(u"[ERREUR] Le format de la date est incorrect.")
+        try:
+            # date_ est toujour en mois
+            print date_
+            today = date.today()
+            value = int(date_)
+            return today - timedelta(30 * value) - timedelta(15)
+        except:
+            raise ValueError(u"Age unknown: %s" % date_)
 
 
 def resp_error(message, action):
     message.respond(u"[ERREUR] Impossible de comprendre le SMS pour %s"
                                                                % action)
+    return True
+
+def save_error(message, action):
+    message.respond(u"[ERREUR] %s"  % action)
     return True
 
 
@@ -119,8 +129,10 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.health_center = hc
     try:
         patient.save()
+    except IntegrityError:
+        return save_error(message, u"Identifiant doit être unique")
     except:
-        return resp_error(message, u"enregistrement")
+        return save_error(message, u"d'enregistrement du patient")
 
     # adding patient to the program
     programio = ProgramIO()
