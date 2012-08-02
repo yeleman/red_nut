@@ -22,7 +22,7 @@ from nut.tools.export import report_as_excel
 
 @login_required
 def excel_export(request, *args, **kwargs):
-    context = {'category': 'export'}
+
     health_centers = HealthCenter.objects.all()
     date = datetime.today()
 
@@ -45,11 +45,12 @@ def export_db(request):
     if getattr(subprocess, 'check_output', None):
         response = HttpResponse(subprocess.check_output(args))
     else:
-        response = HttpResponse(subprocess.Popen(args, stdout=subprocess.PIPE).communicate()[0])
+        response = HttpResponse(subprocess.Popen(args,
+                                stdout=subprocess.PIPE).communicate()[0])
     response['Content-Type'] = 'text/sql'
     response['Content-Disposition'] = ('attachment; filename="rednut_%s.sql"' %
                                         datetime.today().strftime('%d-%m-%Y'))
-                                        
+
     return response
 
 

@@ -14,8 +14,7 @@ from nut.models import HealthCenter, Patient, ProgramIO
 @login_required
 def health_center(request):
     """ """
-    context = {"category": 'health_center',\
-               "user": request.user}
+    context = {"category": 'health_center', "user": request.user}
 
     health_centers = HealthCenter.objects.all()
     movements = Patient.objects.all()

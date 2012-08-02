@@ -72,6 +72,7 @@ def resp_error(message, action):
                                                                % action)
     return True
 
+
 def save_error(message, action):
     message.respond(u"[ERREUR] %s"  % action)
     return True

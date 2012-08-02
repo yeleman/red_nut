@@ -11,7 +11,7 @@ from nut.models import HealthCenter
 
 @login_required
 def excel_export(request, *args, **kwargs):
-    context = {'category': 'export'}
+
     health_centers = HealthCenter.objects.all()
     date = datetime.today()
 

@@ -70,5 +70,5 @@ class NutritionalData(models.Model):
             return "SAM+"
         elif self.oedema == 'Y' or self.muac < 110:
             return "SAM"
-        elif self.muac < 125:
+        elif self.muac < 136:
             return "MAM"

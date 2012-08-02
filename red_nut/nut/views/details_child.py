@@ -18,6 +18,8 @@ def details_child(request, *args, **kwargs):
     patient = Patient.objects.get(id=num)
     movements = ProgramIO.objects.filter(patient__id=patient.id)
 
+    diagnosis = patient.nutritional_data.latest().diagnosis
+
     if patient.last_data_event():
         patient.status = patient.last_data_event().get_event_display()
     try:
@@ -35,11 +37,12 @@ def details_child(request, *args, **kwargs):
 
         list_muac = [datanut.muac for datanut in datanuts_]
         list_weight = [datanut.weight for datanut in datanuts_]
-        list_zscore = [zscore_from(datanut.height, datanut.weight) for datanut in datanuts_]
+        list_zscore = [zscore_from(datanut.height, datanut.weight)
+                                                     for datanut in datanuts_]
 
         graph_date = [datanut.date.strftime('%d/%m') for datanut in datanuts_]
-        graph_data = [{'name': "Poids", 'data': list_weight}, \
-                      {'name': "PB",'data': list_muac}]
+        graph_data = [{'name': "Poids", 'data': list_weight},
+                      {'name': "PB", 'data': list_muac}]
         zscore_data = [{'name': "ZSCORE", 'data': list_zscore}]
 
         context.update({"graph_date": graph_date, \
@@ -51,5 +54,5 @@ def details_child(request, *args, **kwargs):
     except ProgramIO.DoesNotExist:
         context.update({'error': 'Aucun details nutritionnel'})
 
-    context.update({'patient': patient})
+    context.update({'patient': patient, "diagnosis": diagnosis})
     return render(request, 'details_child.html', context)

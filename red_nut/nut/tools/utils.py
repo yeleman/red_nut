@@ -80,7 +80,6 @@ def week_range(start, stop=None, days=1):
     return date_range(start, stop, 7)
 
 
-
 def percentage_calculation(nb, tnb):
     try:
         return (nb * 100) / tnb

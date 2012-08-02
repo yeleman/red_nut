@@ -15,7 +15,6 @@ import xlwt
 from django.conf import settings
 
 
-
 def report_as_excel(health_centers):
     """
         Export the whole data base to XLS
@@ -133,7 +132,8 @@ def report_as_excel(health_centers):
 
             last_data_event = patient.last_data_event()
 
-            sheet_patient.write(i_, 14, patient.nutritional_data.latest().diagnosis)
+            sheet_patient.write(i_, 14, \
+                                   patient.nutritional_data.latest().diagnosis)
             sheet_patient.write(i_, 16, write_event(last_data_event))
 
             sheet_patient.write(i_, 17, last_data_event.date
