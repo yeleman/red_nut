@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Messages{% endblock %}
+{% block pagetitle %}
+	<h1 class="pagetitle">Système d'information de routine sur la malnutrition aigu</h1>
+{% endblock %}
+
+{% block content %}
+
+	<div id="context">
+
+		<h2>Messages envoyés et reçus par centre de santé</h2>
+
+		{% if sms %}
+			<table>
+				<tr>
+					<th>Numéro/Contact</th>
+					<th>SMS envoyés</th>
+                    <th>SMS reçus</th>
+                    <th>SMS enregistrement</th>
+                    <th>SMS suivi</th>
+                    <th>SMS recherche</th>
+                    <th>SMS sortie</th>
+                    <th>SMS stock</th>
+
+				</tr>
+				{% for message in sms %}
+					<tr>
+						<td>{{message.identity}}</td>
+                        <td>{{ message.count_inbox }}</td>
+                        <td>{{ message.count_sent }}</td>
+                        <td>{{message.register}}</td>
+                        <td>{{ message.fol }}</td>
+                        <td>{{ message.research }}</td>
+                        <td>{{ message.off }}</td>
+                        <td>{{ message.stock }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% else %}
+			<p>Il n'ya pas de messages pour cette période.<p>
+		{% endif %}
+	</div>
+
+{% endblock %}

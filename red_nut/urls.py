@@ -25,6 +25,8 @@ urlpatterns = patterns('',
                              name='health_center'),
     url(r'^log_messages?$', views.log_message,
                              name='log_messages'),
+    url(r'^sms_per_center?$', views.sms_per_center,
+                             name='sms_per_center'),
     url(r'^details_health_center/(?P<id>\d+)$', views.details_health_center,
                                                 name='details_health_center'),
 
