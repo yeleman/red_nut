@@ -10,6 +10,7 @@ from nutritional_data import NutritionalData
 
 from nut.tools.utils import weight_gain_calc
 
+
 class Patient(models.Model):
     """ """
 
@@ -117,7 +118,7 @@ class Patient(models.Model):
 
         visits = self.last_inprogram_data()
         last_datanut = list(visits)[-1]
-        min_datanut =  visits.order_by('weight')[0]
+        min_datanut = visits.order_by('weight')[0]
 
         return weight_gain_calc(last_datanut, min_datanut)
 
