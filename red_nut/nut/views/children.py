@@ -32,7 +32,8 @@ def children(request, *args, **kwargs):
     context = {'category': 'children', 'user': request.user}
     context.update({"message": u"Recherche "})
 
-    patients = Patient.objects.all()
+    patients = Patient.objects.order_by("-create_date")
+
     if request.method == "POST":
         form_r = ResearchForm(request.POST)
         form = ChildrenForm(request.POST)
