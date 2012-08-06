@@ -349,7 +349,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     programio.patient = patient
     programio.event = programio.OUT
     programio.reason = reason
-    programio.date = formatdate(date_disable)
+    programio.date = formatdate(date_disable, True)
     programio.save()
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
                     u"du programme." %
