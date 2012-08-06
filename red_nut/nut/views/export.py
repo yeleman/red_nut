@@ -41,14 +41,19 @@ def export_db(request):
     if not os.path.exists(settings.DB_PATH):
         raise Http404
 
-    args = ['sqlite3', settings.DB_PATH, '.dump']
-    if getattr(subprocess, 'check_output', None):
-        response = HttpResponse(subprocess.check_output(args))
-    else:
-        response = HttpResponse(subprocess.Popen(args,
-                                stdout=subprocess.PIPE).communicate()[0])
-    response['Content-Type'] = 'text/sql'
-    response['Content-Disposition'] = ('attachment; filename="rednut_%s.sql"' %
+    # args = ['sqlite3', settings.DB_PATH, '.dump']
+    # if getattr(subprocess, 'check_output', None):
+    #     response = HttpResponse(subprocess.check_output(args))
+    # else:
+    #     response = HttpResponse(subprocess.Popen(args,
+    #                             stdout=subprocess.PIPE).communicate()[0])
+
+    # DB_PATH is now a zipped MySQL plain SQL dump
+    response = open(settings.DB_PATH).read()
+
+    response['Content-Type'] = 'application/zip; charset=binary'
+    response['Content-Disposition'] = ('attachment; '
+                                       'filename="rednut_%s.sql.zip"' %
                                         datetime.today().strftime('%d-%m-%Y'))
 
     return response
