@@ -49,7 +49,7 @@ def export_db(request):
     #                             stdout=subprocess.PIPE).communicate()[0])
 
     # DB_PATH is now a zipped MySQL plain SQL dump
-    response = open(settings.DB_PATH).read()
+    response = HttpResponse(open(settings.DB_PATH).read())
 
     response['Content-Type'] = 'application/zip; charset=binary'
     response['Content-Disposition'] = ('attachment; '
