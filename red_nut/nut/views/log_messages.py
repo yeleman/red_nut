@@ -7,6 +7,8 @@ from django import forms
 from django.shortcuts import render
 from nosmsd.models import Inbox, SentItems
 
+from red_nut.nut.models.period import MonthPeriod
+
 
 class PeriodForm(forms.Form):
     """ """
@@ -25,6 +27,11 @@ def sms_received_for_period(period=None):
                                   .all().order_by('-receivingdatetime')
 
         return inbox
+
+def current_period():
+    """ Period of current date """
+    from datetime import date
+    return MonthPeriod.find_create_by_date(date.today())
 
 def log_message(request):
     """ Display all messages received """
@@ -46,58 +53,56 @@ def log_message(request):
 def sms_per_center(request):
     """ display the number of SMS per center """
 
-    def create_list(inbox, sent):
-        identies = []
+    def get_all_identities(period):
+        identities = []
+
+        inbox = Inbox.objects.filter(receivingdatetime__gte=period.start_on,
+                                     receivingdatetime__lte=period.end_on)
+
+        sent = SentItems.objects.filter(sendingdatetime__gte=period.start_on,
+                                        sendingdatetime__lte=period.end_on)
+
         for sms in inbox:
-            if not sms.identity in identies:
-                identies.append(sms.identity)
+            if not sms.identity in identities:
+                identities.append(sms.identity)
 
         for sms in sent:
-            if not sms.identity in identies:
-                identies.append(sms.identity)
+            if not sms.identity in identities:
+                identities.append(sms.identity)
 
-        return identies
+        return identities
 
-    def compte_sms(inbox):
-        register = 0
-        fol = 0
-        research = 0
-        off = 0
-        stock = 0
+    def count_sms_type(inbox):
+        keywords = ['register', 'fol', 'research', 'off', 'stock']
+        counts = {}
 
         for sms in inbox:
-            if 'register' in sms.content:
-                register += 1
-            if 'fol' in sms.content:
-                register += 1
-            if 'research' in sms.content:
-                register += 1
-            if 'off' in sms.content:
-                register += 1
-            if 'stock' in sms.content:
-                register += 1
-            print sms.content
-        list_values = [register,fol,research,off,stock]
-        return list_values
+            for kw in keywords:
+                if sms.content.startswith('nut %s' % kw):
+                    counts[kw] = counts.get(kw, 0) + 1
+
+        return counts
 
     context = {'category': 'log_messagesms_per_center'}
 
-    inbox = Inbox.objects.all()
+    period_activities = []
 
-    sent = SentItems.objects.all()
-    identies =  create_list(inbox, sent)
+    for period in Period.objects.all():
 
-    sms = []
-    for identity in identies:
-        inbox = Inbox.objects.filter(sendernumber=identity)
-        register, fol, research, off, stock = compte_sms(inbox)
-        count_inbox = Inbox.objects.filter(sendernumber=identity).count()
-        count_sent = SentItems.objects.filter(destinationnumber=identity).count()
-        sms.append({'identity': identity,
-                    'count_inbox': count_inbox,
-                    'count_sent': count_sent,
-                    'register': register, 'fol': fol, 'research': research,
-                    'off': off, 'stock': stock})
+        all_identities = get_all_identities(period)
 
-    context.update({'sms': sms})
+        contact_activities = []
+        for identity in all_identities:
+            inbox = Inbox.objects.filter(sendernumber=identity)
+            sms_type = count_sms_type(inbox)
+            inbox_count = Inbox.objects.filter(sendernumber=identity).count()
+            sent_count = SentItems.objects.filter(destinationnumber=identity).count()
+            contact_activities.append({'identity': identity,
+                        'inbox_count': inbox_count,
+                        'sent_count': sent_count,
+                        'sms_type': sms_type})
+        period_activities.append({'period': period,
+                                  'contacts':contact_activities})
+
+    context.update({'period_activities': period_activities})
     return render(request, 'sms_per_center.html', context)

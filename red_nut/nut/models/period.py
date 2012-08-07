@@ -10,6 +10,10 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from nut.tools.utils import week_from_weeknum, next_month
 
 
+ONE_SECOND = 0.0001
+ONE_MICROSECOND = 0.00000000001
+
+
 class DayManager(models.Manager):
     def get_query_set(self):
         return super(DayManager, self).get_query_set() \
@@ -242,7 +246,7 @@ class DayPeriod(Period):
 
     class Meta:
         proxy = True
-        app_label = 'bolibana'
+        app_label = 'nut'
         verbose_name = _(u"Period")
         verbose_name_plural = _(u"Periods")
 
@@ -272,7 +276,7 @@ class MonthPeriod(Period):
 
     class Meta:
         proxy = True
-        app_label = 'bolibana'
+        app_label = 'nut'
         verbose_name = _(u"Period")
         verbose_name_plural = _(u"Periods")
 
@@ -317,7 +321,7 @@ class YearPeriod(Period):
 
     class Meta:
         proxy = True
-        app_label = 'bolibana'
+        app_label = 'nut'
         verbose_name = _(u"Period")
         verbose_name_plural = _(u"Periods")
 
