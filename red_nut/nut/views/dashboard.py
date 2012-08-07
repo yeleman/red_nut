@@ -4,7 +4,6 @@
 
 
 from django.shortcuts import render
-from django.utils.translation import ugettext as _, ugettext_lazy
 from django.contrib.auth.decorators import login_required
 
 from nut.models import ProgramIO, Patient, NutritionalData

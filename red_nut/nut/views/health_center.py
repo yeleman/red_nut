@@ -4,7 +4,6 @@
 
 
 from django.shortcuts import render
-from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 

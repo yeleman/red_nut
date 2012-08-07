@@ -2,7 +2,8 @@
 
 import re
 
-from red_nut.nut.models import *
+from red_nut.nut.models import (Patient, ProgramIO, NutritionalData,
+                                HealthCenter, Input, ConsumptionReport)
 from red_nut.nut.models.period import MonthPeriod
 
 from datetime import date, datetime, timedelta
@@ -16,7 +17,9 @@ def handler(message):
                     'fol': nut_followup,
                     'register': nut_register,
                     'research': nut_search,
-                    'off': nut_disable}
+                    'off': nut_disable,
+                    'test': nut_test,
+                    'echo': nut_echo}
 
         if message.content.lower().startswith('nut '):
             for cmd_id, cmd_target in commands.items():
@@ -39,6 +42,22 @@ def handler(message):
     return False
 
 
+def nut_test(message, **kwargs):
+    try:
+        code, msg = message.content.split('nut test')
+    except:
+        msg = ''
+
+    message.respond(u"Received on %(date)s: %(msg)s" \
+                    % {'date': datetime.datetime.now(), 'msg': msg})
+    return True
+
+
+def nut_echo(message, **kwargs):
+    message.respond(kwargs['args'])
+    return True
+
+
 def formatdate(date_, time_=False):
     """ Reçoi un string. return date ou datetime
 
@@ -59,7 +78,6 @@ def formatdate(date_, time_=False):
     else:
         try:
             # date_ est toujour en mois
-            print date_
             today = date.today()
             value = int(date_)
             return today - timedelta(30 * value) - timedelta(15)
@@ -76,10 +94,6 @@ def resp_error(message, action):
 def save_error(message, action):
     message.respond(u"[ERREUR] %s"  % action)
     return True
-
-
-def generate_id(*kwargs):
-    return
 
 
 def nut_register(message, args, sub_cmd, cmd):
@@ -131,7 +145,8 @@ def nut_register(message, args, sub_cmd, cmd):
     try:
         patient.save()
     except IntegrityError:
-        return save_error(message, u"Identifiant doit être unique")
+        return save_error(message, u"Identifiant existe deja dans la base de"
+                                    u" donnee")
     except:
         return save_error(message, u"d'enregistrement du patient")
 
@@ -435,7 +450,7 @@ def nut_consumption(message, args, sub_cmd, cmd):
     if len(errors):
         message.respond(u"[ERREUR] %d rapport de conso en erreur."
                         u" Verifiez toutes les donnees et renvoyez -- %s"
-                                        % (len(error), ', '.join(errors)))
+                                        % (len(errors), ', '.join(errors)))
         return True
 
     message.respond(u"[SUCCES] %d rapports de conso enregistres pour %s."
