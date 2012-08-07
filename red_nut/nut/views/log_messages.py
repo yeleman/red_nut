@@ -83,6 +83,7 @@ def sms_per_center(request):
 
         return counts
 
+    current_period()
     context = {'category': 'log_messagesms_per_center'}
 
     period_activities = []
