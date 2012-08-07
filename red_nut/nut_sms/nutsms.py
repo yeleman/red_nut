@@ -78,7 +78,6 @@ def formatdate(date_, time_=False):
     else:
         try:
             # date_ est toujour en mois
-            print date_
             today = date.today()
             value = int(date_)
             return today - timedelta(30 * value) - timedelta(15)
@@ -95,10 +94,6 @@ def resp_error(message, action):
 def save_error(message, action):
     message.respond(u"[ERREUR] %s"  % action)
     return True
-
-
-def generate_id(*kwargs):
-    return
 
 
 def nut_register(message, args, sub_cmd, cmd):
@@ -150,7 +145,8 @@ def nut_register(message, args, sub_cmd, cmd):
     try:
         patient.save()
     except IntegrityError:
-        return save_error(message, u"Identifiant doit être unique")
+        return save_error(message, u"Identifiant existe deja dans la base de"
+                                    u" donnee")
     except:
         return save_error(message, u"d'enregistrement du patient")
 
