@@ -16,7 +16,9 @@ def handler(message):
                     'fol': nut_followup,
                     'register': nut_register,
                     'research': nut_search,
-                    'off': nut_disable}
+                    'off': nut_disable,
+                    'test': nut_test,
+                    'echo': nut_echo}
 
         if message.content.lower().startswith('nut '):
             for cmd_id, cmd_target in commands.items():
@@ -37,6 +39,22 @@ def handler(message):
         message.save()
         return True
     return False
+
+
+def nut_test(message, **kwargs):
+    try:
+        code, msg = message.content.split('nut test')
+    except:
+        msg = ''
+
+    message.respond(u"Received on %(date)s: %(msg)s" \
+                    % {'date': datetime.datetime.now(), 'msg': msg})
+    return True
+
+
+def nut_echo(message, **kwargs):
+    message.respond(kwargs['args'])
+    return True
 
 
 def formatdate(date_, time_=False):
