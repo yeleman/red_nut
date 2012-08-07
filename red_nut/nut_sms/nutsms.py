@@ -2,7 +2,8 @@
 
 import re
 
-from red_nut.nut.models import *
+from red_nut.nut.models import (Patient, ProgramIO, NutritionalData,
+                                HealthCenter, Input, ConsumptionReport)
 from red_nut.nut.models.period import MonthPeriod
 
 from datetime import date, datetime, timedelta
@@ -435,7 +436,7 @@ def nut_consumption(message, args, sub_cmd, cmd):
     if len(errors):
         message.respond(u"[ERREUR] %d rapport de conso en erreur."
                         u" Verifiez toutes les donnees et renvoyez -- %s"
-                                        % (len(error), ', '.join(errors)))
+                                        % (len(errors), ', '.join(errors)))
         return True
 
     message.respond(u"[SUCCES] %d rapports de conso enregistres pour %s."

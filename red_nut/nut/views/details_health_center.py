@@ -29,8 +29,8 @@ def details_health_center(request, *args, **kwargs):
 
     # Les patients de ce centre
     patients = Patient.objects.filter(health_center=health_center)
-    datanuts = NutritionalData.objects\
-                              .filter(patient__health_center=health_center)
+    # datanuts = NutritionalData.objects\
+    #                           .filter(patient__health_center=health_center)
     programs_io = ProgramIO.objects \
                          .filter(patient__health_center=health_center)
     consumption_reports = ConsumptionReport.objects \
@@ -78,7 +78,7 @@ def details_health_center(request, *args, **kwargs):
     graph_date = []
     diagnose_mam = []
     diagnose_sam = []
-    diagnose_ni = []
+    # diagnose_ni = []
 
     for dat in week_dates:
 
