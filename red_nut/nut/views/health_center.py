@@ -15,7 +15,7 @@ def health_center(request):
     """ """
     context = {"category": 'health_center', "user": request.user}
 
-    health_centers = HealthCenter.objects.all()
+    health_centers = HealthCenter.objects.exclude(parent=None)
     movements = Patient.objects.all()
     liste_health_center = []
     for health_center in health_centers:
