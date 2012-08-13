@@ -93,17 +93,25 @@ def sms_per_center(request):
         all_identities = get_all_identities(period)
 
         contact_activities = []
+        sent_counts = 0
+        inbox_counts = 0
         for identity in all_identities:
             inbox = Inbox.objects.filter(sendernumber=identity)
             sms_type = count_sms_type(inbox)
             inbox_count = Inbox.objects.filter(sendernumber=identity).count()
-            sent_count = SentItems.objects.filter(destinationnumber=identity).count()
+            inbox_counts += inbox_count
+            sent_count = SentItems.objects \
+                                  .filter(destinationnumber=identity) \
+                                  .count()
+            sent_counts += sent_count
             contact_activities.append({'identity': identity,
                         'inbox_count': inbox_count,
                         'sent_count': sent_count,
                         'sms_type': sms_type})
         period_activities.append({'period': period,
-                                  'contacts':contact_activities})
+                                  'contacts':contact_activities,
+                                  'sent_counts': sent_counts,
+                                  'inbox_counts': inbox_counts})
 
     context.update({'period_activities': period_activities})
     return render(request, 'sms_per_center.html', context)

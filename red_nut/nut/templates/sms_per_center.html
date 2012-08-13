@@ -25,7 +25,6 @@
                         <th>SMS recherche</th>
                         <th>SMS sortie</th>
                         <th>SMS stock</th>
-
     				</tr>
     				{% for contact in period.contacts %}
     					<tr>
@@ -39,6 +38,16 @@
                             <td>{{ contact.sms_type.stock|default:'0' }}</td>
     					</tr>
     				{% endfor %}
+                    <tr>
+                        <th>total</th>
+                            <td>{{ period.inbox_counts }}</td>
+                            <td>{{ period.sent_counts }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                    </tr>
                 {% endif %}
                 {% endfor %}
 			</table>
