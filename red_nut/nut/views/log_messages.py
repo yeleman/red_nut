@@ -18,20 +18,23 @@ class PeriodForm(forms.Form):
                                        for period in Period \
                                             .objects.all().order_by('id')])
 
+
 def sms_received_for_period(period=None):
 
         inbox = Inbox.objects.all()
         if period:
-            inbox = Inbox.objects.filter(receivingdatetime__gte=period.start_on,\
-                                          receivingdatetime__lte=period.end_on)\
-                                  .all().order_by('-receivingdatetime')
+            inbox = Inbox.objects.filter(receivingdatetime__gte=period \
+                         .start_on, receivingdatetime__lte=period.end_on)\
+                         .all().order_by('-receivingdatetime')
 
         return inbox
+
 
 def current_period():
     """ Period of current date """
     from datetime import date
     return MonthPeriod.find_create_by_date(date.today())
+
 
 def log_message(request):
     """ Display all messages received """
@@ -49,6 +52,7 @@ def log_message(request):
 
     context.update({'inbox_sms': inbox_sms, 'form': form})
     return render(request, 'log_message.html', context)
+
 
 def sms_per_center(request):
     """ display the number of SMS per center """
@@ -95,9 +99,26 @@ def sms_per_center(request):
         contact_activities = []
         sent_counts = 0
         inbox_counts = 0
+        register_counts = 0
+        fol_counts = 0
+        research_counts = 0
+        off_counts = 0
+        stock_counts = 0
+
         for identity in all_identities:
             inbox = Inbox.objects.filter(sendernumber=identity)
             sms_type = count_sms_type(inbox)
+            if 'register' in sms_type.keys():
+                register_counts += sms_type['register']
+            if 'fol' in sms_type.keys():
+                fol_counts += sms_type['fol']
+            if 'research' in sms_type.keys():
+                research_counts += sms_type['research']
+            if 'off' in sms_type.keys():
+                off_counts += sms_type['off']
+            if 'stock' in sms_type.keys():
+                stock_counts += sms_type['stock']
+
             inbox_count = Inbox.objects.filter(sendernumber=identity).count()
             inbox_counts += inbox_count
             sent_count = SentItems.objects \
@@ -109,8 +130,13 @@ def sms_per_center(request):
                         'sent_count': sent_count,
                         'sms_type': sms_type})
         period_activities.append({'period': period,
-                                  'contacts':contact_activities,
+                                  'contacts': contact_activities,
                                   'sent_counts': sent_counts,
+                                  'register_counts': register_counts,
+                                  'fol_counts': fol_counts,
+                                  'research_counts': research_counts,
+                                  'off_counts': off_counts,
+                                  'stock_counts': stock_counts,
                                   'inbox_counts': inbox_counts})
 
     context.update({'period_activities': period_activities})

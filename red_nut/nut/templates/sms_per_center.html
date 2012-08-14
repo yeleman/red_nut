@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load nut %}
 
 {% block title %}Détails messages{% endblock %}
 {% block pagetitle %}
@@ -14,8 +15,8 @@
 		{% if period_activities %}
             {% for period in period_activities %}
                 {% if period.contacts %}
-    			<table>
-                    <caption>{{period.period.middle|date:"F Y"}}</caption>
+                <h3>{{ period.period.middle|date:"F Y"|title }}</h3>
+    			<table class="center">
     				<tr>
     					<th>Numéro/Contact</th>
     					<th>SMS envoyés</th>
@@ -39,14 +40,15 @@
     					</tr>
     				{% endfor %}
                     <tr>
-                        <th>total</th>
-                            <td>{{ period.inbox_counts }}</td>
-                            <td>{{ period.sent_counts }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <th><strong>total</strong></th>
+                            <td><strong>{{ period.inbox_counts }}</strong></td>
+                            <td><strong>{{ period.sent_counts }}</strong></td>
+                            <td><strong>{{ period.register_counts }}</strong></td>
+                            <td><strong>{{ period.fol_counts }}</strong></td>
+                            <td><strong>{{ period.research_counts }}</strong></td>
+                            <td><strong>{{ period.off_counts }}</strong></td>
+                            <td><strong>{{ period.stock_counts }}</strong></td>
+
                     </tr>
                 {% endif %}
                 {% endfor %}
