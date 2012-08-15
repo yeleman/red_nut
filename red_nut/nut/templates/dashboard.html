@@ -13,7 +13,7 @@
         <tr><th>Nombre d'enfants dans le programme</th><td>{{ children_in_program }}</td></tr>
         <tr><th>Nombre d'enfants MAM</th><td>{{ MAM_count }}</td></tr>
         <tr><th>Nombre d'enfants MAS</th><td>{{ SAM_count }}</td></tr>
-        <tr><th>Nombre d'enfants en retard</th><td style="background-color: Tomato">{{ patients_late }}</td></tr>
+        <tr><th><a style="text-decoration: underline; color: white" href="{% url child_delay %}">Nombre d'enfants en retard</a> </th><td style="background-color: Tomato">{{ patients_late }}</td></tr>
 
         <tr><th><a style="text-decoration: underline; color: white" href="{% url log_messages %}">Nombre SMS reçus</a> (<a style="text-decoration: underline; color: white" href="{% url sms_per_center %}">details</a>)</th><td>{{ received }}</td><tr>
         <tr><th>Nombre SMS envoyés</th><td>{{ sent }}</td></tr>
