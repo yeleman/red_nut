@@ -54,5 +54,6 @@ def details_child(request, *args, **kwargs):
     except ProgramIO.DoesNotExist:
         context.update({'error': 'Aucun details nutritionnel'})
 
-    context.update({'patient': patient, "diagnosis": diagnosis})
+    context.update({'patient': patient, "diagnosis": diagnosis,
+                    "weight_gain": "%.2f" % patient.weight_gain()})
     return render(request, 'details_child.html', context)
