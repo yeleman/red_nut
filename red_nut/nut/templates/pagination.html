@@ -1,0 +1,23 @@
+{% if paginator.has_other_pages %}
+<div class="pageslist">
+    <ul>
+        {% if not paginator.has_previous %}<span class="disabled"><a href="javascript:void(0);" title="Previous Page">«</a></span>{% else %}<span><a href="?page={{ paginator.previous_page_number }}" title="Previous Page">«</a></span>{% endif %}
+
+        {% if paginator.page_range_data.show_first %}
+        <span><a href="?page=1">1</a></span>
+        <span class="disabled"><a href="javascript:void(0);">…</a></span>
+        {% endif %}
+
+        {% for page_num in paginator.page_range_data.page_range %}
+        <span {% if paginator.number = page_num %}class="active"{% endif %}><a href="?page={{ page_num }}">{{ page_num }}</a></span>
+        {% endfor %}
+
+        {% if paginator.page_range_data.show_last %}
+        <span class="disabled"><a href="javascript:void(0);">…</a></span>
+        <span><a href="?page={{ paginator.paginator.num_pages }}">{{ paginator.paginator.num_pages }}</a></span>
+        {% endif %}
+
+        {% if not paginator.has_next %}<span class="disabled"><a href="javascript:void(0);">»</a></span>{% else %}<span><a href="?page={{ paginator.next_page_number }}" title="Next Page">»</a></span>{% endif %}
+    </ul>
+</div>
+{% endif %}

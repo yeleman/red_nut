@@ -17,11 +17,11 @@ addClickClassToTRElements();{% endblock %}
     <table class="noprint">
         <tr><form action="" method="post" id="health_center">{% csrf_token %}<td>{{ form.health_center.label }} {{ form.health_center }}</td><td><input class= "buttons" id="health_center" type="submit" value="ok"/></td></form></tr>
     </table>
-    {% if page.object_list %}
-        <span>{% include "_pagination.html" %}</span>
+    {% if patients %}
+        {% include 'pagination.html' with paginator=patients %}
         <table>
             <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom de la mère</th><th>Date de naissance</th><th>Centre de santé</th><th>Statuts</th></tr>
-            {% for patient in page.object_list %}
+            {% for patient in patients.object_list %}
                 <tr>
                     <td><a href="{{patient.url_patient }}">{{patient.nut_id}}</a></td><td>{{ patient.first_name.capitalize }}</td><td>{{ patient.last_name.capitalize }}</td>
                     <td>{{ patient.surname_mother.title }}</td><td>{{ patient.birth_date }}</td><td>{{ patient.health_center }}</td>

@@ -9,8 +9,10 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.paginator import EmptyPage, PageNotAnInteger
 
 from nut.models import Patient, HealthCenter
+from nut.tools.digg_paginator import FlynsarmyPaginator
 
 
 class ChildrenForm(forms.Form):
@@ -62,28 +64,15 @@ def children(request, *args, **kwargs):
     for patient in patients:
         patient.url_patient = reverse("details_child", args=[patient.id])
 
-    num = kwargs["num"] or 1
-    #pour mettre 20 rapport par page
-    paginator = Paginator(patients, 20)
-    try:
-        page = paginator.page(int(num))
-        # si le numero de la page est 2
-        page.is_before_first = (page.number == 2)
-        # si le numero de la page est egale au numero de l'avant derniere page
-        page.is_before_last = (page.number == paginator.num_pages - 1)
-        # On constitue l'url de la page suivante
-        page.url_next = reverse("children", args=[int(num) + 1])
-        # On constitue l'url de la page precedente
-        page.url_previous = reverse("children", args=[int(num) - 1])
-        # On constitue l'url de la 1ere page
-        page.url_first = reverse("children")
-        # On constitue l'url de la derniere page
-        page.url_last = reverse("children", args=[paginator.num_pages])
-        context.update({"page": page, "paginator": paginator, \
-                                                        "lien": "before"})
-    # affiche une erreur Http404 si l'on de passe la page est vide
-    except EmptyPage:
-        pass
+    paginator = FlynsarmyPaginator(list(patients), 20, adjacent_pages=1)
 
-    context.update({"form_r": form_r, "form": form})
+    page = request.GET.get('page', 1)
+    try:
+        patients_list = paginator.page(page)
+    except PageNotAnInteger:
+        patients_list = paginator.page(1)
+    except EmptyPage:
+        patients_list = paginator.page(paginator.num_pages)
+
+    context.update({'patients': patients_list, "form_r": form_r, "form": form})
     return render(request, 'children.html', context)

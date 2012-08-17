@@ -853,3 +853,25 @@ select.browser {
 input.hidden {
   display: block;
 }
+.pageslist a.active, .pageslist ul span.active  {
+    background-color: #464541;
+    color: white;
+    border-color: #071A29;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow:0 0 2px 7px #DCDCDC;
+}
+.pageslist ul span {
+    display: inline;
+    padding: 2px 7px 4px;
+    margin-left: 0;
+    margin-right: 0;
+}
+.pageslist a {
+    padding: 2px 7px 4px;
+    text-decoration: none;
+    box-shadow: 0 0 1px 0px #787878;
+}
+.pageslist a:hover {
+    box-shadow: 0 0 1px 1px #787878;
+    border-radius: 3px 3px 3px 3px;
+}
