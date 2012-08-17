@@ -49,6 +49,7 @@
                 <th>Oedème</th>
                 <th>Périmètre brachial</th>
                 <th>Date</th>
+                <th>Nombre de sachets plumpy</th>
             </tr>
             {% for datanut in datanuts %}
                 <tr>
@@ -57,6 +58,7 @@
                     <td>{% if datanut.oedema %}{{datanut.get_oedema_display}}{% endif %}</td>
                     <td>{{datanut.muac}} mm</td>
                     <td>{{datanut.date}}</td>
+                    <td>{{datanut.nb_plumpy_nut}}</td>
                 </tr>
             {% endfor %}
         </table>
