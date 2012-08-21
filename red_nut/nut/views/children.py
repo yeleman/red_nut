@@ -6,10 +6,10 @@ from django import forms
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, EmptyPage
+from django.core.paginator import  EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.core.paginator import EmptyPage, PageNotAnInteger
+from django.core.paginator import PageNotAnInteger
 
 from nut.models import Patient, HealthCenter
 from nut.tools.digg_paginator import FlynsarmyPaginator
@@ -64,15 +64,19 @@ def children(request, *args, **kwargs):
     for patient in patients:
         patient.url_patient = reverse("details_child", args=[patient.id])
 
+    #pour mettre 20 rapport par page
     paginator = FlynsarmyPaginator(list(patients), 20, adjacent_pages=1)
 
-    page = request.GET.get('page', 1)
-    try:
-        patients_list = paginator.page(page)
-    except PageNotAnInteger:
-        patients_list = paginator.page(1)
-    except EmptyPage:
-        patients_list = paginator.page(paginator.num_pages)
+    if patients:
+        page = request.GET.get('page', 1)
+        try:
+            patients_list = paginator.page(page)
+        except PageNotAnInteger:
+            patients_list = paginator.page(1)
+        except EmptyPage:
+            patients_list = paginator.page(paginator.num_pages)
+    else:
+        patients_list = []
 
     context.update({'patients': patients_list, "form_r": form_r, "form": form})
     return render(request, 'children.html', context)

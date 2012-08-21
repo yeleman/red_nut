@@ -11,17 +11,18 @@ addClickClassToTRElements();{% endblock %}
 
     <h2>Liste des enfants en retard</h2>
 
-    {% if page.object_list%}
-    <span>{% include "_pagination.html" %}</span>
-    <table>
-        <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>Date dernière visite</th><th>Centre de santé</th><th>Nnombre de jours depuis la dernière visite</th></tr>
-        {% for patient in page.object_list %}
-            <tr>
-                <td><a href="{{patient.url_details_child }}">{{ patient.patient.nut_id }}</a></td><td>{{ patient.patient.first_name.capitalize }}</td><td>{{patient.patient.last_name.capitalize}}</td>
-                <td>{{ patient.patient.surname_mother.capitalize}}</td><td>{{ patient.date}}</td><td>{{ patient.patient.health_center}}</td><td>{{ patient.patient.delay_since_last_visit.days }} jours</td>
-            </tr>
-        {% endfor %}
-    </table>
+    {% if patients%}
+        {% include 'pagination.html' with paginator=patients %}
+        <table>
+            <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>Date dernière visite</th><th>Centre de santé</th><th>Nnombre de jours depuis la dernière visite</th></tr>
+            {% for patient in patients.object_list %}
+                <tr>
+                    <td><a href="{{ patient.url_details_child }}">{{ patient.patient.nut_id }}</a></td><td>{{ patient.patient.first_name.capitalize }}</td><td>{{patient.patient.last_name.capitalize}}</td>
+                    <td>{{ patient.patient.surname_mother.capitalize}}</td><td>{{ patient.date}}</td><td>{{ patient.patient.health_center}}</td><td>{{ patient.patient.delay_since_last_visit.days }} jours</td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% include 'pagination.html' with paginator=patients %}
     {%else%}
         <table>
             <tr>

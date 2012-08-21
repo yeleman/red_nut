@@ -23,15 +23,16 @@ addClickClassToTRElements();{% endblock %}
             <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom de la mère</th><th>Date de naissance</th><th>Centre de santé</th><th>Statuts</th></tr>
             {% for patient in patients.object_list %}
                 <tr>
-                    <td><a href="{{patient.url_patient }}">{{patient.nut_id}}</a></td><td>{{ patient.first_name.capitalize }}</td><td>{{ patient.last_name.capitalize }}</td>
+                    <td><a href="{{ patient.url_patient }}">{{patient.nut_id}}</a></td><td>{{ patient.first_name.capitalize }}</td><td>{{ patient.last_name.capitalize }}</td>
                     <td>{{ patient.surname_mother.title }}</td><td>{{ patient.birth_date }}</td><td>{{ patient.health_center }}</td>
                     <td>{% ifnotequal patient.last_data_event.get_event_display "Sorti" %} {{ patient.last_data_event.get_event_display }} {% else %} {{ patient.last_data_event.get_reason_display }}{% endifnotequal %}</td>
                 </tr>
             {% endfor %}
         </table>
+        {% include 'pagination.html' with paginator=patients %}
     {% else %}
         <table>
-            <tr> <td>Votre requête ne trouve aucun patient.</td></tr>
+            <tr><td>Votre requête ne trouve aucun patient.</td></tr>
         </table>
     {% endif %}
 </div>
