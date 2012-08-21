@@ -858,7 +858,7 @@ input.hidden {
     color: white;
     border-color: #071A29;
     border-radius: 3px 3px 3px 3px;
-    box-shadow:0 0 2px 7px #DCDCDC;
+    box-shadow: 0 0 2px 4px silver;
 }
 .pageslist ul span {
     display: inline;
@@ -869,7 +869,7 @@ input.hidden {
 .pageslist a {
     padding: 2px 7px 4px;
     text-decoration: none;
-    box-shadow: 0 0 1px 0px #787878;
+    box-shadow: 1px 1px 3px 2px #787878;
 }
 .pageslist a:hover {
     box-shadow: 0 0 1px 1px #787878;

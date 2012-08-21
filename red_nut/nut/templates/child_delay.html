@@ -14,7 +14,7 @@ addClickClassToTRElements();{% endblock %}
     {% if patients%}
         {% include 'pagination.html' with paginator=patients %}
         <table>
-            <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>Date dernière visite</th><th>Centre de santé</th><th>Nnombre de jours depuis la dernière visite</th></tr>
+            <tr><th>Identifiant</th><th>Prénom</th><th>Nom</th><th>Nom mère</th><th>Date dernière visite</th><th>Centre de santé</th><th>Nombre de jours depuis la dernière visite</th></tr>
             {% for patient in patients.object_list %}
                 <tr>
                     <td><a href="{{ patient.url_details_child }}">{{ patient.patient.nut_id }}</a></td><td>{{ patient.patient.first_name.capitalize }}</td><td>{{patient.patient.last_name.capitalize}}</td>
