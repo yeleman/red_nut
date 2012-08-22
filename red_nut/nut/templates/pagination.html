@@ -1,5 +1,5 @@
 {% if paginator.has_other_pages %}
-<div class="pageslist">
+<div class="pageslist" style="margin-left:0px">
     <ul>
         {% if not paginator.has_previous %}<span class="disabled"><a href="javascript:void(0);" title="Previous Page">«</a></span>{% else %}<span><a href="?page={{ paginator.previous_page_number }}" title="Previous Page">«</a></span>{% endif %}
 
