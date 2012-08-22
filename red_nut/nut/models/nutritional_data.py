@@ -67,8 +67,8 @@ class NutritionalData(models.Model):
         if self.muac is None or self.muac == 0:
             return None
         elif self.muac < 80:
-            return "SAM+"
+            return "MASC"
         elif self.oedema == 'Y' or self.muac < 110:
-            return "SAM"
+            return "MAS"
         elif self.muac < 136:
             return "MAM"
