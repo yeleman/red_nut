@@ -28,7 +28,7 @@ def child_delay(request, *args, **kwargs):
                                                 args=[patient.patient.id])
 
     #pour mettre 20 rapport par page
-    paginator = FlynsarmyPaginator(list(patients), 20, adjacent_pages=6)
+    paginator = FlynsarmyPaginator(list(patients), 20, adjacent_pages=10)
 
     if patients:
         page = request.GET.get('page', 1)
