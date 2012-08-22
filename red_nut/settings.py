@@ -111,7 +111,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'nut',
     'nosmsd',
-    'reversion',
     'babeldjango',
 )
 

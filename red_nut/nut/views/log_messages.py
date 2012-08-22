@@ -120,15 +120,21 @@ def sms_per_center(request):
                 stock_counts += sms_type['stock']
 
             inbox_count = Inbox.objects.filter(sendernumber=identity).count()
-            inbox_counts += inbox_count
             sent_count = SentItems.objects \
                                   .filter(destinationnumber=identity) \
                                   .count()
-            sent_counts += sent_count
             contact_activities.append({'identity': identity,
                         'inbox_count': inbox_count,
                         'sent_count': sent_count,
                         'sms_type': sms_type})
+        inbox_counts = Inbox.objects \
+                            .filter(receivingdatetime__gte=period.start_on,
+                                    receivingdatetime__lte=period.end_on) \
+                            .count()
+        sent_counts = SentItems.objects \
+                               .filter(sendingdatetime__gte=period.start_on,
+                                       sendingdatetime__lte=period.end_on) \
+                               .count()
         period_activities.append({'period': period,
                                   'contacts': contact_activities,
                                   'sent_counts': sent_counts,
