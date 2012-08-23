@@ -45,7 +45,8 @@ def children(request):
                                    .POST.get('health_center'))
         if "search_patient" in request.POST:
             if request.POST.get('search_patient'):
-                val = request.POST.get('search_patient')
+                val = request.POST.get('search_patient').title()
+                print val
 
                 query = (Q(first_name__contains=val) |
                          Q(last_name__contains=val) |

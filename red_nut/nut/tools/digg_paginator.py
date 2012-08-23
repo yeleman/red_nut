@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator, Page
 
+
 class FlynsarmyPaginator(Paginator):
     def __init__(self, object_list, per_page, orphans=0, allow_empty_first_page=True, adjacent_pages=0):
         self.adjacent_pages = adjacent_pages
@@ -14,6 +15,7 @@ class FlynsarmyPaginator(Paginator):
         if top + self.orphans >= self.count:
             top = self.count
         return FlynsarmyPage(self.object_list[bottom:top], number, self, self.adjacent_pages)
+
 
 class FlynsarmyPage(Page):
     def __init__(self, object_list, number, paginator, adjacent_pages=0):
@@ -44,4 +46,3 @@ iterating through within a template for loop.
             'show_last': self.paginator.num_pages not in page_range,
         }
     page_range_data = property(_get_page_range_data)
-
