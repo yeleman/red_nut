@@ -105,11 +105,11 @@ def extract(data, *keys, **kwargs):
     """
 
     try:
-      value = data[keys[0]]
-      for key in keys[1:]:
-          value = value[key]
+        value = data[keys[0]]
+        for key in keys[1:]:
+            value = value[key]
     except (KeyError, IndexError, TypeError):
-      return kwargs.get('default', None)
+        return kwargs.get('default', None)
 
     return value
 

@@ -92,7 +92,7 @@ def resp_error(message, action):
 
 
 def save_error(message, action):
-    message.respond(u"[ERREUR] %s"  % action)
+    message.respond(u"[ERREUR] %s" % action)
     return True
 
 
@@ -254,7 +254,7 @@ def nut_followup(message, args, sub_cmd, cmd):
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema,
                                 muac=muac, nb_plumpy_nut=nb_plumpy_nut,
-                                date = formatdate(reporting_d))
+                                date=formatdate(reporting_d))
     if not datanut:
         return resp_error(message, u"suivi")
 

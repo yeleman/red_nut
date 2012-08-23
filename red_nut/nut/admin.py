@@ -4,8 +4,8 @@
 
 from django.contrib import admin
 
-from models import (Period, Input, Patient, ProgramIO, HealthCenter, \
-					NutritionalData, ConsumptionReport)
+from models import (Period, Input, Patient, ProgramIO, HealthCenter,
+                    NutritionalData, ConsumptionReport)
 
 
 class HealthCenterAdmin(admin.ModelAdmin):
@@ -14,7 +14,7 @@ class HealthCenterAdmin(admin.ModelAdmin):
 
 class PatientAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'first_name', 'last_name', 'sex',\
-                        'surname_mother', 'contact', 'birth_date', 'health_center')
+                    'surname_mother', 'contact', 'birth_date', 'health_center')
 
 
 class ProgramIOAdmin(admin.ModelAdmin):

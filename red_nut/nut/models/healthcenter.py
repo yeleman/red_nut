@@ -16,6 +16,5 @@ class HealthCenter(models.Model):
     nut_code = models.CharField(max_length=10, verbose_name=u"Nutrition Code")
     parent = models.ForeignKey("HealthCenter", verbose_name=u"Parent", null=True, blank=True)
 
-
     def __unicode__(self):
         return u'%(name)s' % {"name": self.name}
