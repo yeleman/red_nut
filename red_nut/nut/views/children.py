@@ -30,7 +30,7 @@ class ResearchForm(forms.Form):
 
 
 @login_required
-def children(request, *args, **kwargs):
+def children(request):
     context = {'category': 'children', 'user': request.user}
     context.update({"message": u"Recherche "})
 
