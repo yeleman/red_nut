@@ -135,6 +135,10 @@ def sms_per_center(request):
                                .filter(sendingdatetime__gte=period.start_on,
                                        sendingdatetime__lte=period.end_on) \
                                .count()
+        parts_sent_counts = SentItems.raw \
+                               .filter(sendingdatetime__gte=period.start_on,
+                                       sendingdatetime__lte=period.end_on) \
+                               .count()
         period_activities.append({'period': period,
                                   'contacts': contact_activities,
                                   'sent_counts': sent_counts,
@@ -143,7 +147,8 @@ def sms_per_center(request):
                                   'research_counts': research_counts,
                                   'off_counts': off_counts,
                                   'stock_counts': stock_counts,
-                                  'inbox_counts': inbox_counts})
+                                  'inbox_counts': inbox_counts,
+                                  'parts_sent_counts': parts_sent_counts})
 
     context.update({'period_activities': period_activities})
     return render(request, 'sms_per_center.html', context)

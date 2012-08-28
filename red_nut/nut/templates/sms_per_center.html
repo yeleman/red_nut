@@ -19,8 +19,8 @@
     			<table class="center">
     				<tr>
     					<th>Numéro/Contact</th>
-    					<th>SMS envoyés</th>
-                        <th>SMS reçus</th>
+    					<th>SMS envoyés par le centre</th>
+                        <th>SMS envoyés par le serveur</th>
                         <th>SMS enregistrement</th>
                         <th>SMS suivi</th>
                         <th>SMS recherche</th>
@@ -42,7 +42,7 @@
                     <tr>
                         <th><strong>total</strong></th>
                             <td><strong>{{ period.inbox_counts }}</strong></td>
-                            <td><strong>{{ period.sent_counts }}</strong></td>
+                            <td><strong>{{ period.sent_counts }}/<small>{{ period.parts_sent_counts }}</small></strong></td>
                             <td><strong>{{ period.register_counts }}</strong></td>
                             <td><strong>{{ period.fol_counts }}</strong></td>
                             <td><strong>{{ period.research_counts }}</strong></td>
