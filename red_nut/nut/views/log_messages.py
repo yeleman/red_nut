@@ -106,7 +106,9 @@ def sms_per_center(request):
         stock_counts = 0
 
         for identity in all_identities:
-            inbox = Inbox.objects.filter(sendernumber=identity)
+            inbox = Inbox.objects.filter(sendernumber=identity,
+                                    receivingdatetime__gte=period.start_on,
+                                    receivingdatetime__lte=period.end_on)
             sms_type = count_sms_type(inbox)
             if 'register' in sms_type.keys():
                 register_counts += sms_type['register']
