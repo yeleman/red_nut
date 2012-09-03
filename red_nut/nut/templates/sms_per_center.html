@@ -15,8 +15,9 @@
 		{% if period_activities %}
             {% for period in period_activities %}
                 {% if period.contacts %}
-                <h3>{{ period.period.middle|date:"F Y"|title }}</h3>
     			<table class="center">
+                    <caption><strong>{{ period.period.middle|date:"F Y"|title }}</strong></caption>
+
     				<tr>
     					<th>Numéro/Contact</th>
     					<th>SMS envoyés par le centre</th>
