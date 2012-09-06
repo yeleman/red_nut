@@ -49,7 +49,7 @@ def nut_test(message, **kwargs):
         msg = ''
 
     message.respond(u"Received on %(date)s: %(msg)s" \
-                    % {'date': datetime.datetime.now(), 'msg': msg})
+                    % {'date': datetime.now(), 'msg': msg})
     return True
 
 
