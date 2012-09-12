@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 
 
 def week_from_weeknum(year, weeknum, is_iso=False):
@@ -65,8 +65,9 @@ def diff_weight(p1, p2):
 
 
 def date_range(start, stop=None, days=1):
-    """ """
-    stop = stop or datetime.today()
+
+    date_tody = date.today()
+    stop = stop or  datetime(*date_tody.timetuple()[:-4])
 
     while(start <= stop):
         yield start
