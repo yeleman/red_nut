@@ -66,8 +66,9 @@ def diff_weight(p1, p2):
 
 def date_range(start, stop=None, days=1):
 
-    date_tody = date.today()
-    stop = stop or  datetime(*date_tody.timetuple()[:-4])
+    # stop at 00h00 today so we don't have an extra
+    # point for today if the last period ends today.
+    stop = stop or datetime(*date.today().timetuple()[:-4])
 
     while(start <= stop):
         yield start
