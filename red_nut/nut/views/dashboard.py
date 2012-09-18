@@ -87,7 +87,8 @@ def dashboard(request):
                 pass
 
         diagnose_mam.append(l_diagnose.count('MAM'))
-        diagnose_sam.append(l_diagnose.count('SAM'))
+        diagnose_sam.append(l_diagnose.count('MAS'))
+        print diagnose_mam, diagnose_sam
 
         graph_data = [{'name': "Total", 'data': total_patient},
                       {'name': "MAM", 'data': diagnose_mam},
