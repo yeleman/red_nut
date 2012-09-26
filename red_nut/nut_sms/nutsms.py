@@ -101,7 +101,7 @@ def nut_register(message, args, sub_cmd, cmd):
             nut register hc_code, create_date, patient_id, type_uren,
                          first_name, last_name, mother, sex, dob, contact
                          #weight height oed pb nbr
-            exple: 'nut register adas 20120723 mas 12 madou coulibaly ami M
+            exple: 'nut register sab3 20120723 sam 12 madou coulibaly ami M
                                  20100723 4332523#6 65 YES 120 23'
         Outgoing:
             [SUCCES] Le rapport de name_health_center a ete enregistre.
@@ -168,7 +168,7 @@ def nut_register(message, args, sub_cmd, cmd):
               'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
     nb_plumpy_nut = int(nb_plumpy_nut) \
-                              if not nb_plumpy_nut.lower() == '-' else 0
+    if not nb_plumpy_nut.lower() == '-' else 0
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema, muac=muac,
                                 nb_plumpy_nut=nb_plumpy_nut,
@@ -201,7 +201,7 @@ def nut_followup(message, args, sub_cmd, cmd):
     """ Incomming:
             nut fol hc_code reporting_d type_uren patient_id weight height
                 oedema muac nb_plumpy_nut(optional)
-        exple: 'nut fol adas 20120723 mas 0012 4 65 YES 83 -'
+        exple: 'nut fol sab3 20120723 sam 0012 4 65 YES 83 -'
 
         Outgoing:
             [SUCCES] Donnees nutrition mise a jour pour full_name #id
@@ -335,15 +335,17 @@ def nut_search(message, args, sub_cmd, cmd):
 
 def nut_disable(message, args, sub_cmd, cmd):
     """  Incomming:
-            hc_code, date_disable, type_uren, patient_id, reason
+            hc_code, date_disable, type_uren, patient_id, weight, height, muac,
+            reason
             example reason: (a= abandon, t = transfer ...)
-            example data: 'nut off csref 20120723 mas 2 a'
+            example data: 'nut off sab3 20120925 sam 9 - - - a'
          Outgoing:
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
 
     try:
-        hc_code, date_disable, type_uren, patient_id, reason= args.split()
+        hc_code, date_disable, type_uren, patient_id, weight, height, \
+                                                    muac, reason = args.split()
     except:
         return resp_error(message, u"la sortie")
 
@@ -351,6 +353,7 @@ def nut_disable(message, args, sub_cmd, cmd):
         patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(),
                                                                     patient_id)
     except:
+        # raise
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" %
                                                              patient_id)
         return True
@@ -359,6 +362,19 @@ def nut_disable(message, args, sub_cmd, cmd):
                         u" du programme." %
                         {'full_name': patient.full_name()})
         return True
+
+    if reason == "h":
+        datanut = add_followup_data(patient=patient, weight=weight,
+                                    height=height, muac=muac,
+                                    oedema=NutritionalData.OEDEMA_NO,
+                                    nb_plumpy_nut=0,
+                                    date=formatdate(date_disable))
+        if not datanut:
+            message.respond(u"/!\ %(full_name)s enregistre avec ID#%(id)s."
+                            u" Donnees nutrition non enregistres."
+                            % {'full_name': patient.full_name(),
+                               'id': patient_id})
+            return True
 
     programio = ProgramIO()
     programio.patient = patient
