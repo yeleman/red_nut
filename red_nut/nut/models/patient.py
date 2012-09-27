@@ -47,6 +47,15 @@ class Patient(models.Model):
                  "birth_date": self.birth_date, \
                  "health_center": self.health_center}
 
+    @property
+    def status(self):
+        return self.last_data_event().event
+
+    def is_healing(self):
+        from programIO import ProgramIO
+        return (self.status == ProgramIO.OUT 
+                and self.last_data_event().reason == ProgramIO.HEALING)
+
     def full_name(self):
         """return full name"""
         return (u'%(first_name)s %(last_name)s' % \
@@ -72,13 +81,13 @@ class Patient(models.Model):
         return None
 
     @classmethod
-    def avg_weight_delta(cls, qs=None):
+    def avg_weight_gain(cls, qs=None):
         """ return avg weight """
         qs = qs
         if qs == None:
             qs = cls.objects.all()
 
-        list_weight = [p.weight_delta_since_input for p in qs]
+        list_weight = [p.weight_gain() for p in qs if p.is_healing()]
 
         try:
             return sum(list_weight) / len(list_weight)

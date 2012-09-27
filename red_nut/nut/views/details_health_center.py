@@ -76,9 +76,8 @@ def details_health_center(request, *args, **kwargs):
 
     total_patient = []
     graph_date = []
-    diagnose_mam = []
+    diagnose_samp = []
     diagnose_sam = []
-    # diagnose_ni = []
 
     for dat in week_dates:
 
@@ -100,17 +99,17 @@ def details_health_center(request, *args, **kwargs):
             except NutritionalData.DoesNotExist:
                 pass
 
-        diagnose_mam.append(l_diagnose.count('MAM'))
-        diagnose_sam.append(l_diagnose.count('SAM'))
+        diagnose_samp.append(l_diagnose.count(NutritionalData.SAMP))
+        diagnose_sam.append(l_diagnose.count(NutritionalData.SAM))
 
         graph_data = [{'name': "Total", 'data': total_patient},
-                      {'name': "MAM", 'data': diagnose_mam},
+                      {'name': "MAS+", 'data': diagnose_samp},
                       {'name': "MAS", 'data': diagnose_sam}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
 
     # Diagnose
-    dict_["MAM_count"] = extract(diagnose_mam, -1, default=0)
+    dict_["SAMP_count"] = extract(diagnose_samp, -1, default=0)
     dict_["SAM_count"] = extract(diagnose_sam, -1, default=0)
 
     # Nbre d'enfants dans le programme
@@ -125,7 +124,7 @@ def details_health_center(request, *args, **kwargs):
     except:
         dict_["avg_days"] = 0
 
-    dict_["avg_diff_weight"] = "%.2f" % Patient.avg_weight_delta(patients)
+    dict_["avg_diff_weight"] = "%.2f" % Patient.avg_weight_gain(patients)
 
     context.update({'dict_': dict_, \
                     'consumption_reports': consumption_reports})

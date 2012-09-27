@@ -28,7 +28,6 @@ def dashboard(request):
     nbr_abandonment = ProgramIO.abandon.count()
     abandonment_rates = percentage_calculation(nbr_abandonment,
                                                nbr_total_patient)
-
     # Taux déces
     nbr_deaths = ProgramIO.death.count()
     deaths_rates = percentage_calculation(nbr_deaths, nbr_total_patient)
@@ -53,14 +52,14 @@ def dashboard(request):
     context.update({"avg_days": ProgramIO.out.avg_days()})
 
     # Gain de poids moyen
-    context.update({"avg_weight": "%.2f" % Patient.avg_weight_delta()})
+    context.update({"avg_weight": "%.2f" % Patient.avg_weight_gain()})
 
     # graphic
     total_patient = []
     graph_date = []
-    diagnose_mam = []
+    diagnose_samp = []
     diagnose_sam = []
-    diagnose_ni = []
+
     try:
         week_dates = week_range(ProgramIO.objects.all()[0].date)
     except IndexError:
@@ -85,20 +84,18 @@ def dashboard(request):
                 l_diagnose.append(patient.nutritional_data.latest().diagnosis)
             except NutritionalData.DoesNotExist:
                 pass
-
-        diagnose_mam.append(l_diagnose.count('MAM'))
-        diagnose_sam.append(l_diagnose.count('MAS'))
+        diagnose_samp.append(l_diagnose.count(NutritionalData.SAMP))
+        diagnose_sam.append(l_diagnose.count(NutritionalData.SAM))
 
         graph_data = [{'name': "Total", 'data': total_patient},
-                      {'name': "MAM", 'data': diagnose_mam},
+                      {'name': "MAS+", 'data': diagnose_samp},
                       {'name': "MAS", 'data': diagnose_sam}]
 
         context.update({"graph_date": graph_date, "graph_data": graph_data})
 
     # Diagnose
-    MAM_count = extract(diagnose_mam, -1, default=0)
+    SAMP_count = extract(diagnose_samp, -1, default=0)
     SAM_count = extract(diagnose_sam, -1, default=0)
-    NI_count = extract(diagnose_ni, -1, default=0)
 
     # Nbre d'enfant dans le programme
     children_in_program = extract(total_patient, -1, default=0)
@@ -116,7 +113,7 @@ def dashboard(request):
 
     context.update({"children_in_program": children_in_program, \
                     "sent": sent, "received": received, \
-                    "MAM_count": MAM_count, "SAM_count": SAM_count, \
-                    "patients_late": patients_late, "NI_count": NI_count})
+                    "SAMP_count": SAMP_count, "SAM_count": SAM_count, \
+                    "patients_late": patients_late})
 
     return render(request, 'dashboard.html', context)

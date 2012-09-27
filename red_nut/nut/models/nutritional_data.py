@@ -66,9 +66,7 @@ class NutritionalData(models.Model):
         '''Diagnosis of the patient'''
         if self.muac is None or self.muac == 0:
             return None
-        elif self.muac < 80:
-            return "MASC"
         elif self.oedema == 'Y' or self.muac < 110:
-            return "MAS"
+            return self.SAM
         elif self.muac < 136:
-            return "MAM"
+            return self.MAS

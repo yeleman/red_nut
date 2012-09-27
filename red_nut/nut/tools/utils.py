@@ -40,18 +40,6 @@ def next_month(year, month):
         return (year + 1, 1)
 
 
-def diagnose_patient(muac, oedema):
-    '''Diagnosis of the patient'''
-    if muac is None or muac == 0:
-        return None
-    elif muac < 80:
-        return "SAM+"
-    elif oedema == 'Y' or muac < 110:
-        return "SAM"
-    elif muac < 125:
-        return "MAM"
-
-
 def number_days(begin, end):
     ''' return the number of days in two dates '''
     if end and begin:
