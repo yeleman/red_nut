@@ -346,6 +346,12 @@ def nut_disable(message, args, sub_cmd, cmd):
     try:
         hc_code, date_disable, type_uren, patient_id, weight, height, \
                                                     muac, reason = args.split()
+    except ValueError:
+        # Todo: A supprimer une fois la version 06 de appli java est deployé au cscom
+        hc_code, date_disable, type_uren, patient_id, reason = args.split()
+        weight = None
+        height = None
+        muac = None
     except:
         return resp_error(message, u"la sortie")
 
@@ -353,7 +359,6 @@ def nut_disable(message, args, sub_cmd, cmd):
         patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(),
                                                                     patient_id)
     except:
-        # raise
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" %
                                                              patient_id)
         return True
@@ -363,7 +368,7 @@ def nut_disable(message, args, sub_cmd, cmd):
                         {'full_name': patient.full_name()})
         return True
 
-    if reason == "h":
+    if reason == "h" and weight:
         datanut = add_followup_data(patient=patient, weight=weight,
                                     height=height, muac=muac,
                                     oedema=NutritionalData.OEDEMA_NO,
