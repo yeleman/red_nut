@@ -144,11 +144,11 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.health_center = hc
     try:
         patient.save()
-    except IntegrityError:
+    except:
         return save_error(message, u"Identifiant existe deja dans la base de"
                                     u" donnee")
-    except:
-        return save_error(message, u"d'enregistrement du patient")
+    # except:
+    #     return save_error(message, u"d'enregistrement du patient")
 
     # adding patient to the program
     programio = ProgramIO()
