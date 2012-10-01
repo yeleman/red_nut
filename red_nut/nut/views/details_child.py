@@ -21,7 +21,7 @@ def details_child(request, *args, **kwargs):
     diagnosis = patient.nutritional_data.latest().diagnosis
 
     if patient.last_data_event():
-        patient.status = patient.last_data_event().get_event_display()
+        patient.statut = patient.last_data_event().get_event_display()
     try:
         output = movements.filter(event=ProgramIO.OUT).latest('date')
         context.update({"output": output})
