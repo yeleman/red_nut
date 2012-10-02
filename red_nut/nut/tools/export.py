@@ -120,7 +120,7 @@ def report_as_excel(health_centers):
         for patient in health_center.patients.all():
             row += 1
             col = 0
-            sheet_patient.write(row, col, patient.nut_id)
+            sheet_patient.write(row, col, patient.nut_id, style_title)
             col += 1
             sheet_patient.write(row, col, "Enregistrement")
             col += 1
@@ -165,20 +165,13 @@ def report_as_excel(health_centers):
             col += 1
             sheet_patient.write(row, col, last_data_event.date
                                                        .strftime(date_format))
-            col += 1
-            sheet_patient.write(row, col, last_data_event.date
-                                                       .strftime(date_format))
-            col += 1
-            sheet_patient.write(row, col, write_event(last_data_event))
-            col += 1
-            sheet_patient.write(row, col, last_data_event.get_reason_display()
-                                                       .upper())
+            # la dernière ligne 
             rowpp = row
             datanut_patients = patient.nutritional_data.all().order_by("date")
             for data in datanut_patients.exclude(pk=first_data_nut.pk):
                 row += 1
                 col = 0
-                sheet_patient.write(row, col, data.patient.nut_id)
+                sheet_patient.write(row, col, data.patient.nut_id, style_title)
                 col += 1
                 sheet_patient.write(row, col, u"Suivi")
                 col += 9
@@ -194,14 +187,17 @@ def report_as_excel(health_centers):
                 col += 1
                 sheet_patient.write(row, col, data.diagnosis)
 
-            patient_programios = patient.programios.all().order_by("-date")
-            for pp in patient_programios.exclude(pk=last_data_event.pk):
-                rowpp += 1
-                row += 1
-                sheet_patient.write(row, 0, pp.patient.nut_id)
-                sheet_patient.write(rowpp, 19, pp.date.strftime(date_format),style_title)
+            patient_programios = patient.programios.all().order_by("date")
+            for pp in patient_programios:
+                if pp.event == ProgramIO.OUT:
+                    rowpp = row
+                    sheet_patient.write(rowpp, 0, pp.patient.nut_id, style_title)
+
+                sheet_patient.write(rowpp, 19, pp.date.strftime(date_format))
                 sheet_patient.write(rowpp, 20, write_event(pp))
                 sheet_patient.write(rowpp, 21, pp.get_reason_display().upper())
+                rowpp += 1
+                row += 1
 
     stream = StringIO.StringIO()
     book.save(stream)
