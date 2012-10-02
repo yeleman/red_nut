@@ -37,7 +37,7 @@ class NutritionalData(models.Model):
     patient = models.ForeignKey("Patient", related_name='nutritional_data',
                                          verbose_name="Patients")
 
-    date = models.DateField(verbose_name="Date", default=datetime.today)
+    date = models.DateField(verbose_name="Date", default=datetime.now())
 
     weight = models.FloatField(u"Poids (kg)")
     height = models.FloatField(u"Taille (cm)")

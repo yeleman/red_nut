@@ -10,6 +10,7 @@ import StringIO
 import xlwt
 
 from django.conf import settings
+from nut.models import ProgramIO
 
 
 al_center = xlwt.Alignment()
@@ -31,7 +32,7 @@ def report_as_excel(health_centers):
         """
             Return status
         """
-        if patient.event == 'e':
+        if patient.event == ProgramIO.SUPPORT:
             return 'ENTRE'
 
         return 'SORTIE'
@@ -142,14 +143,14 @@ def report_as_excel(health_centers):
                                               .strftime(date_format))
             col += 2
 
-            last_data_nut = patient.last_data_nut()
-            sheet_patient.write(row, col, last_data_nut.weight)
+            first_data_nut = patient.first_data_nut()
+            sheet_patient.write(row, col, first_data_nut.weight)
             col += 1
-            sheet_patient.write(row, col, last_data_nut.height)
+            sheet_patient.write(row, col, first_data_nut.height)
             col += 1
-            sheet_patient.write(row, col, last_data_nut.muac)
+            sheet_patient.write(row, col, first_data_nut.muac)
             col += 1
-            sheet_patient.write(row, col, last_data_nut.get_oedema_display()
+            sheet_patient.write(row, col, first_data_nut.get_oedema_display()
                                                      .upper())
             col += 1
 
@@ -172,10 +173,9 @@ def report_as_excel(health_centers):
             col += 1
             sheet_patient.write(row, col, last_data_event.get_reason_display()
                                                        .upper())
-
-            datanut_patients = patient.nutritional_data.all()
-
-            for data in datanut_patients.exclude(pk=last_data_nut.pk).order_by("date"):
+            rowpp = row
+            datanut_patients = patient.nutritional_data.all().order_by("date")
+            for data in datanut_patients.exclude(pk=first_data_nut.pk):
                 row += 1
                 col = 0
                 sheet_patient.write(row, col, data.patient.nut_id)
@@ -194,13 +194,14 @@ def report_as_excel(health_centers):
                 col += 1
                 sheet_patient.write(row, col, data.diagnosis)
 
-            patient_programios = patient.programios.all()
+            patient_programios = patient.programios.all().order_by("-date")
             for pp in patient_programios.exclude(pk=last_data_event.pk):
+                rowpp += 1
                 row += 1
                 sheet_patient.write(row, 0, pp.patient.nut_id)
-                sheet_patient.write(row, 18, pp.date.strftime(date_format))
-                sheet_patient.write(row, 19, write_event(pp))
-                sheet_patient.write(row, 20, pp.get_reason_display().upper())
+                sheet_patient.write(rowpp, 19, pp.date.strftime(date_format),style_title)
+                sheet_patient.write(rowpp, 20, write_event(pp))
+                sheet_patient.write(rowpp, 21, pp.get_reason_display().upper())
 
     stream = StringIO.StringIO()
     book.save(stream)

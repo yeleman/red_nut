@@ -16,6 +16,7 @@ class Patient(models.Model):
 
     class Meta:
         app_label = 'nut'
+        ordering = ('create_date',)
 
     SEX_MALE = 'M'
     SEX_FEMELLE = 'F'
@@ -111,6 +112,10 @@ class Patient(models.Model):
     def last_data_nut(self):
         return NutritionalData.objects.filter(patient=self) \
                                       .order_by('-date')[0]
+
+    def first_data_nut(self):
+        return NutritionalData.objects.filter(patient=self) \
+                                      .order_by('date')[0]
 
     def last_data_event(self):
         from programIO import ProgramIO
