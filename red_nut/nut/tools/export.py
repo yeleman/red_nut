@@ -46,7 +46,7 @@ def report_as_excel(health_centers):
     sheet_patient = book.add_sheet(u"Enfants")
 
     # J'agrandi les colonnes.
-    for i in (9, 10, 13, 16, 17, 18, 20):
+    for i in (9, 10, 13, 17, 18, 19, 20):
         sheet_patient.col(i).width = 0x0d00 * 1.5
 
     for i in (0, 4, 5, 6):
@@ -187,18 +187,23 @@ def report_as_excel(health_centers):
                 sheet_patient.write(row, col, data.muac)
                 col += 1
                 sheet_patient.write(row, col, data.get_oedema_display().upper())
-                col += 2
+                col += 1
+                sheet_patient.write(row, col, data.nb_plumpy_nut)
+                col += 1
                 sheet_patient.write(row, col, data.diagnosis)
 
             patient_programios = patient.programios.all().order_by("date")
             for pp in patient_programios:
+                col_ = 20
                 if pp.event == ProgramIO.OUT:
                     rowpp = row
                     sheet_patient.write(rowpp, 0, pp.patient.nut_id, style_title)
 
-                sheet_patient.write(rowpp, 20, pp.date.strftime(date_format))
-                sheet_patient.write(rowpp, 21, write_event(pp))
-                sheet_patient.write(rowpp, 22, pp.get_reason_display().upper())
+                sheet_patient.write(rowpp, col_, pp.date.strftime(date_format))
+                col_ += 1
+                sheet_patient.write(rowpp, col_, write_event(pp))
+                col_ += 1
+                sheet_patient.write(rowpp, col_, pp.get_reason_display().upper())
                 rowpp += 1
                 row += 1
 
