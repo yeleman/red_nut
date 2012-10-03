@@ -89,6 +89,7 @@ def report_as_excel(health_centers):
                  u"Taille",
                  u"Perimètre brachial",
                  u"Oedème",
+                 u"PPN",
                  u"UREN",
                  u"Date de la derniere visite",
                  u"Dernier status",
@@ -153,6 +154,8 @@ def report_as_excel(health_centers):
             sheet_patient.write(row, col, first_data_nut.get_oedema_display()
                                                      .upper())
             col += 1
+            sheet_patient.write(row, col, first_data_nut.nb_plumpy_nut)
+            col += 1
 
             last_data_event = patient.last_data_event()
             sheet_patient.write(row, col, \
@@ -184,7 +187,7 @@ def report_as_excel(health_centers):
                 sheet_patient.write(row, col, data.muac)
                 col += 1
                 sheet_patient.write(row, col, data.get_oedema_display().upper())
-                col += 1
+                col += 2
                 sheet_patient.write(row, col, data.diagnosis)
 
             patient_programios = patient.programios.all().order_by("date")
@@ -193,9 +196,9 @@ def report_as_excel(health_centers):
                     rowpp = row
                     sheet_patient.write(rowpp, 0, pp.patient.nut_id, style_title)
 
-                sheet_patient.write(rowpp, 19, pp.date.strftime(date_format))
-                sheet_patient.write(rowpp, 20, write_event(pp))
-                sheet_patient.write(rowpp, 21, pp.get_reason_display().upper())
+                sheet_patient.write(rowpp, 20, pp.date.strftime(date_format))
+                sheet_patient.write(rowpp, 21, write_event(pp))
+                sheet_patient.write(rowpp, 22, pp.get_reason_display().upper())
                 rowpp += 1
                 row += 1
 
