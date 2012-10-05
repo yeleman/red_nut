@@ -11,6 +11,25 @@ from nutritional_data import NutritionalData
 from nut.tools.utils import weight_gain_calc
 
 
+class PatientURENManager(models.Manager):
+
+    def sam(self):
+        return [patient for patient in self.get_query_set() 
+                if patient.uren == NutritionalData.SAM]
+
+    def mas(self):
+        return [patient for patient in self.get_query_set() 
+                if patient.uren == NutritionalData.MAS]
+    
+    def samp(self):
+        return [patient for patient in self.get_query_set() 
+                if patient.uren == NutritionalData.SAMP]
+
+    def all(self):
+        return [patient for patient in self.get_query_set() 
+                if patient.uren in (NutritionalData.SAMP, NutritionalData.SAM)]
+
+
 class Patient(models.Model):
     """ """
 
@@ -39,6 +58,9 @@ class Patient(models.Model):
     contact = models.CharField(max_length=100, verbose_name=(u"contact"),
                                                         blank=True, null=True)
 
+    objects = models.Manager()
+    by_uren = PatientURENManager()
+
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s'
                  '%(health_center)s') % \
@@ -47,6 +69,10 @@ class Patient(models.Model):
                  "mother": self.surname_mother, \
                  "birth_date": self.birth_date, \
                  "health_center": self.health_center}
+
+    @property
+    def uren(self):
+        return self.nutritional_data.latest().diagnosis
 
     @property
     def status(self):
