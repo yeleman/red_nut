@@ -1,18 +1,26 @@
 #!/usr/bin/env python
 # encoding=utf-8
 # maintainer: alou, Fadiga
-
-
-"""
-    Contains functions dedicated to export the whole database into
-    various format such as XLS and sqlite
-"""
+#
+#Contains functions dedicated to export the whole database into
+#   various format such as XLS and sqlite
 
 import StringIO
 
 import xlwt
 
 from django.conf import settings
+from nut.models import ProgramIO
+
+
+al_center = xlwt.Alignment()
+# al_center.horz = xlwt.Alignment.HORZ_CENTER
+al_center.vert = xlwt.Alignment.VERT_CENTER
+
+#styles
+style_title = xlwt.easyxf('font: name Times New Roman, height 200, bold on,'
+                          'color black')
+style_title.alignment = al_center
 
 
 def report_as_excel(health_centers):
@@ -24,7 +32,7 @@ def report_as_excel(health_centers):
         """
             Return status
         """
-        if patient.event == 'e':
+        if patient.event == ProgramIO.SUPPORT:
             return 'ENTRE'
 
         return 'SORTIE'
@@ -38,15 +46,16 @@ def report_as_excel(health_centers):
     sheet_patient = book.add_sheet(u"Enfants")
 
     # J'agrandi les colonnes.
-    for i in (1, 2, 8, 9, 12, 14, 15, 16, 17, 19):
-        sheet_patient.col(i).width = 0x0d00 * 2
+    for i in (9, 10, 13, 17, 18, 19, 20):
+        sheet_patient.col(i).width = 0x0d00 * 1.5
 
-    for i in (0, 3, 4, 5):
-        sheet_patient.col(i).width = 0x0d00 * 3
+    for i in (0, 4, 5, 6):
+        sheet_patient.col(i).width = 0x0d00 * 2.5
 
     sheet.col(0).width = 0x0d00 * 1.3
+    sheet_patient.col(1).width = 0x0d00 * 1.2
 
-    i_ = i = 0
+    row = row_ = 0
 
     # entete consommation d'intrant
 
@@ -62,10 +71,11 @@ def report_as_excel(health_centers):
                  u"Période")
 
     for index, title in enumerate(headers1):
-        sheet.write(0, index, title)
+        sheet.write(0, index, title, style_title)
 
     # entete liste des enfants
     headers2 = (u"ID",
+                 u"Opération",
                  u"Code CSCOM",
                  u"CSCOM",
                  u"Nom",
@@ -79,6 +89,7 @@ def report_as_excel(health_centers):
                  u"Taille",
                  u"Perimètre brachial",
                  u"Oedème",
+                 u"PPN",
                  u"UREN",
                  u"Date de la derniere visite",
                  u"Dernier status",
@@ -88,83 +99,113 @@ def report_as_excel(health_centers):
                  u"Raison")
 
     for index, title in enumerate(headers2):
-        sheet_patient.write(i_, index, title)
+        sheet_patient.write(row, index, title, style_title)
 
     for health_center in health_centers:
 
         reports = health_center.consumption_reports\
                                .select_related('input_type', 'period')
         for report in reports:
-            i += 1
-            sheet.write(i, 0, health_center.code)
-            sheet.write(i, 1, health_center.name)
-            sheet.write(i, 2, report.input_type.code)
-            sheet.write(i, 3, report.input_type.name)
-            sheet.write(i, 4, report.initial)
-            sheet.write(i, 5, report.received)
-            sheet.write(i, 6, report.used)
-            sheet.write(i, 7, report.lost)
-            sheet.write(i, 8, report.remaining())
-            sheet.write(i, 9, report.period.middle().strftime("%m-%Y"))
+            row_ += 1
+            sheet.write(row_, 0, health_center.code)
+            sheet.write(row_, 1, health_center.name)
+            sheet.write(row_, 2, report.input_type.code)
+            sheet.write(row_, 3, report.input_type.name)
+            sheet.write(row_, 4, report.initial)
+            sheet.write(row_, 5, report.received)
+            sheet.write(row_, 6, report.used)
+            sheet.write(row_, 7, report.lost)
+            sheet.write(row_, 8, report.remaining())
+            sheet.write(row_, 9, report.period.middle().strftime("%m-%Y"))
 
         for patient in health_center.patients.all():
-            i_ += 1
-            sheet_patient.write(i_, 0, patient.nut_id)
-            sheet_patient.write(i_, 1, health_center.code)
-            sheet_patient.write(i_, 2, health_center.name)
-            sheet_patient.write(i_, 3, patient.last_name)
-            sheet_patient.write(i_, 4, patient.first_name)
-            sheet_patient.write(i_, 5, patient.surname_mother)
-            sheet_patient.write(i_, 6, patient.birth_date
+            row += 1
+            col = 0
+            sheet_patient.write(row, col, patient.nut_id, style_title)
+            col += 1
+            sheet_patient.write(row, col, "Enregistrement")
+            col += 1
+            sheet_patient.write(row, col, health_center.code)
+            col += 1
+            sheet_patient.write(row, col, health_center.name)
+            col += 1
+            sheet_patient.write(row, col, patient.last_name)
+            col += 1
+            sheet_patient.write(row, col, patient.first_name)
+            col += 1
+            sheet_patient.write(row, col, patient.surname_mother)
+            col += 1
+            sheet_patient.write(row, col, patient.birth_date
                                               .strftime(date_format))
-            sheet_patient.write(i_, 7, patient.sex)
-            sheet_patient.write(i_, 8, patient.create_date
+            col += 1
+            sheet_patient.write(row, col, patient.sex)
+            col += 1
+            sheet_patient.write(row, col, patient.create_date
                                               .strftime(date_format))
-            sheet_patient.write(i_, 15, patient.last_visit()
-                                              .strftime(date_format))
+            col += 2
 
-            last_data_nut = patient.last_data_nut()
-            sheet_patient.write(i_, 10, last_data_nut.weight)
-            sheet_patient.write(i_, 11, last_data_nut.height)
-            sheet_patient.write(i_, 12, last_data_nut.muac)
-            sheet_patient.write(i_, 13, last_data_nut.get_oedema_display()
+            first_data_nut = patient.first_data_nut()
+            sheet_patient.write(row, col, first_data_nut.weight)
+            col += 1
+            sheet_patient.write(row, col, first_data_nut.height)
+            col += 1
+            sheet_patient.write(row, col, first_data_nut.muac)
+            col += 1
+            sheet_patient.write(row, col, first_data_nut.get_oedema_display()
                                                      .upper())
+            col += 1
+            sheet_patient.write(row, col, first_data_nut.nb_plumpy_nut)
+            col += 1
 
             last_data_event = patient.last_data_event()
-
-            sheet_patient.write(i_, 14, \
+            sheet_patient.write(row, col, \
                                    patient.nutritional_data.latest().diagnosis)
-            sheet_patient.write(i_, 16, write_event(last_data_event))
-
-            sheet_patient.write(i_, 17, last_data_event.date
+            col += 1
+            sheet_patient.write(row, col, patient.last_visit()
+                                              .strftime(date_format))
+            col += 1
+            sheet_patient.write(row, col, write_event(last_data_event))
+            col += 1
+            sheet_patient.write(row, col, last_data_event.date
                                                        .strftime(date_format))
-            sheet_patient.write(i_, 18, last_data_event.date
-                                                       .strftime(date_format))
-            sheet_patient.write(i_, 19, write_event(last_data_event))
-            sheet_patient.write(i_, 20, last_data_event.get_reason_display()
-                                                       .upper())
+            # la dernière ligne 
+            rowpp = row
+            datanut_patients = patient.nutritional_data.all().order_by("date")
+            for data in datanut_patients.exclude(pk=first_data_nut.pk):
+                row += 1
+                col = 0
+                sheet_patient.write(row, col, data.patient.nut_id, style_title)
+                col += 1
+                sheet_patient.write(row, col, u"Suivi")
+                col += 9
+                sheet_patient.write(row, col, data.date.strftime(date_format))
+                col += 1
+                sheet_patient.write(row, col, data.weight)
+                col += 1
+                sheet_patient.write(row, col, data.height)
+                col += 1
+                sheet_patient.write(row, col, data.muac)
+                col += 1
+                sheet_patient.write(row, col, data.get_oedema_display().upper())
+                col += 1
+                sheet_patient.write(row, col, data.nb_plumpy_nut)
+                col += 1
+                sheet_patient.write(row, col, data.diagnosis)
 
-            datanut_patients = patient.nutritional_data.all()
+            patient_programios = patient.programios.all().order_by("date")
+            for pp in patient_programios:
+                col_ = 20
+                if pp.event == ProgramIO.OUT:
+                    rowpp = row
+                    sheet_patient.write(rowpp, 0, pp.patient.nut_id, style_title)
 
-            for data in datanut_patients.exclude(pk=last_data_nut.pk):
-                i_ += 1
-
-                sheet_patient.write(i_, 0, data.patient.nut_id)
-                sheet_patient.write(i_, 10, data.weight)
-                sheet_patient.write(i_, 11, data.height)
-                sheet_patient.write(i_, 12, data.muac)
-                sheet_patient.write(i_, 13, data.get_oedema_display().upper())
-                sheet_patient.write(i_, 14, data.diagnosis)
-                sheet_patient.write(i_, 9, data.date.strftime(date_format))
-
-            patient_programios = patient.programios.all()
-            for pp in patient_programios.exclude(pk=last_data_event.pk):
-                i_ += 1
-                sheet_patient.write(i_, 0, pp.patient.nut_id)
-                sheet_patient.write(i_, 19, write_event(pp))
-
-                sheet_patient.write(i_, 20, pp.get_reason_display().upper())
-                sheet_patient.write(i_, 18, pp.date.strftime(date_format))
+                sheet_patient.write(rowpp, col_, pp.date.strftime(date_format))
+                col_ += 1
+                sheet_patient.write(rowpp, col_, write_event(pp))
+                col_ += 1
+                sheet_patient.write(rowpp, col_, pp.get_reason_display().upper())
+                rowpp += 1
+                row += 1
 
     stream = StringIO.StringIO()
     book.save(stream)

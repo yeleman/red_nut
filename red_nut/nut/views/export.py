@@ -8,7 +8,6 @@
 """
 
 import os
-import subprocess
 
 from datetime import datetime
 
@@ -40,13 +39,6 @@ def export_db(request):
 
     if not os.path.exists(settings.DB_PATH):
         raise Http404
-
-    # args = ['sqlite3', settings.DB_PATH, '.dump']
-    # if getattr(subprocess, 'check_output', None):
-    #     response = HttpResponse(subprocess.check_output(args))
-    # else:
-    #     response = HttpResponse(subprocess.Popen(args,
-    #                             stdout=subprocess.PIPE).communicate()[0])
 
     # DB_PATH is now a zipped MySQL plain SQL dump
     response = HttpResponse(open(settings.DB_PATH).read())

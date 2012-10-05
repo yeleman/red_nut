@@ -18,7 +18,6 @@ class NutritionalData(models.Model):
     SAM = 'sam'
     SAMP = 'samp'
     MAS = 'mas'
-
     URENS = {SAM: u"URENAS",
              SAMP: u"URENI",
              MAS: u"URENAM"}
@@ -37,7 +36,7 @@ class NutritionalData(models.Model):
     patient = models.ForeignKey("Patient", related_name='nutritional_data',
                                          verbose_name="Patients")
 
-    date = models.DateField(verbose_name="Date", default=datetime.today)
+    date = models.DateField(verbose_name="Date", default=datetime.now())
 
     weight = models.FloatField(u"Poids (kg)")
     height = models.FloatField(u"Taille (cm)")
@@ -55,6 +54,7 @@ class NutritionalData(models.Model):
                                 max_length=30,
                                 verbose_name=u"Sachets plumpy nut données",
                                 blank=True, null=True)
+    is_ureni = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u"%(patient)s %(date)s/%(weight)skg/%(height)scm %(pb)smm "\
@@ -66,9 +66,7 @@ class NutritionalData(models.Model):
         '''Diagnosis of the patient'''
         if self.muac is None or self.muac == 0:
             return None
-        elif self.muac < 80:
-            return "MASC"
         elif self.oedema == 'Y' or self.muac < 110:
-            return "MAS"
+            return self.SAM
         elif self.muac < 136:
-            return "MAM"
+            return self.MAS

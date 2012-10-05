@@ -51,7 +51,7 @@ installation du site red nut
         ./manage.py syncdb --database rednut
 
     Ajout des fixtures:
-        ./manage.py loaddata ./nut/fixtures/*.json
+        ./manage.py loaddata --database rednut ./nut/fixtures/*.json
 
     configuration de nginx:
         cd /etc/nginx/sites-available/
