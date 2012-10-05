@@ -18,7 +18,6 @@ class NutritionalData(models.Model):
     SAM = 'sam'
     SAMP = 'samp'
     MAS = 'mas'
-
     URENS = {SAM: u"URENAS",
              SAMP: u"URENI",
              MAS: u"URENAM"}
@@ -55,6 +54,7 @@ class NutritionalData(models.Model):
                                 max_length=30,
                                 verbose_name=u"Sachets plumpy nut données",
                                 blank=True, null=True)
+    is_ureni = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u"%(patient)s %(date)s/%(weight)skg/%(height)scm %(pb)smm "\

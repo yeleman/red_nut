@@ -98,11 +98,11 @@ def save_error(message, action):
 
 def nut_register(message, args, sub_cmd, cmd):
     """ Incomming:
-            nut register hc_code, create_date, patient_id, type_uren,
+            nut register hc_code, create_date, patient_id,
                          first_name, last_name, mother, sex, dob, contact
-                         #weight height oed pb nbr
-            exple: 'nut register sab3 20120723 sam 12 madou coulibaly ami M
-                                 20100723 4332523#6 65 YES 120 23'
+                         #weight height oed pb nbr, is_ureni
+            exple: 'nut register sab3 20121004 23 Moussa Kone Camara M 7
+                    35354#6 65 YES 111 25 0'
         Outgoing:
             [SUCCES] Le rapport de name_health_center a ete enregistre.
             Son id est 8.
@@ -111,11 +111,11 @@ def nut_register(message, args, sub_cmd, cmd):
     try:
         register_data, follow_up_data = args.split('#')
 
-        hc_code, create_date, type_uren, patient_id, first_name, \
+        hc_code, create_date, patient_id, first_name, \
         last_name, mother, sex, dob, contact = register_data.split()
 
-        weight, height, oedema, muac, \
-                                nb_plumpy_nut = follow_up_data.split()
+        weight, height, oedema, muac, nb_plumpy_nut, is_ureni \
+                                                     = follow_up_data.split()
     except:
         return resp_error(message, u"enregistrement")
     try:
@@ -126,6 +126,12 @@ def nut_register(message, args, sub_cmd, cmd):
         message.respond(u"[ERREUR] %(hc)s n'est pas un code de Centre "
                         u"valide." % {'hc': hc_code})
         return True
+
+    type_uren = NutritionalData.SAM # Car on ne traite que les URENI pour l'instant
+    is_ureni = bool(int(is_ureni)) # return un 
+
+    if is_ureni:
+        type_uren = NutritionalData.SAMP
 
     try:
         nut_id = Patient.get_nut_id(hc_code, type_uren.lower(), patient_id)
@@ -138,7 +144,12 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.first_name = first_name.replace('_', ' ').title()
     patient.last_name = last_name.replace('_', ' ').title()
     patient.surname_mother = mother.replace('_', ' ').title()
-    patient.birth_date = formatdate(dob)
+    try:
+        patient.birth_date = formatdate(dob)
+    except ValueError as e:
+        message.respond(u"[ERREUR] %(e)s" % {'e': e})
+        return True
+
     patient.sex = sex.upper()
     patient.contact = contact
     patient.health_center = hc
@@ -147,8 +158,6 @@ def nut_register(message, args, sub_cmd, cmd):
     except:
         return save_error(message, u"Identifiant existe deja dans la base de"
                                     u" donnee")
-    # except:
-    #     return save_error(message, u"d'enregistrement du patient")
 
     # adding patient to the program
     programio = ProgramIO()
@@ -172,6 +181,7 @@ def nut_register(message, args, sub_cmd, cmd):
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema, muac=muac,
                                 nb_plumpy_nut=nb_plumpy_nut,
+                                is_ureni = is_ureni,
                                 date=formatdate(create_date, True))
     if not datanut:
         message.respond(u"/!\ %(full_name)s enregistre avec ID#%(id)s."
@@ -199,9 +209,9 @@ def add_followup_data(**kwargs):
 def nut_followup(message, args, sub_cmd, cmd):
 
     """ Incomming:
-            nut fol hc_code reporting_d type_uren patient_id weight height
-                oedema muac nb_plumpy_nut(optional)
-        exple: 'nut fol sab3 20120723 sam 0012 4 65 YES 83 -'
+            nut fol hc_code reporting_d  patient_id weight height
+                oedema muac nb_plumpy_nut(optional), is_ureni
+        exple: 'nut fol sab3 20121004 sam 12 5 65 YES 120 2 10 1'
 
         Outgoing:
             [SUCCES] Donnees nutrition mise a jour pour full_name #id
@@ -209,7 +219,7 @@ def nut_followup(message, args, sub_cmd, cmd):
 
     try:
         hc_code, reporting_d, type_uren, patient_id, weight, \
-        height, oedema, muac, nb_plumpy_nut = args.split()
+        height, oedema, muac, nb_plumpy_nut, is_ureni= args.split()
     except:
         return resp_error(message, u"suivi")
 
@@ -221,6 +231,17 @@ def nut_followup(message, args, sub_cmd, cmd):
                                                              patient_id)
         return True
 
+    # creating a followup event
+    is_ureni = bool(int(is_ureni))
+    weight = float(weight)
+    height = int(height)
+    oedema = {'yes': NutritionalData.OEDEMA_YES,
+              'no': NutritionalData.OEDEMA_NO,
+              'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
+    muac = int(muac)
+    nb_plumpy_nut = int(nb_plumpy_nut) \
+                              if not nb_plumpy_nut.lower() == '-' else 0
+
     if patient.last_data_nut().date == formatdate(reporting_d):
         last_data_nut = patient.last_data_nut()
         last_data_nut.weight = weight
@@ -228,6 +249,7 @@ def nut_followup(message, args, sub_cmd, cmd):
         last_data_nut.oedema = oedema
         last_data_nut.muac = muac
         last_data_nut.nb_plumpy_nut = nb_plumpy_nut
+        last_data_nut.is_ureni = is_ureni
         last_data_nut.save()
         message.respond(u"[SUCCES] Donnees nutrition mise a jour pour "
                     u"%(full_name)s" % {'full_name': patient.full_name_id()})
@@ -245,19 +267,10 @@ def nut_followup(message, args, sub_cmd, cmd):
         programio.date = formatdate(reporting_d, True)
         programio.save()
 
-    # creating a followup event
-    weight = float(weight)
-    height = int(height)
-    oedema = {'yes': NutritionalData.OEDEMA_YES,
-              'no': NutritionalData.OEDEMA_NO,
-              'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
-    muac = int(muac)
-    nb_plumpy_nut = int(nb_plumpy_nut) \
-                              if not nb_plumpy_nut.lower() == '-' else 0
-
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema,
                                 muac=muac, nb_plumpy_nut=nb_plumpy_nut,
+                                is_ureni=is_ureni,
                                 date=formatdate(reporting_d))
     if not datanut:
         return resp_error(message, u"suivi")
@@ -339,7 +352,7 @@ def nut_search(message, args, sub_cmd, cmd):
 
 def nut_disable(message, args, sub_cmd, cmd):
     """  Incomming:
-            hc_code, date_disable, type_uren, patient_id, weight, height, muac,
+            hc_code, date_disable, patient_id, weight, height, muac,
             reason
             example reason: (a= abandon, t = transfer ...)
             example data: 'nut off sab3 20120925 sam 9 - - - a'
@@ -351,7 +364,8 @@ def nut_disable(message, args, sub_cmd, cmd):
         hc_code, date_disable, type_uren, patient_id, weight, height, \
                                                     muac, reason = args.split()
     except ValueError:
-        # Todo: A supprimer une fois la version 06 de appli java est deployé au cscom
+        # Todo: A supprimer une fois la version 07 de application java"
+        # est deployé au cscom
         hc_code, date_disable, type_uren, patient_id, reason = args.split()
         weight = None
         height = None
@@ -366,6 +380,12 @@ def nut_disable(message, args, sub_cmd, cmd):
         message.respond(u"[ERREUR] Aucun patient trouve pour ID#%s" %
                                                              patient_id)
         return True
+
+    if patient.last_data_nut().date > formatdate(date_disable):
+        message.respond(u"[ERREUR] La date du dernier suivi pour ID# %s est "
+                        u"superieur que la date utilise" % patient.nut_id)
+        return True
+
     if patient.last_data_event().event == ProgramIO.OUT:
         message.respond(u"[ERREUR] %(full_name)s est deja sortie"
                         u" du programme." %
@@ -392,8 +412,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     programio.date = formatdate(date_disable, True)
     programio.save()
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
-                    u"du programme." %
-                    {'full_name': patient.full_name()})
+                    u"du programme." % {'full_name': patient.full_name()})
     return True
 
 
