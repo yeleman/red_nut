@@ -95,7 +95,7 @@ def details_health_center(request, *args, **kwargs):
         l_diagnose = []
         for patient in active_patients:
             try:
-                l_diagnose.append(patient.nutritional_data.latest().diagnosis)
+                l_diagnose.append(patient.uren)
             except NutritionalData.DoesNotExist:
                 pass
 

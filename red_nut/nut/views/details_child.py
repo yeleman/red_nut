@@ -18,8 +18,6 @@ def details_child(request, *args, **kwargs):
     patient = Patient.objects.get(id=num)
     movements = ProgramIO.objects.filter(patient__id=patient.id)
 
-    diagnosis = patient.nutritional_data.latest().diagnosis
-
     if patient.last_data_event():
         patient.statut = patient.last_data_event().get_event_display()
     try:
@@ -59,6 +57,6 @@ def details_child(request, *args, **kwargs):
     else:
         weight_gain = None
 
-    context.update({'patient': patient, "diagnosis": diagnosis,
+    context.update({'patient': patient, "diagnosis": patient.uren,
                     "weight_gain": weight_gain})
     return render(request, 'details_child.html', context)

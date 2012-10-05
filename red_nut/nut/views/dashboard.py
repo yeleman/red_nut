@@ -17,8 +17,8 @@ def dashboard(request):
     context = {"category": 'dashboard', 'user': request.user}
 
     # le nombre total d'enfant
-    patients = Patient.objects.all()
-    nbr_total_patient = patients.count()
+    patients = Patient.by_uren.all()
+    nbr_total_patient = len(patients)
 
     # Taux guerison
     nbr_healing = ProgramIO.healing.count()
@@ -81,7 +81,7 @@ def dashboard(request):
         l_diagnose = []
         for patient in active_patients:
             try:
-                l_diagnose.append(patient.nutritional_data.latest().diagnosis)
+                l_diagnose.append(patient.uren)
             except NutritionalData.DoesNotExist:
                 pass
         diagnose_samp.append(l_diagnose.count(NutritionalData.SAMP))

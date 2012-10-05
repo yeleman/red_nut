@@ -64,6 +64,8 @@ class NutritionalData(models.Model):
     @property
     def diagnosis(self):
         '''Diagnosis of the patient'''
+        if self.is_ureni:
+            return self.SAMP
         if self.muac is None or self.muac == 0:
             return None
         elif self.oedema == 'Y' or self.muac < 110:
