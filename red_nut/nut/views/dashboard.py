@@ -17,7 +17,7 @@ def dashboard(request):
     context = {"category": 'dashboard', 'user': request.user}
 
     # le nombre total d'enfant
-    patients = Patient.by_uren.all()
+    patients = Patient.by_uren.all().all_uren()
     nbr_total_patient = len(patients)
 
     # Taux guerison

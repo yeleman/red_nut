@@ -4,6 +4,7 @@
 
 from datetime import datetime, date
 from django.db import models
+from django.db.models.query import QuerySet
 
 from healthcenter import HealthCenter
 from nutritional_data import NutritionalData
@@ -11,23 +12,29 @@ from nutritional_data import NutritionalData
 from nut.tools.utils import weight_gain_calc
 
 
-class PatientURENManager(models.Manager):
+class PatientURENQS(QuerySet):
 
     def sam(self):
-        return [patient for patient in self.get_query_set() 
+        return [patient for patient in self
                 if patient.uren == NutritionalData.SAM]
 
     def mas(self):
-        return [patient for patient in self.get_query_set() 
+        return [patient for patient in self
                 if patient.uren == NutritionalData.MAS]
     
     def samp(self):
         return [patient for patient in self.get_query_set() 
                 if patient.uren == NutritionalData.SAMP]
 
-    def all(self):
+    def all_uren(self):
         return [patient for patient in self.get_query_set() 
                 if patient.uren in (NutritionalData.SAMP, NutritionalData.SAM)]
+
+
+class PatientURENManager(models.Manager):
+
+    def get_query_set(self):
+        return PatientURENQS(self.model, using=self._db)
 
 
 class Patient(models.Model):
