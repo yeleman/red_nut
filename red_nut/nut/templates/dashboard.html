@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% load babel %}
+{% load cache %}
 
 {% block title %}Accueil{% endblock %}
-{% block jqueryonload %}{% include "indicator_graph.js" with graph_data=graph_data graph_date=graph_date %}{% endblock %}
+{% block jqueryonload %}
+{% cache 3600 cache_graph %}{% include "indicator_graph.js" with graph_data=graph_data graph_date=graph_date %}{% endcache %}
+{% endblock %}
 {% block content %}
 
 <div id="context">
-
+{% cache 3600 cache_dashboard %}
     <h2>Tableau de bord</h2>
     <table class="center">
         <tr><th>Nombre total d'enfants enregistrés</th><td>{{ nbr_total_patient }}</td></tr>
@@ -29,7 +32,7 @@
 
     <h3 class="caption"><strong>Figure: </strong>Courbes de l'évolution du nombre d'enfant dans le programme</h3>
     {%if graph_data %}<div id="graph"></div>{% else %}<p>Pas de données disponible.</p>{% endif %}
-
+{% endcache %}
 </div>
 
 {% endblock %}

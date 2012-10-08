@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from dashboard import dashboard
+from dashboard import dashboard, dashboard_clear_cache
 from children import children
 from details_child import details_child
 from details_health_center import details_health_center

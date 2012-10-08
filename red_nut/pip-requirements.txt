@@ -9,3 +9,4 @@ nosmsd
 django-reversion==1.4
 MySQLdb
 South
+twill

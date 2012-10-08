@@ -5,6 +5,7 @@
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 from nut.models import ProgramIO, Patient, NutritionalData
 from nosmsd.models import Inbox, SentItems
@@ -117,3 +118,11 @@ def dashboard(request):
                     "patients_late": patients_late})
 
     return render(request, 'dashboard.html', context)
+
+
+def dashboard_clear_cache(request):
+    # clear the whole django cache
+    from django.core.cache import get_cache
+    cache = get_cache('default')
+    cache.clear()
+    return HttpResponse(u"OK")
