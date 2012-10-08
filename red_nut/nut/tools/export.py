@@ -199,6 +199,7 @@ def report_as_excel(health_centers):
                 if pp.event == ProgramIO.OUT:
                     rowpp = row
                     sheet_patient.write(rowpp, 0, pp.patient.nut_id, style_title)
+                    sheet_patient.write(row, 1, u"Sortie")
 
                 sheet_patient.write(rowpp, col_, pp.date.strftime(date_format))
                 col_ += 1
