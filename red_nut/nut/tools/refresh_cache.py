@@ -8,7 +8,8 @@ from twill import commands as tw, get_browser
 from twill.errors import TwillAssertionError
 
 LOGIN_URL = 'http://crf.yeleman.com:8080/' 
-DATA_URL = 'http://crf.yeleman.com:8080/dashboard'
+DATA_URL = ['http://crf.yeleman.com:8080/dashboard/reset',
+            'http://crf.yeleman.com:8080/dashboard']
 AUTH_PATH = 'auth.json'
 
 def get_credentials():
@@ -30,6 +31,8 @@ def main():
 
     if isinstance(DATA_URL, basestring):
         urls = [DATA_URL]
+    else:
+        urls = list(DATA_URL)
 
     # retrieve URIs
     for url in urls:
@@ -38,9 +41,7 @@ def main():
             tw.code('200')
             tw.show()
         except TwillAssertionError:
-            code = get_browser().get_code()
-            # ensure we don't keep credentials
-            tw.reset_browser()
+            code = get_browser().get_code()           
             print (u"Unable to access %(url)s. "
                    u"Received HTTP #%(code)s."
                    % {'url': url, 'code': code})
