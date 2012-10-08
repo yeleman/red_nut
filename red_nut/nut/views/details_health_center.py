@@ -28,7 +28,7 @@ def details_health_center(request, *args, **kwargs):
             return None
 
     # Les patients de ce centre
-    patients = Patient.objects.filter(health_center=health_center)
+    patients = Patient.by_uren.all().filter(health_center=health_center).all_uren()
     # datanuts = NutritionalData.objects\
     #                           .filter(patient__health_center=health_center)
     programs_io = ProgramIO.objects \
@@ -36,24 +36,25 @@ def details_health_center(request, *args, **kwargs):
     consumption_reports = ConsumptionReport.objects \
                                            .filter(health_center=health_center)
 
+    nbr_total_patient = len(patients)
     # Taux guerison
     nbr_healing = ProgramIO.healing \
                         .filter(patient__health_center=health_center).count()
-    healing_rates = percentage_calculation(nbr_healing, patients.count())
+    healing_rates = percentage_calculation(nbr_healing, nbr_total_patient)
     # Taux abandon
     nbr_abandonment = ProgramIO.abandon \
                         .filter(patient__health_center=health_center).count()
     abandonment_rates = percentage_calculation(nbr_abandonment, \
-                                                        patients.count())
+                                                        nbr_total_patient)
     # Taux déces
     nbr_deaths = ProgramIO.death \
                           .filter(patient__health_center=health_center).count()
-    deaths_rates = percentage_calculation(nbr_deaths, patients.count())
+    deaths_rates = percentage_calculation(nbr_deaths, nbr_total_patient)
     # Taux non repondant
     nbr_non_response = ProgramIO.nonresp \
                         .filter(patient__health_center=health_center).count()
     non_response_rates = percentage_calculation(nbr_non_response, \
-                                                        patients.count())
+                                                        nbr_total_patient)
 
     dict_ = {}
 
@@ -115,7 +116,7 @@ def details_health_center(request, *args, **kwargs):
     # Nbre d'enfants dans le programme
     dict_["actif"] = extract(total_patient, -1, default=0)
     # Nbre d'enfants enregistres
-    dict_["total"] = patients.count() or 0
+    dict_["total"] = nbr_total_patient or 0
 
     try:
         dict_["avg_days"] = "%.0f" % ProgramIO.out\

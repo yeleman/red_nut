@@ -20,8 +20,9 @@ def child_delay(request, *args, **kwargs):
     context.update({"category": category, "message": u"Recherche "})
 
     patients = [patient.last_data_event() \
-                for patient in Patient.objects.all().order_by("create_date") \
-                if patient.is_late and not patient.last_data_event().is_output]
+                for patient in Patient.by_uren.all().order_by("create_date")\
+                .all_uren() if patient.is_late and not
+                patient.last_data_event().is_output]
 
     for patient in patients:
         patient.url_details_child = reverse("details_child", \

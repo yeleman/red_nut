@@ -16,11 +16,11 @@ def health_center(request):
     context = {"category": 'health_center', "user": request.user}
 
     health_centers = HealthCenter.objects.exclude(parent=None)
-    movements = Patient.objects.all()
+    movements =  Patient.by_uren.all()
     liste_health_center = []
     for health_center in health_centers:
         movement = movements\
-                    .filter(health_center=health_center)
+                    .filter(health_center=health_center).all_uren()
         dict_hc = {}
         nb_supports = [patient for patient in movement \
                                 if patient.last_data_event()\
@@ -29,7 +29,7 @@ def health_center(request):
                                 if patient.last_data_event()\
                                 .reason == ProgramIO.ADBANDONMENT].__len__()
         dict_hc["health_center"] = health_center.name
-        dict_hc["nb_child"] = movement.count()
+        dict_hc["nb_child"] = len(movement)
         dict_hc["nb_supports"] = nb_supports
         dict_hc["Reason_type"] = nb_reason_ab
         dict_hc["url"] = reverse("details_health_center", \

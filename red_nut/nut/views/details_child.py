@@ -57,6 +57,6 @@ def details_child(request, *args, **kwargs):
     else:
         weight_gain = None
 
-    context.update({'patient': patient, "diagnosis": patient.uren,
+    context.update({'patient': patient, "diagnosis": NutritionalData.URENS.get(patient.uren),
                     "weight_gain": weight_gain})
     return render(request, 'details_child.html', context)

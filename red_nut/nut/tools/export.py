@@ -10,7 +10,7 @@ import StringIO
 import xlwt
 
 from django.conf import settings
-from nut.models import ProgramIO
+from nut.models import ProgramIO, NutritionalData
 
 
 al_center = xlwt.Alignment()
@@ -118,7 +118,8 @@ def report_as_excel(health_centers):
             sheet.write(row_, 8, report.remaining())
             sheet.write(row_, 9, report.period.middle().strftime("%m-%Y"))
 
-        for patient in health_center.patients.all():
+        for patient in [patient for patient in health_center.patients.all() if
+             patient.uren in (NutritionalData.SAMP, NutritionalData.SAM)]:
             row += 1
             col = 0
             sheet_patient.write(row, col, patient.nut_id, style_title)
