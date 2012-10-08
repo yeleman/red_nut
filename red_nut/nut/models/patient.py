@@ -23,11 +23,11 @@ class PatientURENQS(QuerySet):
                 if patient.uren == NutritionalData.MAS]
     
     def samp(self):
-        return [patient for patient in self.get_query_set() 
+        return [patient for patient in self
                 if patient.uren == NutritionalData.SAMP]
 
     def all_uren(self):
-        return [patient for patient in self.get_query_set() 
+        return [patient for patient in self
                 if patient.uren in (NutritionalData.SAMP, NutritionalData.SAM)]
 
 
