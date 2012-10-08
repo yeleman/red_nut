@@ -149,14 +149,12 @@ LOGGING = {
     }
 }
 
-CACHES = {
-    'default': {
-        # 'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        # 'LOCATION': 'rednutstore'
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/tmp/cache',
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#         'LOCATION': 'rednutstore'
+#     }
+# }
 
 DEFAULT_LOCALE = 'fr_FR.UTF-8'
 NOSMS_HANDLER = 'nut_sms.nut.nosms_handler'
