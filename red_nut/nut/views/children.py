@@ -41,8 +41,8 @@ def children(request):
         form = ChildrenForm(request.POST)
         if "health_center" in request.POST:
             if request.POST.get('health_center'):
-                patients = patients.filter(health_center__code=request \
-                                   .POST.get('health_center'))
+                patients = Patient.by_uren.all().filter(health_center__code=request \
+                                   .POST.get('health_center')).all_uren()
         if "search_patient" in request.POST:
             if request.POST.get('search_patient'):
                 val = request.POST.get('search_patient').title()
@@ -51,7 +51,7 @@ def children(request):
                          Q(surname_mother__contains=val) |
                          Q(nut_id__contains=val))
 
-                patients = Patient.objects.filter(query)
+                patients = Patient.by_uren.all().filter(query).all_uren()
 
                 if not patients:
                     context.update({"message": u"Votre requête ne trouve"

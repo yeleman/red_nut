@@ -11,10 +11,14 @@ DB_PATH = os.path.join(settings.ROOT_DIR, 'rednut.sqlite')
 
 DATABASES = {'default': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': '/home/reg/src/red_nut/red_nut/django.sqlite'},
+    'NAME': '/home/fadiga/projets/red_nut/red_nut/django.sqlite'},
     'rednut': {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': DB_PATH},
+    # 'ENGINE': 'django.db.backends.sqlite3',
+    # 'NAME': DB_PATH},
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'rednut',
+    'USER': 'rednut',
+    'PASSWORD': 'rednut'},
     'smsd': {'ENGINE': 'django.db.backends.mysql',
     'NAME': 'rednutsms',
     'USER': 'rednutsms',
