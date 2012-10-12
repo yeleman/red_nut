@@ -96,6 +96,11 @@ def save_error(message, action):
     return True
 
 
+def clean_up_pid(patient_id):
+    # remove neg sign if exist or decimal point
+    return patient_id.replace('-', '').replace('.', '')
+
+
 def nut_register(message, args, sub_cmd, cmd):
     """ Incomming:
             nut register hc_code, create_date, patient_id,
@@ -120,7 +125,7 @@ def nut_register(message, args, sub_cmd, cmd):
         return resp_error(message, u"enregistrement")
     try:
         # On essai prendre le seat
-        hc = HealthCenter.objects.get(code=hc_code)
+        hc = HealthCenter.objects.get(code=hc_code.lower())
     except:
         # On envoi un sms pour signaler que le code n'est pas valide
         message.respond(u"[ERREUR] %(hc)s n'est pas un code de Centre "
@@ -134,6 +139,7 @@ def nut_register(message, args, sub_cmd, cmd):
         type_uren = NutritionalData.SAMP
 
     try:
+        patient_id = clean_up_pid(patient_id)
         nut_id = Patient.get_nut_id(hc_code, type_uren.lower(), patient_id)
     except ValueError as e:
         return resp_error(message, e)
@@ -224,6 +230,7 @@ def nut_followup(message, args, sub_cmd, cmd):
         return resp_error(message, u"suivi")
 
     try:
+        patient_id = clean_up_pid(patient_id)
         patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(),
                                                                     patient_id)
     except:
@@ -374,6 +381,7 @@ def nut_disable(message, args, sub_cmd, cmd):
         return resp_error(message, u"la sortie")
 
     try:
+        patient_id = clean_up_pid(patient_id)
         patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(),
                                                                     patient_id)
     except:
