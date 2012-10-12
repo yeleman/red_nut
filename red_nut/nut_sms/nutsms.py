@@ -171,13 +171,13 @@ def nut_register(message, args, sub_cmd, cmd):
 
     # creating a followup event
     weight = float(weight)
-    height = int(height)
+    height = float(height)
     oedema = {'yes': NutritionalData.OEDEMA_YES,
               'no': NutritionalData.OEDEMA_NO,
               'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
     nb_plumpy_nut = int(nb_plumpy_nut) \
-    if not nb_plumpy_nut.lower() == '-' else 0
+                    if not str(nb_plumpy_nut).lower() == '-' else 0
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema, muac=muac,
                                 nb_plumpy_nut=nb_plumpy_nut,
