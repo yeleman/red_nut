@@ -22,22 +22,23 @@ def dashboard(request):
     nbr_total_patient = len(patients)
 
     # Taux guerison
-    nbr_healing = ProgramIO.healing.count()
-    healing_rates = percentage_calculation(nbr_healing, nbr_total_patient)
+    nbr_healing = len(ProgramIO.healing.all().all_uren())
+    healing_rates = percentage_calculation(nbr_healing,
+                                                      nbr_total_patient)
 
     # Taux abandon
-    nbr_abandonment = ProgramIO.abandon.count()
+    nbr_abandonment = len(ProgramIO.abandon.all().all_uren())
     abandonment_rates = percentage_calculation(nbr_abandonment,
-                                               nbr_total_patient)
+                                                      nbr_total_patient)
     # Taux déces
-    nbr_deaths = ProgramIO.death.count()
+    nbr_deaths = len(ProgramIO.death.all().all_uren())
     deaths_rates = percentage_calculation(nbr_deaths, nbr_total_patient)
 
     # Taux non repondant
-    nbr_non_response = ProgramIO.nonresp.count()
+    nbr_non_response = len(ProgramIO.nonresp.all().all_uren())
 
     non_response_rates = percentage_calculation(nbr_non_response,
-                                                nbr_total_patient)
+                                                      nbr_total_patient)
 
     context.update({"nbr_total_patient": nbr_total_patient,
                     "nbr_healing": nbr_healing,

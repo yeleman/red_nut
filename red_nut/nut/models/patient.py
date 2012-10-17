@@ -119,10 +119,9 @@ class Patient(models.Model):
         """ return avg weight """
         qs = qs
         if qs == None:
-            qs = cls.objects.all()
+            qs = cls.by_uren.all().all_uren()
 
         list_weight = [p.weight_gain() for p in qs if p.is_healing()]
-
         try:
             return sum(list_weight) / len(list_weight)
         except ZeroDivisionError:
