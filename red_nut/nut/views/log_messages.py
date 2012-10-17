@@ -92,7 +92,7 @@ def sms_per_center(request):
 
     period_activities = []
 
-    for period in Period.objects.all():
+    for period in Period.objects.all().order_by('-start_on'):
 
         all_identities = get_all_identities(period)
 
