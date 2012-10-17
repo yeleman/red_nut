@@ -128,11 +128,15 @@ def nut_register(message, args, sub_cmd, cmd):
         return True
 
     type_uren = NutritionalData.SAM # Car on ne traite que les URENI pour l'instant
-    is_ureni = bool(int(is_ureni)) # return un 
+    is_ureni = bool(int(is_ureni)) # return un bool
 
     if is_ureni:
-        type_uren = NutritionalData.SAMP
-
+        if hc_code == "qmali":
+            type_uren = NutritionalData.SAMP
+        else:
+            message.respond(u"[ERREUR] Seul les CSREF ont le droit "
+                            u"d'enregistrer les enfants URENI")
+            return True
     try:
         nut_id = Patient.get_nut_id(hc_code, type_uren.lower(), patient_id)
     except ValueError as e:
