@@ -15,20 +15,24 @@ class HealthCenterAdmin(admin.ModelAdmin):
 class PatientAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'first_name', 'last_name', 'sex',\
                     'surname_mother', 'contact', 'birth_date', 'health_center')
+    list_filter = ('create_date','health_center',)
 
 
 class ProgramIOAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'date', 'event', 'reason')
+    list_filter = ('date', 'reason','patient__health_center','patient',)
 
 
 class NutritionalDataAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'date', 'weight', \
                     'height', 'oedema', 'muac')
+    list_filter = ('date','patient__health_center','patient',)
 
 
 class ConsumptionReportAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'period', 'input_type', 'initial', \
                     'received', 'used', 'lost')
+    list_filter = ('period','health_center',)
 
 
 admin.site.register(HealthCenter, HealthCenterAdmin)

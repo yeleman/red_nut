@@ -19,7 +19,7 @@ class ProgramIOURENQS(QuerySet):
     def mas(self):
         return [patient for patient in self
                 if patient.patient.uren == NutritionalData.MAS]
-    
+
     def samp(self):
         return [patient for patient in self
                 if patient.patient.uren == NutritionalData.SAMP]
@@ -98,7 +98,7 @@ class ProgramIO(models.Model):
     DEATH = "d"
     NON_RESPONDENT = "n"
     REFERENCE = "r"
-    
+
     Reason_type = ((NEANT, "----"), (ADBANDONMENT, "abandon"),
                    (HEALING, u"guérison"), (TANSFER, "transfer"),
                    (DEATH, u"deces"), (NON_RESPONDENT, u"non-repondant"))

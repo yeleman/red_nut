@@ -133,7 +133,7 @@ def nut_register(message, args, sub_cmd, cmd):
         return True
 
     type_uren = NutritionalData.SAM # Car on ne traite que les URENI pour l'instant
-    is_ureni = bool(int(is_ureni)) # return un bool
+    is_ureni = bool(int(is_ureni)) # return True or False
 
     if is_ureni:
         if hc_code == "qmali":
