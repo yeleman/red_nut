@@ -58,31 +58,34 @@ def nut_echo(message, **kwargs):
     return True
 
 
-def formatdate(date_, time_=False):
-    """ Reçoi un string. return date ou datetime
+def formatdate(date_str, as_datetime=False):
 
-        exemple: '20120620' or 40 """
-    if re.match(r'^\d{8}$', date_):
-        if not time_:
-            date_now = date.today()
-            parsed_date = date(int(date_[0:4]), int(date_[4:6]), \
-                           int(date_[6:8]))
-        else:
-            date_now = datetime.now()
-            parsed_date = datetime(int(date_[0:4]), int(date_[4:6]), \
-                               int(date_[6:8]), date_now.hour, date_now.minute,
-                               date_now.second, date_now.microsecond)
-        if date_now < parsed_date:
-            raise ValueError(u"[ERREUR] La date est dans le futur.")
-        return parsed_date
+    now = date.today()
+
+    # we received a date
+    if re.match(r'^\d{8}$', date_str):
+        try:
+            adate = date(int(date_str[0:4]), 
+                         int(date_str[4:6]),
+                         int(date_str[6:8]))
+        except:
+            raise ValueError(u"[ERREUR] Date incorrecte.")
+    # we received a number of month
     else:
         try:
-            # date_ est toujour en mois
-            today = date.today()
-            value = int(date_)
-            return today - timedelta(30 * value) - timedelta(15)
-        except:
-            raise ValueError(u"Age unknown: %s" % date_)
+            adate = now - timedelta(30 * int(date_str)) - timedelta(15)
+        except ValueError:
+            raise ValueError(u"[ERREUR] Nombre de mois incorrect.")
+
+    if adate > now:
+        raise ValueError(u"[ERREUR] La date est dans le futur.")
+
+    if as_datetime:
+        dt_now = datetime.now()
+        return datetime(adate.year, adate.month, adate.day, 
+                        dt_now.hour, dt_now.minute, dt_now.second)
+    else:
+        return adate
 
 
 def resp_error(message, action):
@@ -132,6 +135,12 @@ def nut_register(message, args, sub_cmd, cmd):
                         u"valide." % {'hc': hc_code})
         return True
 
+    # check date
+    try:
+        registration_date = formatdate(create_date, True)
+    except ValueError as e:
+        return resp_error(message, e)
+
     type_uren = NutritionalData.SAM # Car on ne traite que les URENI pour l'instant
     is_ureni = bool(int(is_ureni)) # return True or False
 
@@ -154,6 +163,7 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.first_name = first_name.replace('_', ' ').title()
     patient.last_name = last_name.replace('_', ' ').title()
     patient.surname_mother = mother.replace('_', ' ').title()
+    patient.create_date = registration_date
     try:
         patient.birth_date = formatdate(dob)
     except ValueError as e:
@@ -173,7 +183,7 @@ def nut_register(message, args, sub_cmd, cmd):
     programio = ProgramIO()
     programio.patient = patient
     programio.event = programio.SUPPORT
-    programio.date = formatdate(create_date, True)
+    programio.date = registration_date
     try:
         programio.save()
     except:
@@ -192,7 +202,7 @@ def nut_register(message, args, sub_cmd, cmd):
                                 height=height, oedema=oedema, muac=muac,
                                 nb_plumpy_nut=nb_plumpy_nut,
                                 is_ureni = is_ureni,
-                                date=formatdate(create_date, True))
+                                date=registration_date)
     if not datanut:
         message.respond(u"/!\ %(full_name)s enregistre avec ID#%(id)s."
                         u" Donnees nutrition non enregistres."
@@ -242,6 +252,12 @@ def nut_followup(message, args, sub_cmd, cmd):
                                                              patient_id)
         return True
 
+    try:
+        followup_date = formatdate(reporting_d)
+        followup_datetime = formatdate(reporting_d, True)
+    except ValueError as e:
+        return resp_error(message, e)
+
     # creating a followup event
     is_ureni = bool(int(is_ureni))
     weight = float(weight)
@@ -253,7 +269,7 @@ def nut_followup(message, args, sub_cmd, cmd):
     nb_plumpy_nut = int(nb_plumpy_nut) \
                               if not nb_plumpy_nut.lower() == '-' else 0
 
-    if patient.last_data_nut().date == formatdate(reporting_d):
+    if patient.last_data_nut().date == followup_date:
         last_data_nut = patient.last_data_nut()
         last_data_nut.weight = weight
         last_data_nut.height = height
@@ -266,7 +282,7 @@ def nut_followup(message, args, sub_cmd, cmd):
                     u"%(full_name)s" % {'full_name': patient.full_name_id()})
         return True
 
-    if patient.last_data_nut().date > formatdate(reporting_d):
+    if patient.last_data_nut().date > followup_date:
         message.respond(u"[ERREUR] La date du dernier suivi pour ID# %s est "
                         u"superieur que la date utilise" % patient.nut_id)
         return True
@@ -275,14 +291,14 @@ def nut_followup(message, args, sub_cmd, cmd):
         programio = ProgramIO()
         programio.patient = patient
         programio.event = programio.SUPPORT
-        programio.date = formatdate(reporting_d, True)
+        programio.date = followup_datetime
         programio.save()
 
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema,
                                 muac=muac, nb_plumpy_nut=nb_plumpy_nut,
                                 is_ureni=is_ureni,
-                                date=formatdate(reporting_d))
+                                date=followup_date)
     if not datanut:
         return resp_error(message, u"suivi")
 
@@ -385,6 +401,12 @@ def nut_disable(message, args, sub_cmd, cmd):
         return resp_error(message, u"la sortie")
 
     try:
+        quitting_date = formatdate(date_disable)
+        quitting_datetime = formatdate(date_disable, True)
+    except ValueError as e:
+        return resp_error(message, e)
+
+    try:
         patient_id = clean_up_pid(patient_id)
         patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(),
                                                                     patient_id)
@@ -393,7 +415,7 @@ def nut_disable(message, args, sub_cmd, cmd):
                                                              patient_id)
         return True
 
-    if patient.last_data_nut().date > formatdate(date_disable):
+    if patient.last_data_nut().date > quitting_date:
         message.respond(u"[ERREUR] La date du dernier suivi pour ID# %s est "
                         u"superieur que la date utilise" % patient.nut_id)
         return True
@@ -409,7 +431,7 @@ def nut_disable(message, args, sub_cmd, cmd):
                                     height=height, muac=muac,
                                     oedema=NutritionalData.OEDEMA_NO,
                                     nb_plumpy_nut=0,
-                                    date=formatdate(date_disable))
+                                    date=quitting_date)
         if not datanut:
             message.respond(u"/!\ %(full_name)s enregistre avec ID#%(id)s."
                             u" Donnees nutrition non enregistres."
@@ -421,7 +443,7 @@ def nut_disable(message, args, sub_cmd, cmd):
     programio.patient = patient
     programio.event = programio.OUT
     programio.reason = reason
-    programio.date = formatdate(date_disable, True)
+    programio.date = quitting_datetime
     programio.save()
     message.respond(u"[SUCCES] %(full_name)s ne fait plus partie "
                     u"du programme." % {'full_name': patient.full_name()})

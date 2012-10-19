@@ -48,7 +48,7 @@ class OutProgramIOManager(ProgramIOURENManager):
              all patients that are out of the program.
         """
         qs = self.get_query_set()
-        list_num_days = [out.program_duration.days for out in qs.all().all_uren()]
+        list_num_days = [out.program_duration for out in qs.all().all_uren()]
         try:
             return sum(list_num_days) / len(list_num_days)
         except ZeroDivisionError:
@@ -126,10 +126,13 @@ class ProgramIO(models.Model):
     def is_output(self):
         return self.event == self.OUT
 
+    def bad_date(self):
+        return self.program_duration < 0
+
     @property
     def program_duration(self):
         if self.event == self.OUT:
-            return self.date - self.patient.create_date
+            return (self.date - self.patient.create_date).days
 
     def __unicode__(self):
         return ((u'%(patient)s %(event)s %(reason)s %(date)s') %
