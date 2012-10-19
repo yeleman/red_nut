@@ -159,8 +159,10 @@ def report_as_excel(health_centers):
             col += 1
 
             last_data_event = patient.last_data_event()
-            sheet_patient.write(row, col, \
-                                   patient.nutritional_data.latest().diagnosis)
+            sheet_patient.write(row, col,
+                                NutritionalData.URENS_FR
+                                               .get(patient.nutritional_data
+                                               .latest().diagnosis))
             col += 1
             sheet_patient.write(row, col, patient.last_visit()
                                               .strftime(date_format))
@@ -169,7 +171,7 @@ def report_as_excel(health_centers):
             col += 1
             sheet_patient.write(row, col, last_data_event.date
                                                        .strftime(date_format))
-            # la dernière ligne 
+            # la dernière ligne
             rowpp = row
             datanut_patients = patient.nutritional_data.all().order_by("date")
             for data in datanut_patients.exclude(pk=first_data_nut.pk):
@@ -191,7 +193,9 @@ def report_as_excel(health_centers):
                 col += 1
                 sheet_patient.write(row, col, data.nb_plumpy_nut)
                 col += 1
-                sheet_patient.write(row, col, data.diagnosis)
+                sheet_patient.write(row, col,
+                                    NutritionalData.URENS_FR
+                                                   .get(data.diagnosis))
 
             patient_programios = patient.programios.all().order_by("date")
             for pp in patient_programios:

@@ -22,6 +22,10 @@ class NutritionalData(models.Model):
              SAMP: u"URENI",
              MAS: u"URENAM"}
 
+    URENS_FR = {SAM: u"MAS",
+                SAMP: u"MAS+",
+                MAS: u"MAM"}
+
     OEDEMA_YES = 'Y'
     OEDEMA_NO = 'N'
     OEDEMA_UNKNOWN = 'U'

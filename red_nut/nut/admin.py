@@ -13,8 +13,9 @@ class HealthCenterAdmin(admin.ModelAdmin):
 
 
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'first_name', 'last_name', 'sex',\
-                    'surname_mother', 'contact', 'birth_date', 'health_center')
+    list_display = ('__unicode__','create_date', 'first_name', 'last_name',
+                    'sex', 'surname_mother', 'contact', 'birth_date',
+                    'health_center')
     list_filter = ('create_date','health_center',)
 
 

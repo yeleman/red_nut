@@ -21,7 +21,7 @@ class PatientURENQS(QuerySet):
     def mas(self):
         return [patient for patient in self
                 if patient.uren == NutritionalData.MAS]
-    
+
     def samp(self):
         return [patient for patient in self
                 if patient.uren == NutritionalData.SAMP]
@@ -69,12 +69,12 @@ class Patient(models.Model):
     by_uren = PatientURENManager()
 
     def __unicode__(self):
-        return (u'%(first_name)s %(last_name)s %(mother)s %(birth_date)s'
+        return (u'%(first_name)s %(last_name)s %(mother)s %(create_date)s'
                  '%(health_center)s') % \
                 {"first_name": self.first_name, \
                  "last_name": self.last_name, \
                  "mother": self.surname_mother, \
-                 "birth_date": self.birth_date, \
+                 "create_date": self.create_date, \
                  "health_center": self.health_center}
 
     @property
@@ -87,7 +87,7 @@ class Patient(models.Model):
 
     def is_healing(self):
         from programIO import ProgramIO
-        return (self.status == ProgramIO.OUT 
+        return (self.status == ProgramIO.OUT
                 and self.last_data_event().reason == ProgramIO.HEALING)
 
     def full_name(self):
