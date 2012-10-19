@@ -90,6 +90,33 @@ class Patient(models.Model):
         return (self.status == ProgramIO.OUT 
                 and self.last_data_event().reason == ProgramIO.HEALING)
 
+    def in_program(self):
+        from programIO import ProgramIO
+        return self.status == ProgramIO.SUPPORT
+
+    def program_periods(self):
+        """ A list of in-progran periods
+
+            (join_date, leave_date, nb_of_days) """
+
+        periods = []
+        ind = None
+        outd = None
+        for pio in self.programios.order_by('date'):
+            if pio.event == pio.SUPPORT:
+                ind = pio.date
+            elif pio.event == pio.OUT:
+                outd = pio.date
+                periods.append((ind, outd, (outd - ind).days))
+                ind = None
+                outd = None
+        if ind:
+            periods.append((ind, None, None))
+        return periods
+
+    def last_program(self):
+        return self.program_periods()[-1]
+
     def full_name(self):
         """return full name"""
         return (u'%(first_name)s %(last_name)s' % \
