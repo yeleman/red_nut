@@ -48,7 +48,7 @@ class OutProgramIOManager(ProgramIOURENManager):
              all patients that are out of the program.
         """
         qs = self.get_query_set()
-        list_num_days = [out.program_duration.days for out in qs.all().all_uren()]
+        list_num_days = [out.program_duration for out in qs.all().all_uren()]
         try:
             return sum(list_num_days) / len(list_num_days)
         except ZeroDivisionError:
