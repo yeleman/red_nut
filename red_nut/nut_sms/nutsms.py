@@ -65,7 +65,7 @@ def formatdate(date_str, as_datetime=False):
     # we received a date
     if re.match(r'^\d{8}$', date_str):
         try:
-            adate = date(int(date_str[0:4]), 
+            adate = date(int(date_str[0:4]),
                          int(date_str[4:6]),
                          int(date_str[6:8]))
         except:
@@ -82,7 +82,7 @@ def formatdate(date_str, as_datetime=False):
 
     if as_datetime:
         dt_now = datetime.now()
-        return datetime(adate.year, adate.month, adate.day, 
+        return datetime(adate.year, adate.month, adate.day,
                         dt_now.hour, dt_now.minute, dt_now.second)
     else:
         return adate
@@ -231,7 +231,7 @@ def nut_followup(message, args, sub_cmd, cmd):
     """ Incomming:
             nut fol hc_code reporting_d  patient_id weight height
                 oedema muac nb_plumpy_nut(optional), is_ureni
-        exple: 'nut fol sab3 20121004 sam 12 5 65 YES 120 2 10 1'
+        exple: 'nut fol sab3 20121004 sam 23 5 65 YES 120 2 1'
 
         Outgoing:
             [SUCCES] Donnees nutrition mise a jour pour full_name #id
@@ -283,8 +283,9 @@ def nut_followup(message, args, sub_cmd, cmd):
         return True
 
     if patient.last_data_nut().date > followup_date:
-        message.respond(u"[ERREUR] La date du dernier suivi pour ID# %s est "
-                        u"superieur que la date utilise" % patient.nut_id)
+        message.respond(u"[ERREUR] La date du dernier suivi pour"
+                        u" %(full_name)s est superieur que la date utilise" %
+                        {'full_name': patient.full_name_id()})
         return True
 
     if patient.last_data_event().event == ProgramIO.OUT:
@@ -382,7 +383,7 @@ def nut_disable(message, args, sub_cmd, cmd):
             hc_code, date_disable, patient_id, weight, height, muac,
             reason
             example reason: (a= abandon, t = transfer ...)
-            example data: 'nut off sab3 20120925 sam 9 - - - a'
+            example data: 'nut off sab3 20120925 sam 23 - - - a'
          Outgoing:
             [SUCCES] full_name ne fait plus partie du programme.
             or error message """
@@ -426,7 +427,7 @@ def nut_disable(message, args, sub_cmd, cmd):
                         {'full_name': patient.full_name()})
         return True
 
-    if reason == "h" and weight:
+    if reason == ProgramIO.HEALING and weight:
         datanut = add_followup_data(patient=patient, weight=weight,
                                     height=height, muac=muac,
                                     oedema=NutritionalData.OEDEMA_NO,

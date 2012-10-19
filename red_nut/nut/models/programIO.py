@@ -132,7 +132,7 @@ class ProgramIO(models.Model):
     @property
     def program_duration(self):
         if self.event == self.OUT:
-            return (self.date - self.patient.create_date).days
+            return (self.date - self.patient.first_program()).days
 
     def __unicode__(self):
         return ((u'%(patient)s %(event)s %(reason)s %(date)s') %

@@ -117,6 +117,9 @@ class Patient(models.Model):
     def last_program(self):
         return self.program_periods()[-1]
 
+    def first_program(self):
+        return self.program_periods()[0][0]
+
     def full_name(self):
         """return full name"""
         return (u'%(first_name)s %(last_name)s' % \
