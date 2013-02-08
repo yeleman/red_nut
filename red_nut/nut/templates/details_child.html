@@ -22,7 +22,7 @@
             {% if weight_gain %}
                 <tr><th>Gain de poids</th><td>{{weight_gain}} g/ kg/ jour</td></tr>
             {% endif %}
-            <tr><th>Date de naissance</th><td>{{patient.birth_date}}</td></tr>
+            <tr><th>Date de naissance</th><td>{{patient.birth_date}} ({{patient.dob}} mois)</td></tr>
             <tr><th>Date d'enregistrement</th><td>{{patient.create_date}}</td></tr>
             {% if output %}
                 <tr><th>Date de sortie</th><td>{{output.date}}</td></tr>

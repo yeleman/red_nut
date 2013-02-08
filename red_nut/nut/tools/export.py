@@ -82,6 +82,7 @@ def report_as_excel(health_centers):
                  u"Prénom",
                  u"Mère",
                  u"DDN",
+                 u"DDN en mois",
                  u"Sexe",
                  u"Date d'enregistrement",
                  u"Date de la visite",
@@ -139,12 +140,13 @@ def report_as_excel(health_centers):
             sheet_patient.write(row, col, patient.birth_date
                                               .strftime(date_format))
             col += 1
+            sheet_patient.write(row, col, patient.dob)
+            col += 1
             sheet_patient.write(row, col, patient.sex)
             col += 1
             sheet_patient.write(row, col, patient.create_date
                                               .strftime(date_format))
-            col += 2
-
+            col += 1
             first_data_nut = patient.first_data_nut()
             sheet_patient.write(row, col, first_data_nut.weight)
             col += 1

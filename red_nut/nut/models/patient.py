@@ -189,6 +189,10 @@ class Patient(models.Model):
         """ """
         return self.delay_since_last_visit().days > 14
 
+    @property
+    def dob(self):
+        return ((self.create_date.date() - self.birth_date).days) / 30
+
     def weight_gain(self):
         """ return weight gain per patient"""
 
