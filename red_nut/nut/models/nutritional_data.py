@@ -17,14 +17,14 @@ class NutritionalData(models.Model):
 
     SAM = 'sam'
     SAMP = 'samp'
-    MAS = 'mas'
+    MAM = 'mas'
     URENS = {SAM: u"URENAS",
              SAMP: u"URENI",
-             MAS: u"URENAM"}
+             MAM: u"URENAM"}
 
     URENS_FR = {SAM: u"MAS",
                 SAMP: u"MAS+",
-                MAS: u"MAM"}
+                MAM: u"MAM"}
 
     OEDEMA_YES = 'Y'
     OEDEMA_NO = 'N'
@@ -75,4 +75,4 @@ class NutritionalData(models.Model):
         elif self.oedema == 'Y' or self.muac < 110:
             return self.SAM
         elif self.muac < 136:
-            return self.MAS
+            return self.MAM

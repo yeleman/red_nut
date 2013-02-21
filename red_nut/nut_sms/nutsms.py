@@ -201,7 +201,7 @@ def nut_register(message, args, sub_cmd, cmd):
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema, muac=muac,
                                 nb_plumpy_nut=nb_plumpy_nut,
-                                is_ureni = is_ureni,
+                                is_ureni=is_ureni,
                                 date=registration_date)
     if not datanut:
         message.respond(u"/!\ %(full_name)s enregistre avec ID#%(id)s."

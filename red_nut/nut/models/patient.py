@@ -18,9 +18,9 @@ class PatientURENQS(QuerySet):
         return [patient for patient in self
                 if patient.uren == NutritionalData.SAM]
 
-    def mas(self):
+    def mam(self):
         return [patient for patient in self
-                if patient.uren == NutritionalData.MAS]
+                if patient.uren == NutritionalData.MAM]
 
     def samp(self):
         return [patient for patient in self

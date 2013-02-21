@@ -146,7 +146,7 @@ def report_as_excel(health_centers):
             col += 1
             sheet_patient.write(row, col, patient.create_date
                                               .strftime(date_format))
-            col += 1
+            col += 2
             first_data_nut = patient.first_data_nut()
             sheet_patient.write(row, col, first_data_nut.weight)
             col += 1
@@ -176,13 +176,14 @@ def report_as_excel(health_centers):
             # la dernière ligne
             rowpp = row
             datanut_patients = patient.nutritional_data.all().order_by("date")
+
             for data in datanut_patients.exclude(pk=first_data_nut.pk):
                 row += 1
                 col = 0
                 sheet_patient.write(row, col, data.patient.nut_id, style_title)
                 col += 1
                 sheet_patient.write(row, col, u"Suivi")
-                col += 9
+                col += 10
                 sheet_patient.write(row, col, data.date.strftime(date_format))
                 col += 1
                 sheet_patient.write(row, col, data.weight)
@@ -201,7 +202,7 @@ def report_as_excel(health_centers):
 
             patient_programios = patient.programios.all().order_by("date")
             for pp in patient_programios:
-                col_ = 20
+                col_ = 21
                 if pp.event == ProgramIO.OUT:
                     rowpp = row
                     sheet_patient.write(rowpp, 0, pp.patient.nut_id, style_title)
@@ -211,7 +212,8 @@ def report_as_excel(health_centers):
                 col_ += 1
                 sheet_patient.write(rowpp, col_, write_event(pp))
                 col_ += 1
-                sheet_patient.write(rowpp, col_, pp.get_reason_display().upper())
+                sheet_patient.write(rowpp, col_, pp.get_reason_display())
+                # sheet_patient.write(rowpp, col_, pp.get_reason_display().upper())
                 rowpp += 1
                 row += 1
 

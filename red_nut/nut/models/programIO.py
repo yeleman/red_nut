@@ -101,7 +101,8 @@ class ProgramIO(models.Model):
 
     Reason_type = ((NEANT, "----"), (ADBANDONMENT, "abandon"),
                    (HEALING, u"guérison"), (TANSFER, "transfer"),
-                   (DEATH, u"deces"), (NON_RESPONDENT, u"non-repondant"))
+                   (REFERENCE, "référence"), (DEATH, u"deces"),
+                   (NON_RESPONDENT, u"non-repondant"))
 
     objects = models.Manager()  # he default manager.
     out = OutProgramIOManager()

@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic.simple import direct_to_template
 
+from settings import MEDIA_ROOT
 from nut import views
 
 admin.autodiscover()
@@ -39,5 +40,9 @@ urlpatterns = patterns('',
 
 
     url(r'^admin/', include(admin.site.urls)),
-)
 
+    url(r'^media/(?P<path>.*)$',
+             'django.views.static.serve',
+             {'document_root': MEDIA_ROOT, 'show_indexes': True},
+             name='media'),
+)
