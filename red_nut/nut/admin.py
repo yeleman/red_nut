@@ -13,27 +13,27 @@ class HealthCenterAdmin(admin.ModelAdmin):
 
 
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__','create_date', 'first_name', 'last_name',
-                    'sex', 'surname_mother', 'contact', 'birth_date',
-                    'health_center')
-    list_filter = ('create_date','health_center',)
+    list_display = ('__unicode__', 'nut_id', 'create_date', 'first_name',
+                    'last_name', 'sex', 'surname_mother', 'contact',
+                    'birth_date', 'health_center')
+    list_filter = ('create_date', 'health_center')
 
 
 class ProgramIOAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'date', 'event', 'reason')
-    list_filter = ('date', 'reason','patient__health_center','patient',)
+    list_filter = ('date', 'reason', 'patient__health_center', 'patient')
 
 
 class NutritionalDataAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'date', 'weight', \
-                    'height', 'oedema', 'muac')
-    list_filter = ('date','patient__health_center','patient',)
+    list_display = ('__unicode__', 'is_ureni', 'date', 'weight',
+                    'height', 'oedema', 'muac', 'nb_plumpy_nut')
+    list_filter = ('date', 'patient__health_center', 'patient')
 
 
 class ConsumptionReportAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'period', 'input_type', 'initial', \
+    list_display = ('__unicode__', 'period', 'input_type', 'initial',
                     'received', 'used', 'lost')
-    list_filter = ('period','health_center',)
+    list_filter = ('period', 'health_center', 'input_type')
 
 
 admin.site.register(HealthCenter, HealthCenterAdmin)
