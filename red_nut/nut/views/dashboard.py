@@ -61,12 +61,15 @@ def dashboard(request):
     graph_date = []
     diagnose_samp = []
     diagnose_sam = []
-    programio = ProgramIO.by_uren.order_by('-date')
+    programio = ProgramIO.by_uren.order_by('-date').all_uren()
+
+    nbr_date_graph = 0
+    if len(programio) > 100:
+        nbr_date_graph = 100
+
     try:
-        week_dates = week_range(programio.all_uren()[100].date)
+        week_dates = week_range(programio[nbr_date_graph].date)
     except IndexError:
-        week_dates = week_range(programio.all_uren()[0].date)
-    except:
         week_dates = []
 
     for dat in week_dates:
