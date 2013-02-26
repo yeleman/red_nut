@@ -3,6 +3,7 @@
 
 from datetime import datetime
 from django.db import models
+from zscore import zscore_from
 
 
 class NutritionalData(models.Model):
@@ -70,9 +71,11 @@ class NutritionalData(models.Model):
         '''Diagnosis of the patient'''
         if self.is_ureni:
             return self.SAMP
+        elif self.oedema == self.OEDEMA_YES:
+            return self.SAMP
         if self.muac is None or self.muac == 0:
             return None
-        elif self.oedema == 'Y' or self.muac < 110:
+        elif self.muac < 115 or zscore_from(self.height, self.weight) < -3:
             return self.SAM
         elif self.muac < 136:
             return self.MAM

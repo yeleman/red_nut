@@ -8,7 +8,7 @@ from datetime import datetime, date, timedelta
 def week_from_weeknum(year, weeknum, is_iso=False):
     """ datetime tuple of start/end of week from a week number (and year) """
     sy = datetime(year, 1, 1, 0, 0)
-    ey = datetime(year, 12, 31, 23, 59)
+    # ey = datetime(year, 12, 31, 23, 59)
     ONE_WEEK = 7
     ONE_SEC = 0.00001
 
