@@ -239,7 +239,7 @@ def nut_followup(message, args, sub_cmd, cmd):
 
     try:
         hc_code, reporting_d, type_uren, patient_id, weight, \
-        height, oedema, muac, nb_plumpy_nut, is_ureni= args.split()
+        height, oedema, muac, nb_plumpy_nut, is_ureni = args.split()
     except:
         return resp_error(message, u"suivi")
 
@@ -261,7 +261,7 @@ def nut_followup(message, args, sub_cmd, cmd):
     # creating a followup event
     is_ureni = bool(int(is_ureni))
     weight = float(weight)
-    height = int(height)
+    height = float(height)
     oedema = {'yes': NutritionalData.OEDEMA_YES,
               'no': NutritionalData.OEDEMA_NO,
               'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
