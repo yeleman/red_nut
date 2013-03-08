@@ -234,7 +234,7 @@ class Patient(models.Model):
 
         return (u"%(region_code)s/%(district_code)s/"
                u"%(uren)s%(center)s/%(center_id)s"
-               % {'region_code': '08',
+               % {'region_code': '09',
                   'district_code': hc.parent.nut_code,
                   'uren': uren_level,
                   'center': hc.nut_code.title(),
