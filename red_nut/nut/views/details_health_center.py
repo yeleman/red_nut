@@ -70,15 +70,20 @@ def details_health_center(request, *args, **kwargs):
     dict_["taux_non_repondant"] = non_response_rates
 
     # graphic
-    try:
-        week_dates = week_range(programs_io.order_by("date")[0].date)
-    except IndexError:
-        week_dates = []
-
     total_patient = []
     graph_date = []
     diagnose_samp = []
     diagnose_sam = []
+    programio = ProgramIO.by_uren.order_by('-date').all_uren()
+
+    nbr_date_graph = 0
+    if len(programio) > 100:
+        nbr_date_graph = 100
+
+    try:
+        week_dates = week_range(programio[nbr_date_graph].date)
+    except IndexError:
+        week_dates = []
 
     for dat in week_dates:
 
