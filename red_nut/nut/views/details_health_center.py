@@ -28,31 +28,30 @@ def details_health_center(request, *args, **kwargs):
             return None
 
     # Les patients de ce centre
-    patients = Patient.by_uren.all().filter(health_center=health_center).all_uren()
-    # datanuts = NutritionalData.objects\
-    #                           .filter(patient__health_center=health_center)
-    programs_io = ProgramIO.objects \
-                         .filter(patient__health_center=health_center)
+    patients = Patient.by_uren.all().filter(health_center=health_center) \
+                                                                .all_uren()
     consumption_reports = ConsumptionReport.objects \
                                            .filter(health_center=health_center)
 
     nbr_total_patient = len(patients)
     # Taux guerison
-    nbr_healing = ProgramIO.healing \
-                        .filter(patient__health_center=health_center).count()
+    nbr_healing = len(ProgramIO.healing
+                     .filter(patient__health_center=health_center).all_uren())
     healing_rates = percentage_calculation(nbr_healing, nbr_total_patient)
     # Taux abandon
-    nbr_abandonment = ProgramIO.abandon \
-                        .filter(patient__health_center=health_center).count()
+    nbr_abandonment = len(ProgramIO.abandon
+                          .filter(patient__health_center=health_center)
+                          .all_uren())
     abandonment_rates = percentage_calculation(nbr_abandonment, \
                                                         nbr_total_patient)
     # Taux déces
-    nbr_deaths = ProgramIO.death \
-                          .filter(patient__health_center=health_center).count()
+    nbr_deaths = len(ProgramIO.death
+                     .filter(patient__health_center=health_center).all_uren())
     deaths_rates = percentage_calculation(nbr_deaths, nbr_total_patient)
     # Taux non repondant
-    nbr_non_response = ProgramIO.nonresp \
-                        .filter(patient__health_center=health_center).count()
+    nbr_non_response = len(ProgramIO.nonresp
+                           .filter(patient__health_center=health_center)
+                           .all_uren())
     non_response_rates = percentage_calculation(nbr_non_response, \
                                                         nbr_total_patient)
 

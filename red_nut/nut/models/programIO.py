@@ -26,7 +26,8 @@ class ProgramIOURENQS(QuerySet):
 
     def all_uren(self):
         return [patient for patient in self
-                if patient.patient.uren in (NutritionalData.SAMP, NutritionalData.SAM)]
+                if patient.patient.uren in (NutritionalData.SAMP,
+                                            NutritionalData.SAM)]
 
 
 class ProgramIOURENManager(models.Manager):
