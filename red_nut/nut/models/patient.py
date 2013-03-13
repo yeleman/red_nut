@@ -128,14 +128,14 @@ class Patient(models.Model):
 
     def full_name_id(self):
         """ return full name and id """
-        return u"%s#%d" % (self.full_name(), self.id)
+        return u"%s ID#%s" % (self.full_name(), self.nut_id)
 
     def full_name_mother(self):
         """ return full name of mother """
         return u"%s/%s" % (self.full_name(), self.surname_mother.capitalize())
 
     def full_name_all(self):
-        return u"%s#%d" % (self.full_name_mother(), self.id)
+        return u"%sID#%s" % (self.full_name_mother(), self.nut_id)
 
     def last_visit(self):
         """ return date of last visit """
