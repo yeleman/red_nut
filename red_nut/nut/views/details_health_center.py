@@ -75,7 +75,7 @@ def details_health_center(request, *args, **kwargs):
     diagnose_sam = []
     programio = ProgramIO.by_uren.order_by('-date').all_uren()
 
-    nbr_date_graph = 0
+    nbr_date_graph = len(programio)
     if len(programio) > 100:
         nbr_date_graph = 100
 
