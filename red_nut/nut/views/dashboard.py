@@ -61,9 +61,10 @@ def dashboard(request):
     graph_date = []
     diagnose_samp = []
     diagnose_sam = []
+    # Ordonne les programio par order décroissante
     programio = ProgramIO.by_uren.order_by('-date').all_uren()
 
-    nbr_date_graph = 0
+    nbr_date_graph = len(programio)
     if len(programio) > 100:
         nbr_date_graph = 100
 
