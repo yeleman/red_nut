@@ -151,12 +151,13 @@ def nut_register(message, args, sub_cmd, cmd):
         registration_date = formatdate(create_date, True)
     except ValueError as e:
         return resp_error(message, e)
-
-    type_uren = NutritionalData.SAM # Car on ne traite que les URENI pour l'instant
-    is_ureni = bool(int(is_ureni)) # return True or False
+    # Car on ne traite que les URENI pour l'instant
+    type_uren = NutritionalData.SAM
+    # True or False
+    is_ureni = bool(int(is_ureni))
 
     if is_ureni:
-        if hc_code == "qmali":
+        if hc_code in ["qmali", "cr"]:
             type_uren = NutritionalData.SAMP
         else:
             msg = u"[ERREUR] Seul les CSREF ont le droit " \
