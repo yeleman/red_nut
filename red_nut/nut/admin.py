@@ -21,13 +21,15 @@ class PatientAdmin(admin.ModelAdmin):
 
 class ProgramIOAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'date', 'event', 'reason')
-    list_filter = ('date', 'reason', 'patient__health_center', 'patient')
+    list_filter = ('date', 'reason', 'patient__health_center',
+                   'patient__nut_id', 'patient')
 
 
 class NutritionalDataAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'is_ureni', 'date', 'weight',
                     'height', 'oedema', 'muac', 'nb_plumpy_nut')
-    list_filter = ('date', 'patient__health_center', 'patient')
+    list_filter = ('date', 'patient__health_center',
+                   'patient__nut_id', 'patient')
 
 
 class ConsumptionReportAdmin(admin.ModelAdmin):
