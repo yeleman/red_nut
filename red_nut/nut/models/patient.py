@@ -51,35 +51,34 @@ class Patient(models.Model):
         (SEX_FEMELLE, u"Féminin"),)
 
     nut_id = models.CharField(max_length=30, verbose_name=(u"Identifiant"),
-                                                           unique=True)
+                              unique=True)
     first_name = models.CharField(max_length=30, verbose_name=(u"Prénom"))
     last_name = models.CharField(max_length=30, verbose_name=(u"Nom"))
-    surname_mother = models.CharField(max_length=30, \
-                                          verbose_name=(u"Prénom de la mère"))
+    surname_mother = models.CharField(max_length=30,
+                                      verbose_name=(u"Prénom de la mère"))
     health_center = models.ForeignKey(HealthCenter, related_name='patients',
-                                                      verbose_name=("Clinic"))
+                                      verbose_name=("Clinic"))
     create_date = models.DateTimeField(verbose_name=("Date d'enregistrement"),
-                                                     default=datetime.today())
+                                       default=datetime.today())
     birth_date = models.DateField(verbose_name=(u"Date de naissance"))
     sex = models.CharField(u"Sexe", max_length=1, choices=SEX_CHOICES)
     contact = models.CharField(max_length=100, verbose_name=(u"contact"),
-                                                        blank=True, null=True)
+                               blank=True, null=True)
 
     objects = models.Manager()
     by_uren = PatientURENManager()
 
     def __unicode__(self):
         return (u'%(first_name)s %(last_name)s %(mother)s %(create_date)s'
-                 '%(health_center)s') % \
-                {"first_name": self.first_name, \
-                 "last_name": self.last_name, \
-                 "mother": self.surname_mother, \
-                 "create_date": self.create_date, \
-                 "health_center": self.health_center}
+                '%(health_center)s') % {"first_name": self.first_name,
+                                        "last_name": self.last_name,
+                                        "mother": self.surname_mother,
+                                        "create_date": self.create_date,
+                                        "health_center": self.health_center}
 
     @property
     def uren(self):
-        return self.nutritional_data.latest().diagnosis
+        return self.nutritional_data.order_by("date")[0].diagnosis
 
     @property
     def status(self):
@@ -122,9 +121,9 @@ class Patient(models.Model):
 
     def full_name(self):
         """return full name"""
-        return (u'%(first_name)s %(last_name)s' % \
-                                {"first_name": self.first_name.capitalize(),
-                                "last_name": self.last_name.capitalize()})
+        return (u'%(first_name)s %(last_name)s' %
+                {"first_name": self.first_name.capitalize(),
+                 "last_name": self.last_name.capitalize()})
 
     def full_name_id(self):
         """ return full name and id """
@@ -182,7 +181,7 @@ class Patient(models.Model):
     def last_data_event(self):
         from programIO import ProgramIO
         return ProgramIO.objects.filter(patient=self)\
-                                         .order_by('-date')[0]
+                                .order_by('-date')[0]
 
     @property
     def is_late(self):
@@ -233,12 +232,12 @@ class Patient(models.Model):
             raise ValueError(u"Invalid District")
 
         return (u"%(region_code)s/%(district_code)s/"
-               u"%(uren)s%(center)s/%(center_id)s"
-               % {'region_code': '09',
-                  'district_code': hc.parent.nut_code,
-                  'uren': uren_level,
-                  'center': hc.nut_code.title(),
-                  'center_id': center_id.zfill(4)})
+                u"%(uren)s%(center)s/%(center_id)s"
+                % {'region_code': '09',
+                   'district_code': hc.parent.nut_code,
+                   'uren': uren_level,
+                   'center': hc.nut_code.title(),
+                   'center_id': center_id.zfill(4)})
 
     @classmethod
     def get_patient_nut_id(cls, hc_code, uren, center_id, hc=None):

@@ -39,7 +39,7 @@ class NutritionalData(models.Model):
     DANGER_SIGN_CHOICES = ((SIGN_DIARRHEA, "Diarrhée"),)
 
     patient = models.ForeignKey("Patient", related_name='nutritional_data',
-                                         verbose_name="Patients")
+                                verbose_name="Patients")
 
     date = models.DateField(verbose_name="Date", default=datetime.now())
 
@@ -55,16 +55,15 @@ class NutritionalData(models.Model):
                                    verbose_name="Signe de danger",
                                    blank=True, null=True)
 
-    nb_plumpy_nut = models.IntegerField(
-                                max_length=30,
-                                verbose_name=u"Sachets plumpy nut données",
-                                blank=True, null=True)
+    nb_plumpy_nut = models.IntegerField(max_length=30,
+                                        verbose_name=u"Sachets plumpy nut données",
+                                        blank=True, null=True)
     is_ureni = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u"%(patient)s %(date)s/%(weight)skg/%(height)scm %(pb)smm "\
-         % {"patient": self.patient, "height": self.height, \
-                "weight": self.weight, "pb": self.muac, "date": self.date}
+               % {"patient": self.patient, "height": self.height,
+                  "weight": self.weight, "pb": self.muac, "date": self.date}
 
     @property
     def diagnosis(self):
