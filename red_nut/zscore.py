@@ -162,8 +162,7 @@ ZSCORES = {
 
 def zscore_from(height, weight):
     # unable to calculate z-score for out of range data
-    if (height > 120
-        or height < 45):
+    if (height > 120 or height < 45):
         return None
 
     # check if there is a perfect height match
