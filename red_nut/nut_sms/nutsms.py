@@ -4,6 +4,8 @@ import re
 
 from datetime import date, datetime, timedelta
 
+from django.db import IntegrityError
+
 from red_nut.nut.models import (Patient, ProgramIO, NutritionalData,
                                 HealthCenter, Input, ConsumptionReport)
 from red_nut.nut.models.period import MonthPeriod
@@ -29,8 +31,7 @@ def handler(message):
             for cmd_id, cmd_target in commands.items():
                 command = '%s %s' % (keyword, cmd_id)
                 if message.content.lower().startswith(command):
-                    n, args = re.split(r'^%s\s?' \
-                                       % command, \
+                    n, args = re.split(r'^%s\s?' % command,
                                        message.content.lower().strip())
                     return cmd_target(message,
                                       args=args,
@@ -128,11 +129,9 @@ def nut_register(message, args, sub_cmd, cmd):
     try:
         register_data, follow_up_data = args.split('#')
 
-        hc_code, create_date, patient_id, first_name, \
-        last_name, mother, sex, dob, contact = register_data.split()
+        hc_code, create_date, patient_id, first_name, last_name, mother, sex, dob, contact = register_data.split()
 
-        weight, height, oedema, muac, nb_plumpy_nut, is_ureni \
-                                                     = follow_up_data.split()
+        weight, height, oedema, muac, nb_plumpy_nut, is_ureni = follow_up_data.split()
     except:
         return resp_error(message, u"enregistrement")
     try:
@@ -141,7 +140,7 @@ def nut_register(message, args, sub_cmd, cmd):
     except:
         # On envoi un sms pour signaler que le code n'est pas valide
         msg = u"[ERREUR] %(hc)s n'est pas un code de Centre valide."\
-                                                             % {'hc': hc_code}
+              % {'hc': hc_code}
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
@@ -161,7 +160,7 @@ def nut_register(message, args, sub_cmd, cmd):
             type_uren = NutritionalData.SAMP
         else:
             msg = u"[ERREUR] Seul les CSREF ont le droit " \
-                            u"d'enregistrer les enfants URENI"
+                  u"d'enregistrer les enfants URENI"
             message.respond(msg)
             send_sms(FOL_NUMBER, msg)
             return True
@@ -171,7 +170,6 @@ def nut_register(message, args, sub_cmd, cmd):
     except ValueError as e:
         return resp_error(message, e)
 
-    # creating the patient record
     patient = Patient()
     patient.nut_id = nut_id
     patient.first_name = first_name.replace('_', ' ').title()
@@ -189,9 +187,20 @@ def nut_register(message, args, sub_cmd, cmd):
     patient.health_center = hc
     try:
         patient.save()
+    except IntegrityError:
+        patient = Patient.objects.get(nut_id=nut_id)
+        save_error(message, u"/!\ l'identifiant #%(id)s appartient déjà à"
+                            u" %(full_name)s. enregistré au centre"
+                            u" %(health_center)s le %(date)s"
+                            u" Pour plus d'information, appelez ce numéro %(admin)s"
+                   % {'full_name': patient.full_name(), 'id': nut_id,
+                      'date': patient.create_date.strftime("%x %H: %Mmm %Ss"),
+                      'health_center': patient.health_center.name,
+                      'admin': FOL_NUMBER})
+        return False
     except:
-        return save_error(message, u"Identifiant existe deja dans la base de"
-                                    u" donnee")
+        return save_error(message, u"Impossible d'enregistrer ce rapport dans "
+                                   u"la base des donnees")
 
     # adding patient to the program
     programio = ProgramIO()
@@ -210,8 +219,7 @@ def nut_register(message, args, sub_cmd, cmd):
               'no': NutritionalData.OEDEMA_NO,
               'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
-    nb_plumpy_nut = int(nb_plumpy_nut) \
-                    if not str(nb_plumpy_nut).lower() == '-' else 0
+    nb_plumpy_nut = int(nb_plumpy_nut) if not str(nb_plumpy_nut).lower() == '-' else 0
     datanut = add_followup_data(patient=patient, weight=weight,
                                 height=height, oedema=oedema, muac=muac,
                                 nb_plumpy_nut=nb_plumpy_nut,
@@ -219,16 +227,13 @@ def nut_register(message, args, sub_cmd, cmd):
                                 date=registration_date)
     if not datanut:
         msg = u"/!\ %(full_name)s enregistre avec ID#%(id)s." \
-                        u" Donnees nutrition non enregistres." \
-                        % {'full_name': patient.full_name(), 'id': nut_id}
+              u" Donnees nutrition non enregistres." % {'full_name': patient.full_name(), 'id': nut_id}
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
 
     message.respond(u"[SUCCES] %(full_name)s enregistre avec ID#%(id)s."
-                    u" Donnees nutrition enregistres." \
-                    % {'full_name': patient.full_name_mother(),
-                       'id': nut_id})
+                    u" Donnees nutrition enregistres." % {'full_name': patient.full_name_mother(), 'id': nut_id})
     return True
 
 
@@ -253,15 +258,13 @@ def nut_followup(message, args, sub_cmd, cmd):
             or error message """
 
     try:
-        hc_code, reporting_d, type_uren, patient_id, weight, \
-        height, oedema, muac, nb_plumpy_nut, is_ureni = args.split()
+        hc_code, reporting_d, type_uren, patient_id, weight, height, oedema, muac, nb_plumpy_nut, is_ureni = args.split()
     except:
         return resp_error(message, u"suivi")
 
     try:
         patient_id = clean_up_pid(patient_id)
-        patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(),
-                                                                    patient_id)
+        patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(), patient_id)
     except:
         msg = u"[ERREUR] Aucun patient trouve pour ID#%s" % patient_id
         message.respond()
@@ -282,8 +285,7 @@ def nut_followup(message, args, sub_cmd, cmd):
               'no': NutritionalData.OEDEMA_NO,
               'unknown': NutritionalData.OEDEMA_UNKNOWN}[oedema.lower()]
     muac = int(muac)
-    nb_plumpy_nut = int(nb_plumpy_nut) \
-                              if not nb_plumpy_nut.lower() == '-' else 0
+    nb_plumpy_nut = int(nb_plumpy_nut) if not nb_plumpy_nut.lower() == '-' else 0
 
     if patient.last_data_nut().date == followup_date:
         last_data_nut = patient.last_data_nut()
@@ -295,13 +297,12 @@ def nut_followup(message, args, sub_cmd, cmd):
         last_data_nut.is_ureni = is_ureni
         last_data_nut.save()
         message.respond(u"[SUCCES] Donnees nutrition mise a jour pour "
-                    u"%(full_name)s" % {'full_name': patient.full_name_id()})
+                        u"%(full_name)s" % {'full_name': patient.full_name_id()})
         return True
 
     if patient.last_data_nut().date > followup_date:
         msg = u"[ERREUR] La date du dernier suivi pour" \
-                        u" %(full_name)s est superieur que la date utilise" % \
-                        {'full_name': patient.full_name_id()}
+              u" %(full_name)s est superieur que la date utilise" % {'full_name': patient.full_name_id()}
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
@@ -349,8 +350,7 @@ def nut_search(message, args, sub_cmd, cmd):
     try:
         hc = HealthCenter.objects.get(code=hc_code)
     except:
-        msg = u"[ERREUR] %(hc)s n'est pas un code de Centre valide." % \
-                                                             {'hc': hc_code}
+        msg = u"[ERREUR] %(hc)s n'est pas un code de Centre valide." % {'hc': hc_code}
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
@@ -392,8 +392,7 @@ def nut_search(message, args, sub_cmd, cmd):
         return True
 
     msg = u"[SUCCES] %d trouves: %s" % (len(patients.all()),
-          ", ".join([display_name(patient, fmt)
-                for patient in patients.all()]))
+          ", ".join([display_name(patient, fmt) for patient in patients.all()]))
     message.respond(msg[:160])
     return True
 
@@ -409,8 +408,7 @@ def nut_disable(message, args, sub_cmd, cmd):
             or error message """
 
     try:
-        hc_code, date_disable, type_uren, patient_id, weight, height, \
-                                                    muac, reason = args.split()
+        hc_code, date_disable, type_uren, patient_id, weight, height, muac, reason = args.split()
     except ValueError:
         # Todo: A supprimer une fois la version 07 de application java"
         # est deployé au cscom
@@ -429,8 +427,7 @@ def nut_disable(message, args, sub_cmd, cmd):
 
     try:
         patient_id = clean_up_pid(patient_id)
-        patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(),
-                                                                    patient_id)
+        patient = Patient.get_patient_nut_id(hc_code, type_uren.lower(), patient_id)
     except:
         msg = u"[ERREUR] Aucun patient trouve pour ID#%s" % patient_id
         message.respond(msg)
@@ -439,14 +436,13 @@ def nut_disable(message, args, sub_cmd, cmd):
 
     if patient.last_data_nut().date > quitting_date:
         msg = u"[ERREUR] La date du dernier suivi pour ID# %s est " \
-                        u"superieur que la date utilise" % patient.nut_id
+              u"superieur que la date utilise" % patient.nut_id
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
 
     if patient.last_data_event().event == ProgramIO.OUT:
-        msg = u"/!\ %(full_name)s est deja sortie du programme." % \
-                                        {'full_name': patient.full_name()}
+        msg = u"/!\ %(full_name)s est deja sortie du programme." % {'full_name': patient.full_name()}
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
@@ -497,8 +493,7 @@ def nut_consumption(message, args, sub_cmd, cmd):
     try:
         hc = HealthCenter.objects.get(code=hc_code)
     except:
-        msg = u"[ERREUR] %(hc)s n'est pas un code de Centre valide." % \
-                                                             {'hc': hc_code}
+        msg = u"[ERREUR] %(hc)s n'est pas un code de Centre valide." % {'hc': hc_code}
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
@@ -515,8 +510,7 @@ def nut_consumption(message, args, sub_cmd, cmd):
     now_period = MonthPeriod.find_create_by_date(date.today())
     if period != now_period.previous():
         msg = u"[ERREUR] Impossible d'enregistrer le rapport de conso pour %s.\
-                 Envoyez pour %s" % (period.full_name(), now_period.previous()
-                                                         .full_name())
+                 Envoyez pour %s" % (period.full_name(), now_period.previous().full_name())
         message.respond(msg)
         send_sms(FOL_NUMBER, msg)
         return True
@@ -535,14 +529,14 @@ def nut_consumption(message, args, sub_cmd, cmd):
         except:
             errors.append(icode)
 
-        if ConsumptionReport.objects.filter(period=period, \
-                                            health_center=hc, \
+        if ConsumptionReport.objects.filter(period=period,
+                                            health_center=hc,
                                             input_type=input_type).count():
-            cr = ConsumptionReport.objects.get(period=period, \
-                                               health_center=hc, \
+            cr = ConsumptionReport.objects.get(period=period,
+                                               health_center=hc,
                                                input_type=input_type)
         else:
-            cr = ConsumptionReport(period=period, health_center=hc, \
+            cr = ConsumptionReport(period=period, health_center=hc,
                                    input_type=input_type)
         cr.initial = int(initial)
         cr.received = int(received)
@@ -562,5 +556,5 @@ def nut_consumption(message, args, sub_cmd, cmd):
         return True
 
     message.respond(u"[SUCCES] %d rapports de conso enregistres pour %s."
-                                        % (len(success), period.full_name()))
+                    % (len(success), period.full_name()))
     return True
