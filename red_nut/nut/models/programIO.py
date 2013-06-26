@@ -29,6 +29,17 @@ class ProgramIOURENQS(QuerySet):
                 if patient.patient.uren in (NutritionalData.SAMP,
                                             NutritionalData.SAM)]
 
+    def avg_days(self):
+        """
+             Return the average program duration days for
+             all patients that are out of the program.
+        """
+        list_num_days = [out.program_duration for out in self]
+        try:
+            return sum(list_num_days) / len(list_num_days)
+        except ZeroDivisionError:
+            return 0
+
 
 class ProgramIOURENManager(models.Manager):
 

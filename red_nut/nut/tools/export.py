@@ -97,7 +97,9 @@ def report_as_excel(health_centers):
                  u"Date du dernier status",
                  u"Date de l'evenement",
                  u"Evenement",
-                 u"Raison")
+                 u"Raison",
+                 u"Durée Moyenne",
+                 u"Gain de poids")
 
     for index, title in enumerate(headers2):
         sheet_patient.write(row, index, title, style_title)
@@ -216,6 +218,16 @@ def report_as_excel(health_centers):
                 # sheet_patient.write(rowpp, col_, pp.get_reason_display().upper())
                 rowpp += 1
                 row += 1
+
+            col_ += 1
+            if not patient.in_program():
+                avg_days = ProgramIO.out.filter(patient=patient).avg_days()
+                sheet_patient.write(row, col_, avg_days)
+
+            col_ += 1
+            if patient.is_healing():
+                avg_weight = patient.weight_gain_out()
+                sheet_patient.write(row, col_, float("%.1f" % avg_weight))
 
     stream = StringIO.StringIO()
     book.save(stream)
