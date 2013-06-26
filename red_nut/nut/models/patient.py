@@ -201,6 +201,11 @@ class Patient(models.Model):
 
         return weight_gain_calc(last_datanut, min_datanut)
 
+    def weight_gain_out(self):
+        if not self.is_healing():
+            return None
+        return self.weight_gain()
+
     def last_inprogram_data(self):
         """ return all datanut for patient since last entrance."""
 
