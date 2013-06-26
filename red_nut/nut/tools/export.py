@@ -222,12 +222,12 @@ def report_as_excel(health_centers):
             col_ += 1
             if not patient.in_program():
                 avg_days = ProgramIO.out.filter(patient=patient).avg_days()
-                sheet_patient.write(row, col_, avg_days)
+                sheet_patient.write(rowpp - 1, col_, avg_days)
 
             col_ += 1
             if patient.is_healing():
                 avg_weight = patient.weight_gain_out()
-                sheet_patient.write(row, col_, float("%.1f" % avg_weight))
+                sheet_patient.write(rowpp - 1, col_, float("%.1f" % avg_weight))
 
     stream = StringIO.StringIO()
     book.save(stream)
