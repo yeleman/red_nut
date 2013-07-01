@@ -6,7 +6,7 @@ installation du site red nut
 
     install pip:
         sudo apt-get install python-pip
-        
+
     install virtualenvqarpper:
         sudo pip install virtualenvwrapper
         mkdir -p ~/src
@@ -16,7 +16,7 @@ installation du site red nut
                 export WORKON_HOME=~/src/envs
                 source /usr/local/bin/virtualenvwrapper.sh
         logout / login
-        mkvirtualenv nutenv
+        mkvirtualenv rednut
 
     install git-core:
         sudo aptitude install git-core
@@ -27,22 +27,22 @@ installation du site red nut
 
     Creation de la base de données SMS:
         echo "grant all privileges on rednutsms.* to 'rednutsms'@'localhost' identified by 'rednutsms' with grant option; flush privileges; create database rednutsms;" | mysql -uroot -p
-        mysql -urednutsms -prednutsms rednutsms < ~/src/envs/nutenv/lib/python2.7/site-packages/nosmsd/contrib/nosmsd-gammu-full.sql
+        mysql -urednutsms -prednutsms rednutsms < ~/src/envs/rednut/lib/python2.7/site-packages/nosmsd/contrib/nosmsd-gammu-full.sql
 
     installation de gunicorn et nginx:
         sudo apt-get install nginx
         sudo pip install gunicorn
-        
+
     Création du projet:
         mkdir project
         cd project
         git clone https://github.com/yeleman/red_nut.git
         cd red_nut/red_nut/
         pip install -r pip-requirements.txt
-        cd /src/envs/nutenv/lib/python2.7/site-packages/nosmsd/contrib
+        cd /src/envs/rednut/lib/python2.7/site-packages/nosmsd/contrib
         vi nosmsd.conf.py
         cd /home/my user/project/red_nut/red_nut/
-        workon nutenv
+        workon rednut
         ./manage.py collectstatic
         mv local_settings.py.example local_settings.py
         vi local_settings.py
